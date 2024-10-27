@@ -22,9 +22,9 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: 'Pretendard-Regular', sans-serif;
-    background-color: ${theme.colors.background}; 
-    font-size: ${theme.typography.bodyFontSize}; 
-    color: ${theme.colors.text};
+    background-color: ${theme.gray[10]}; 
+    font-size: ${theme.typography.body3.fontSize}; 
+    color: ${theme.gray[60]};
   }
 
   a {

@@ -24,31 +24,31 @@ export const theme = {
   },
   typography: {
     h1: {
-      fontSize: '40px',
+      fontSize: '2.5rem',
       fontWeight: 'bold',
     },
     h2: {
-      fontSize: '32px',
+      fontSize: '2rem',
       fontWeight: 'bold',
     },
     h3: {
-      fontSize: '24px',
+      fontSize: '1.5rem',
       fontWeight: 'bold',
     },
     body1: {
-      fontSize: '20px',
+      fontSize: '1.25rem',
       fontWeight: 'normal',
     },
     body1Bold: {
-      fontSize: '20px',
+      fontSize: '1.25rem',
       fontWeight: 'bold',
     },
     body2: {
-      fontSize: '18px',
+      fontSize: '1.125rem',
       fontWeight: 'normal',
     },
     body2Bold: {
-      fontSize: '18px',
+      fontSize: '1.125rem',
       fontWeight: 'bold',
     },
     body3: {
