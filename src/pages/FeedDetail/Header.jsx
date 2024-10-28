@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { shareKakao } from '../../utills/KakaoShare';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -35,9 +36,14 @@ const ShareContainer = styled.div`
   margin-top: 12px;
 `;
 
-const ShareIcon = styled.img`
+const ShareIconLink = styled.a`
   width: 40px;
   height: 40px;
+`;
+
+const ShareIcon = styled.img`
+  width: 100%;
+  height: 100%;
 `;
 
 function Header() {
@@ -47,9 +53,15 @@ function Header() {
       <ProfileImage src='/images/contents/profile.svg' />
       <UserName as='h2'>이동훈</UserName>
       <ShareContainer>
-        <ShareIcon src='/images/icons/ic_share.svg' />
-        <ShareIcon src='/images/icons/ic_kakao-share.svg' />
-        <ShareIcon src='/images/icons/ic_facebook-share.svg' />
+        <ShareIconLink href='https://example.com/share'>
+          <ShareIcon src='/images/icons/ic_share.svg' />
+        </ShareIconLink>
+        <ShareIconLink onClick={shareKakao} href='/post'>
+          <ShareIcon src='/images/icons/ic_kakao-share.svg' />
+        </ShareIconLink>
+        <ShareIconLink href='https://facebook.com/share'>
+          <ShareIcon src='/images/icons/ic_facebook-share.svg' />
+        </ShareIconLink>
       </ShareContainer>
     </HeaderContainer>
   );
