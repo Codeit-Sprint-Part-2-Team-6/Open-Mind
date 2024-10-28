@@ -87,7 +87,7 @@ export default function Card({ imageSource, name, questionCount }) {
         <CardName>{name}</CardName>
         <CardQuestionWrap>
           <CardQuestionBox>
-            <CardQuestionIcos src='/images/icons/Messages.svg' alt='메시지 아이콘' />
+            <CardQuestionIcos src='/images/icons/Card-Messages.svg' alt='메시지 아이콘' />
             <CardQuestionTxt>받은 질문</CardQuestionTxt>
           </CardQuestionBox>
           <CardQuestionCount>{questionCount}개</CardQuestionCount>
