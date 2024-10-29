@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
 import { Helmet } from 'react-helmet';
+import FeedDetailPage from './pages/FeedDetail/FeedDetailPage';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <GlobalStyles />
         <Router>
           <Routes>
-            <Route />
+            <Route path='/post' element={<FeedDetailPage />} />
           </Routes>
         </Router>
       </ThemeProvider>
