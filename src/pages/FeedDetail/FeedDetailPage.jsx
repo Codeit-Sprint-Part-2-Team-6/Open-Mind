@@ -66,7 +66,11 @@ function FeedDetailPage() {
             </>
           ) : (
             <>
-              <QuestionCountText>{`아직 질문이 없습니다.`}</QuestionCountText>
+              <QuestionCounterContainer>
+                <QuestionIcon src='/images/icons/ic_messages.svg' />
+                <QuestionCountText>아직 질문이 없습니다.</QuestionCountText>
+              </QuestionCounterContainer>
+
               <NoQuestionImage src='/images/contents/no-question.svg' />
             </>
           )}
