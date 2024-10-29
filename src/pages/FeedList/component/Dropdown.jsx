@@ -8,6 +8,7 @@ const DropdownContainer = styled.div`
   background-color: var(--Grayscale-10);
   font-size: 1rem;
   font-weight: 500;
+  padding: 8px 12px 8px 12px;
 `;
 
 const DropdownButton = styled.button`
