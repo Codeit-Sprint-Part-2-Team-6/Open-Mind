@@ -1,14 +1,21 @@
-import React from "react";
-import CardList from "./Cardlist";
-import Header from "./Header";
-import Pagination from "./Pagination";
+import styled from 'styled-components';
+import Header from './Header';
+import AllSubjects from './AllSubjects';
+
+const Container = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--Grayscale-20);
+`;
 
 function FeedList() {
-	return (
-		<>
-			<Header />
-			<CardList />
-			<Pagination />
-		</>
-	);
+  return (
+    <Container>
+      <Header />
+      <AllSubjects />
+    </Container>
+  );
 }
+
+export default FeedList;
