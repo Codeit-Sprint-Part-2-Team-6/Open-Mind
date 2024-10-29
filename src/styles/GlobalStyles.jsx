@@ -1,9 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
-import { theme } from './theme.jsx';
 
 const GlobalStyles = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Actor&display=swap');
+  
 
   ${reset} // reset.css 적용
   
@@ -22,14 +21,18 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: 'Pretendard-Regular', sans-serif;
-    background-color: ${theme.gray[10]}; 
-    font-size: ${theme.typography.body3.fontSize}; 
-    color: ${theme.gray[60]};
+    background-color: ${({ theme }) => theme.gray[10]}; 
+    font-size: ${({ theme }) => theme.typography.body3.fontSize}; 
+    color: ${({ theme }) => theme.gray[60]};
+  }
+
+  div, h1, h2, h3, h4, h5, h6, p, ol, li, a, form, input, button {
+    font-family: 'Pretendard-Regular', sans-serif;
   }
 
   a {
     text-decoration: none;
-    color: ${theme.gray[60]};
+    color: ${({ theme }) => theme.gray[60]};
   }
   
   li {

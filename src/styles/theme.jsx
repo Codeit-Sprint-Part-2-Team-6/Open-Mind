@@ -1,4 +1,4 @@
-export const theme = {
+const theme = {
   gray: {
     10: '#FFFFFF',
     20: '#F9F9F9',
@@ -24,31 +24,31 @@ export const theme = {
   },
   typography: {
     h1: {
-      fontSize: '2.5rem',
+      fontSize: '2.5rem', // 40px
       fontWeight: 'bold',
     },
     h2: {
-      fontSize: '2rem',
+      fontSize: '2rem', // 32px
       fontWeight: 'bold',
     },
     h3: {
-      fontSize: '1.5rem',
+      fontSize: '1.5rem', // 24px
       fontWeight: 'bold',
     },
     body1: {
-      fontSize: '1.25rem',
+      fontSize: '1.25rem', // 20px
       fontWeight: 'normal',
     },
     body1Bold: {
-      fontSize: '1.25rem',
+      fontSize: '1.25rem', // 20px
       fontWeight: 'bold',
     },
     body2: {
-      fontSize: '1.125rem',
+      fontSize: '1.125rem', // 18px
       fontWeight: 'normal',
     },
     body2Bold: {
-      fontSize: '1.125rem',
+      fontSize: '1.125rem', // 18px
       fontWeight: 'bold',
     },
     body3: {
@@ -73,3 +73,4 @@ export const theme = {
     },
   },
 };
+export default theme;
