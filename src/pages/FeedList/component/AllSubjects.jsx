@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import theme from '../../../styles/theme';
+import { getSubjects } from '../../../api/api';
+import React, { useEffect, useState } from 'react';
+import Dropdown from './Dropdown';
 
 const Container = styled.div`
   display: flex;
@@ -37,10 +40,17 @@ const Title = styled.p`
 `;
 
 function AllSubjects() {
+  const [orderBy, setOrderBy] = useState('createdAt');
+
+  const handleSortCard = (sortOption) => {
+    setOrderBy(sortOption);
+  };
+
   return (
     <Container>
       <HeaderContainer>
         <Title>누구에게 질문할까요?</Title>
+        <Dropdown onSortCard={handleSortCard} />
       </HeaderContainer>
     </Container>
   );
