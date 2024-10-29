@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import CommonBtn from '../../../components/CommonButton';
-import theme from '../../../styles/theme';
+import CommonBtn from '../../components/CommonButton';
+import theme from '../../styles/theme';
 
 const HeaderContainer = styled.div`
   display: flex;

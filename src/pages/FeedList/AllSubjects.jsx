@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import theme from '../../../styles/theme';
-import { getSubjects } from '../../../api/api';
+import theme from '../../styles/theme';
+import { getSubjects } from '../../api/api';
 import React, { useEffect, useState } from 'react';
 import Dropdown from './Dropdown';
 
