@@ -1,5 +1,5 @@
 import React from 'react';
-import CardList from './Cardlist';
+import CardList from './CardList';
 import Header from './Header';
 import Pagination from './Pagination';
 
@@ -12,3 +12,5 @@ function FeedList() {
     </>
   );
 }
+
+export default FeedList;
