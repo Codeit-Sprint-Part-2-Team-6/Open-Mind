@@ -30,9 +30,9 @@ const CommonButtonArrowIcon = styled.img`
   height: 18px;
 `;
 
-export default function CommonBtn({ text, onClick }) {
+export default function CommonBtn({ text, onClick, className }) {
   return (
-    <CommonButtonWrap as='button' onClick={onClick}>
+    <CommonButtonWrap as='button' className={className} onClick={onClick}>
       <CommonButtonFlex>
         <CommonButtonTxt>{text}</CommonButtonTxt>
         <CommonButtonArrowIcon src='/images/icons/arrow-right.svg' alt='화살표 이미지' />
