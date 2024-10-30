@@ -23,15 +23,11 @@ function App() {
       <Helmet>
         <link href='https://fonts.googleapis.com/css2?family=Actor&display=swap' rel='stylesheet' />
       </Helmet>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        <Router>
-          <AppContent />
-          <Routes>
-            <Route path='list' element={<FeedList />} />
-          </Routes>
-        </Router>
-      </ThemeProvider>
+      <Router>
+        <Routes>
+          <Route path='list' element={<FeedList />} />
+        </Routes>
+      </Router>
     </>
   );
 }
