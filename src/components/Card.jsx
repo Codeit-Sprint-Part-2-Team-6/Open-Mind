@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 const CardContainer = styled.div`
   max-width: 155.5px;
