@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import Header from './Header.jsx';
+
 import { useState } from 'react';
+import CreateQuestionModal from './CreateQuestionModal.jsx';
 
 const Main = styled.main`
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,18 +51,43 @@ const NoQuestionImage = styled.img`
   transform: translate(-50%, -50%);
 `;
 
+const CreateQuestionBtn = styled.button`
+  position: absolute;
+  bottom: 30px;
+  right: 24px;
+  font-size: ${(props) => props.theme.typography.body1.fontSize};
+  color: ${(props) => props.theme.gray[10]};
+  padding: 14px 24px;
+  background-color: ${(props) => props.theme.brown[40]};
+  border: none;
+  border-radius: 200px;
+  box-shadow: ${(props) => props.theme.shadows['medium']};
+  line-height: 26px;
+  cursor: pointer;
+`;
+
 function FeedDetailPage() {
-  const [QuestionCount, setQuestionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <Header />
       <Main>
         <QuestionsContainer>
-          {QuestionCount ? (
+          {questionCount ? (
             <>
               <QuestionCounterContainer>
-                <QuestionIcon src='/images/icons/ic_messages.svg' />
-                <QuestionCountText>{`${QuestionCount}개의 질문이 있습니다.`}</QuestionCountText>
+                <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
+                <QuestionCountText>{`${questionCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
 
               {/*질문 박스 들어갈 자리  */}
@@ -67,7 +95,7 @@ function FeedDetailPage() {
           ) : (
             <>
               <QuestionCounterContainer>
-                <QuestionIcon src='/images/icons/ic_messages.svg' />
+                <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
                 <QuestionCountText>아직 질문이 없습니다.</QuestionCountText>
               </QuestionCounterContainer>
 
@@ -75,6 +103,9 @@ function FeedDetailPage() {
             </>
           )}
         </QuestionsContainer>
+        <CreateQuestionBtn onClick={handleOpenModal}>질문 작성</CreateQuestionBtn>
+
+        {isModalOpen && <CreateQuestionModal onClose={handleCloseModal} />}
       </Main>
     </>
   );
