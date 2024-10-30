@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 import { getSubjects } from '../../api/api';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
 import Pagination from './Pagination';
@@ -56,7 +56,6 @@ const GridContainer = styled.div`
   align-items: center;
   justify-content: space-evenly;
   gap: 1.5rem;
-  padding-top: 20px;
 `;
 
 const UserCardGrid = styled.div`
@@ -97,7 +96,7 @@ const PaginationContainer = styled.div`
 function AllSubjects() {
   const [pageSize, setPageSize] = useState(getPageSize());
   const [subjectList, setSubjectList] = useState([]);
-  const [orderBy, setOrderBy] = useState('createdAt');
+  const [orderBy, setOrderBy] = useState('createAt');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
 
@@ -125,15 +124,15 @@ function AllSubjects() {
   }, [orderBy, page, pageSize]);
 
   const pageChange = (pageNum) => {
+    console.log('page change', pageNum);
     setPage(pageNum);
-    fetchData({ orderBy, page: pageNum, pageSize });
   };
 
   return (
     <Container>
       <HeaderContainer>
         <Title>누구에게 질문할까요?</Title>
-        <Dropdown onSorCard={handleSortCard} />
+        <Dropdown onSortCard={handleSortCard} />
       </HeaderContainer>
       <GridContainer>
         <UserCardGrid>
