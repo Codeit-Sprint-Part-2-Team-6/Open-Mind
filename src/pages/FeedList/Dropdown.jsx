@@ -28,14 +28,14 @@ const DropdownButton = styled.button`
   }
 `;
 
-function Dropdown({ onSortCard }) {
-  const [isDropDown, setIsDropDown] = useState(false);
-  const [orderBy, setOrderBy] = useState('최신순');
+function Dropdown() {
+  // const [isDropDown, setIsDropDown] = useState(false);
+  // const [orderBy, setOrderBy] = useState('최신순');
 
   return (
     <DropdownContainer>
       <DropdownButton>
-        {orderBy}
+        {'최신순'}
         <img src='images/icons/Arrow-up.svg' alt='드롭다운 토글' />
       </DropdownButton>
     </DropdownContainer>
