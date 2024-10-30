@@ -65,7 +65,7 @@ const Title = styled.p`
   line-height: 22px;
   color: ${({ theme }) => theme.gray[60]};
 
-  @media (min-width: 768px) {
+  @media ${({ theme }) => theme.device.mobileMn} {
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
     font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   }
@@ -82,7 +82,7 @@ const AnswerProfile = styled.img`
   width: 2rem;
   height: auto;
 
-  @media (min-width: 768px) {
+  @media ${({ theme }) => theme.device.mobileMn} {
     width: 3rem;
   }
 `;
@@ -104,7 +104,7 @@ const UserName = styled.p`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   font-weight: ${({ theme }) => theme.typography.caption1.fontWeight};
 
-  @media (min-width: 768px) {
+  @media ${({ theme }) => theme.device.mobileMn} {
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
     font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   }
