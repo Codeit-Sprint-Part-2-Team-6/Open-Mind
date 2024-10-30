@@ -122,7 +122,7 @@ const HomePageInput = styled.input`
 const ErrorTxt = styled.p`
   color: ${({ theme }) => theme.red};
   opacity: 0;
-  animation: ${({ isVisible }) => (isVisible ? 'fadeIn 0.5s forwards' : 'fadeOut 0.5s forwards')};
+  animation: ${({ isVisible }) => (isVisible ? 'fadeOut 0.5s forwards' : 'fadeIn 0.5s forwards')};
 
   @keyframes fadeIn {
     from {
