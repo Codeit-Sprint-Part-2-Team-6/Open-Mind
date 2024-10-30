@@ -1,14 +1,33 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-const CardContainer = styled.div`
+const CardContainer = styled(Link)`
+  display: block;
+  height: 168px;
   max-width: 155.5px;
-  width: 100%;
+  min-width: 155.5px;
+  background-color: ${({ theme }) => theme.gray[10]};
+  position: relative;
   border: 1px solid ${({ theme }) => theme.gray[40]};
   border-radius: 16px;
 
+  &:hover {
+    border-color: var(--Blue-50);
+  }
+
+  @media (min-width: 640px) {
+    height: 187px;
+    max-width: 220px;
+    min-width: 220px;
+  }
+
   @media (min-width: 768px) {
     max-width: 220px;
+    min-width: 186px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 220px;
   }
 `;
 
@@ -81,8 +100,8 @@ const CardQuestionCount = styled.div`
 
 export default function Card({ item }) {
   return (
-    <CardContainer>
-      <CardPadding to={'/post/${item.id}'}>
+    <CardContainer to={'/post/${item.id}'}>
+      <CardPadding>
         <CardImage src={item.imageSource} alt={`${item.name}의 이미지`} />
         <CardName>{item.name}</CardName>
         <CardQuestionWrap>
