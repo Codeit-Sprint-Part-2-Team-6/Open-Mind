@@ -101,7 +101,8 @@ const CreateQuestionBtn = styled.button`
 `;
 
 function FeedDetailPage() {
-  const [questionCount, setQuestionCount] = useState(0);
+  // const [questionCount, setQuestionCount] = useState(0);
+  const questionCount = 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
