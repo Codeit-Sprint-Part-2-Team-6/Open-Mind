@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
@@ -12,7 +12,7 @@ function App() {
       <Helmet>
         <link href='https://fonts.googleapis.com/css2?family=Actor&display=swap' rel='stylesheet' />
       </Helmet>
-    
+
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <Router>
