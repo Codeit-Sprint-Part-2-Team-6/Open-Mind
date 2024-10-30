@@ -63,7 +63,7 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
         disabled={currentPage === totalPage}
         onClick={() => pageChange(currentPage + 1)}
       >
-        <img src='images/icons/Arrow-right.svg' alt='오른쪽화살표' />
+        <img src='images/icons/A-right.svg' alt='오른쪽화살표' />
       </PaginationButton>
     </PaginationBar>
   );
