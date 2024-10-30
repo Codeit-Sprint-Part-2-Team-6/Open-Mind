@@ -8,7 +8,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 0 24px;
+  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -17,7 +17,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  width: 100%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   background: white;
@@ -75,10 +75,11 @@ const ReceiverNickname = styled.p`
 `;
 
 const QuestionTextArea = styled.textarea`
-  width: 100%;
+  width: 280px;
   height: 358px;
   padding: 16px;
   border: none;
+  background-color: ${(props) => props.theme.gray[20]};
   outline-color: ${(props) => props.theme.gray[20]};
   transition: outline-color 0.2s ease;
   font-family: Pretendard-Regular;
@@ -96,6 +97,11 @@ const QuestionTextArea = styled.textarea`
   &:focus {
     outline-color: ${(props) => props.theme.gray[50]};
     border-radius: 8px;
+  }
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    height: 180px;
+    width: 532px;
   }
 `;
 

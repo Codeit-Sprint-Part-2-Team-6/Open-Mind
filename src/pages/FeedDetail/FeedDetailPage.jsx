@@ -11,6 +11,14 @@ const Main = styled.main`
   align-items: center;
   padding: 0 24px;
   margin-top: 150px;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    padding: 0 32px;
+  }
+
+  @media (${({ theme }) => theme.typography.device.laptopMn}) {
+    padding: 0 242px;
+  }
 `;
 
 const QuestionsContainer = styled.div`
@@ -26,6 +34,10 @@ const QuestionsContainer = styled.div`
   border: 1px solid ${(props) => props.theme.brown[20]};
   border-radius: 16px;
   position: relative;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    aspect-ratio: ${(props) => (props.isNoQuestion ? null : 2.1)};
+  }
 `;
 
 const QuestionCounterContainer = styled.div`
@@ -42,6 +54,10 @@ const QuestionIcon = styled.img`
 const QuestionCountText = styled.p`
   font-size: ${(props) => props.theme.typography.body2.fontSize};
   color: ${(props) => props.theme.brown[40]};
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    font-size: ${(props) => props.theme.typography.body1Bold.fontSize};
+  }
 `;
 
 const NoQuestionImage = styled.img`
@@ -49,10 +65,15 @@ const NoQuestionImage = styled.img`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    width: 150px;
+    height: 154px;
+  }
 `;
 
 const CreateQuestionBtn = styled.button`
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   right: 24px;
   font-size: ${(props) => props.theme.typography.body1.fontSize};
@@ -64,6 +85,19 @@ const CreateQuestionBtn = styled.button`
   box-shadow: ${(props) => props.theme.shadows['medium']};
   line-height: 26px;
   cursor: pointer;
+
+  &::after {
+    content: '질문 작성';
+  }
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 208px;
+    padding: 12px 24px;
+
+    &::after {
+      content: '질문 작성하기';
+    }
+  }
 `;
 
 function FeedDetailPage() {
@@ -103,7 +137,7 @@ function FeedDetailPage() {
             </>
           )}
         </QuestionsContainer>
-        <CreateQuestionBtn onClick={handleOpenModal}>질문 작성</CreateQuestionBtn>
+        <CreateQuestionBtn onClick={handleOpenModal} />
 
         {isModalOpen && <CreateQuestionModal onClose={handleCloseModal} />}
       </Main>

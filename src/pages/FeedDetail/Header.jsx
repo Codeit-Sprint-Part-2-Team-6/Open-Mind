@@ -12,18 +12,29 @@ const HeaderContainer = styled.header`
   background-repeat: no-repeat;
   width: 100%;
   height: 180px;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    height: 234px;
+  }
 `;
 
 const Logo = styled.img`
   height: 50px;
-  width: auto;
   margin-top: 40px;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    height: 68px;
+  }
 `;
 
 const ProfileImage = styled.img`
   height: 104px;
-  width: auto;
   margin-top: 10px;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    height: 136px;
+    width: 136px;
+  }
 `;
 
 const UserName = styled.h1`
@@ -54,21 +65,21 @@ const ShareIcon = styled.img`
 `;
 
 const fadeInOut = keyframes`
-  0% { opacity: 0; bottom: 10px; }
-  10% { opacity: 1; bottom: 30px; }
-  90% { opacity: 1; bottom: 30px; }
-  100% { opacity: 0; bottom: 10px; }
+  0% { opacity: 0; bottom: 30px; }
+  10% { opacity: 1; bottom: 64px; }
+  90% { opacity: 1; bottom: 64px; }
+  100% { opacity: 0; bottom: 30px; }
 `;
 
 const ToastMessage = styled.div`
   position: fixed;
-  bottom: 30px;
+  // bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
+  background-color: black;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
   font-size: 0.875rem;
   animation: ${fadeInOut} 5s ease-in-out forwards;
   z-index: 1000;
