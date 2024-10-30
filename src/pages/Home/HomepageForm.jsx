@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { createSubject } from '../../api/FeedApi';
+import { createSubject } from '../../api/SubjectApi';
 
 function HomeForm() {
   const [inputValue, setInputValue] = useState('');
