@@ -52,7 +52,7 @@ function HomeForm() {
               placeholder='이름을 입력하세요'
             />
           </HomeInputWrap>
-          {errorMessage && <ErrorTxt isVisible>{errorMessage}</ErrorTxt>}
+          {errorMessage && <ErrorTxt $isVisible>{errorMessage}</ErrorTxt>}
           <QuestionReceiveBtn as='button' type='submit'>
             질문 받기
           </QuestionReceiveBtn>
