@@ -203,11 +203,11 @@ export default function QuestionBox() {
           )}
           <ReactionContainer>
             <ReactionBox>
-              <Reaction isActive={isActive}>
+              <Reaction as='button' isActive={isActive}>
                 <ThumbsUpIcon color={isActive ? theme.blue : theme.gray[40]} size={16} />
                 좋아요 {question.like}
               </Reaction>
-              <Reaction isActive={!isActive}>
+              <Reaction as='button' isActive={!isActive}>
                 <ThumbsDownIcon color={!isActive ? theme.blue : theme.gray[40]} size={16} />
                 싫어요 {question.dislike}
               </Reaction>
