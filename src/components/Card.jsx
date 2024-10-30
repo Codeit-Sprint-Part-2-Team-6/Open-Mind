@@ -81,7 +81,7 @@ const CardQuestionCount = styled.div`
 export default function Card({ item }) {
   return (
     <CardContainer>
-      <CardPadding to={'/post/${item.id}'}>
+      <CardPadding to={`/post/${item.id}`}>
         <CardImage src={item.name} alt={`${item.name}의 이미지`} />
         <CardName>{item.name}</CardName>
         <CardQuestionWrap>
