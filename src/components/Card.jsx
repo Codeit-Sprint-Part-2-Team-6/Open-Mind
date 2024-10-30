@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const CardContainer = styled.div`
   max-width: 155.5px;
@@ -78,18 +79,18 @@ const CardQuestionCount = styled.div`
   }
 `;
 
-export default function Card({ imageSource, name, questionCount }) {
+export default function Card({ item }) {
   return (
     <CardContainer>
-      <CardPadding>
-        <CardImage src={imageSource} alt={`${name}의 이미지`} />
-        <CardName>{name}</CardName>
+      <CardPadding to={'/post/${item.id}'}>
+        <CardImage src={item.name} alt={`${item.name}의 이미지`} />
+        <CardName>{item.name}</CardName>
         <CardQuestionWrap>
           <CardQuestionBox>
             <CardQuestionIcos src='/images/icons/Card-Messages.svg' alt='메시지 아이콘' />
             <CardQuestionTxt>받은 질문</CardQuestionTxt>
           </CardQuestionBox>
-          <CardQuestionCount>{questionCount}개</CardQuestionCount>
+          <CardQuestionCount>{item.questionCount}개</CardQuestionCount>
         </CardQuestionWrap>
       </CardPadding>
     </CardContainer>
