@@ -3,19 +3,6 @@ import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
 import { Helmet } from 'react-helmet';
-import FeedList from './pages/FeedList/FeedList';
-
-function AppContent() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  return (
-    <div>
-      {location.pathname !== '/list' && (
-        <button onClick={() => navigate('/list')}>Go to FeedList</button>
-      )}
-    </div>
-  );
-}
 
 function App() {
   return (
@@ -26,9 +13,8 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <Router>
-          <AppContent />
           <Routes>
-            <Route path='list' element={<FeedList />} />
+            <Route />
           </Routes>
         </Router>
       </ThemeProvider>
