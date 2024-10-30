@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 import { getSubjects } from '../../api/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
 import Pagination from './Pagination';
@@ -102,7 +102,6 @@ function AllSubjects() {
 
   const handleSortCard = (sortOption) => {
     setOrderBy(sortOption);
-    setPage(1);
   };
 
   const fetchData = async ({ orderBy, page, pageSize }) => {
@@ -125,8 +124,8 @@ function AllSubjects() {
   }, [orderBy, page, pageSize]);
 
   const pageChange = (pageNum) => {
-    console.log('page change', pageNum);
     setPage(pageNum);
+    fetchData({ orderBy, page: pageNum, pageSize });
   };
 
   return (

@@ -15,7 +15,17 @@
 const API_BASE_URL = 'https://openmind-api.vercel.app/11-6';
 
 export async function getSubjects(params = {}) {
-  const query = new URLSearchParams(params).toString();
+  const { pageSize, page, sort, ...rest } = params;
+
+  if (pageSize && page) {
+    rest.limit = pageSize;
+    rest.offset = (page - 1) * pageSize;
+  }
+  if (sort) {
+    rest.sort = sort;
+  }
+
+  const query = new URLSearchParams(rest).toString();
 
   try {
     const response = await fetch(`${API_BASE_URL}/subjects/?${query}`);
