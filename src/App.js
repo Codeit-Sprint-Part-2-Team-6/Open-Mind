@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
 import { Helmet } from 'react-helmet';
+import HomePage from './pages/Home/Homepage';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <GlobalStyles />
         <Router>
           <Routes>
-            <Route />
+            <Route index element={<HomePage />} />
           </Routes>
         </Router>
       </ThemeProvider>
