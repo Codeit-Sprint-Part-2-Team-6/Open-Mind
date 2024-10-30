@@ -1,6 +1,8 @@
 import styled, { useTheme } from 'styled-components';
-import ThumbsUpIcon from './thumbs-up';
-import ThumbsDownIcon from './thumbs-down';
+import ThumbsUpIcon from './SvgIcons/thumbs-up';
+import ThumbsDownIcon from './SvgIcons/thumbs-down';
+import { useFeed } from '../../hooks/useStore';
+import { useState } from 'react';
 
 const BoxContainer = styled.div`
   display: flex;
@@ -23,6 +25,7 @@ const QuestionCard = styled.div`
 `;
 
 const QuestionToolbar = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -42,6 +45,54 @@ const AnswerTag = styled.div`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   color: ${({ answered, theme }) => (answered ? theme.brown[40] : theme.gray[40])};
   line-height: 18px;
+`;
+
+const KebabButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+`;
+
+const KebabMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  box-shadow: ${({ theme }) => theme.shadows.small};
+  border: 0.5px solid ${({ theme }) => theme.gray[20]};
+  border-radius: 8px;
+  z-index: 1000;
+`;
+
+const KebabMenuItem = styled.div`
+  padding: 10px 15px;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.gray[20]};
+  }
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    bottom: 0;
+    height: 1px;
+    background-color: ${({ theme }) => theme.gray[30]};
+  }
+
+  &:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -65,7 +116,7 @@ const Title = styled.p`
   line-height: 22px;
   color: ${({ theme }) => theme.gray[60]};
 
-  @media ${({ theme }) => theme.device.mobileMn} {
+  @media ${({ theme }) => theme.typography.device.tabletMn} {
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
     font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   }
@@ -82,7 +133,7 @@ const AnswerProfile = styled.img`
   width: 2rem;
   height: auto;
 
-  @media ${({ theme }) => theme.device.mobileMn} {
+  @media ${({ theme }) => theme.typography.device.tabletMn} {
     width: 3rem;
   }
 `;
@@ -92,6 +143,7 @@ const AnswerTextContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
+  flex-grow: 1;
 `;
 
 const AnswerInfo = styled.div`
@@ -104,7 +156,7 @@ const UserName = styled.p`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   font-weight: ${({ theme }) => theme.typography.caption1.fontWeight};
 
-  @media ${({ theme }) => theme.device.mobileMn} {
+  @media ${({ theme }) => theme.typography.device.tabletMn} {
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
     font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   }
@@ -121,7 +173,54 @@ const AnswerContent = styled.p`
   font-size: ${({ theme }) => theme.typography.body3.fontSize};
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
+  color: ${({ isRejected, theme }) => (isRejected ? theme.red : theme.gray[60])};
+`;
+
+const AnswerRegisterContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const AnswerTextArea = styled.textarea`
+  width: 100%;
+  height: 186px;
+  padding: 16px;
+  border: none;
+  background-color: ${({ theme }) => theme.gray[20]};
+  transition: outline-color 0.2s ease;
+  border-radius: 8px;
+
+  font-size: ${({ theme }) => theme.typography.body3.fontSize};
+  font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
+  line-height: 22px;
   color: ${({ theme }) => theme.gray[60]};
+  resize: none;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.gray[40]};
+    border: none;
+  }
+  &:focus {
+    outline-color: ${({ theme }) => theme.gray[50]};
+    border-radius: 8px;
+  }
+`;
+
+const AnswerRegisterButton = styled.button`
+  width: 100%;
+  height: 46px;
+  padding: 12px 24px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  background-color: ${({ theme }) => theme.brown[40]};
+  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
+  &:disabled {
+    background-color: ${({ theme }) => theme.brown[30]};
+  }
 `;
 
 const ReactionContainer = styled.div`
@@ -143,7 +242,8 @@ const Reaction = styled.a`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   font-weight: ${({ theme }) => theme.typography.caption1.fontWeight};
   line-height: 18px;
-  color: ${({ isActive, theme }) => (isActive ? theme.blue : theme.gray[40])};
+  color: ${({ isActive, type, theme }) =>
+    isActive ? (type === 'like' ? theme.blue : theme.gray[60]) : theme.gray[40]};
   cursor: pointer;
 `;
 
@@ -173,7 +273,27 @@ const getRelativeTime = (dateString) => {
 };
 
 export default function QuestionBox() {
-  const isActive = true;
+  //----- 추후 상태 받아오기 -----
+  // const {} = useFeed;
+  const isActive = false;
+  const isFeedOwner = false;
+
+  const [answerText, setAnswerText] = useState('');
+
+  const handleChange = (event) => {
+    setAnswerText(event.target.value);
+  };
+
+  const isButtonDisabled = answerText.trim() === '';
+
+  const [menuOpen, setMenuOpen] = useState({});
+
+  const handleToggleMenu = (id) => {
+    setMenuOpen((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  //---------------------------
+
   const theme = useTheme();
 
   return (
@@ -184,31 +304,88 @@ export default function QuestionBox() {
             <AnswerTag answered={!!question.answer}>
               {question.answer ? '답변 완료' : '미답변'}
             </AnswerTag>
+            {isFeedOwner && (
+              <KebabButton onClick={() => handleToggleMenu(question.id)}>
+                <img src='/images/icons/kebab-button.svg' alt='케밥 메뉴' />
+              </KebabButton>
+            )}
+            {menuOpen[question.id] && (
+              <KebabMenu>
+                {question.answer ? ( // 질문에 답변이 있을 때
+                  question.answer.isRejected ? ( // 답변이 거절된 경우
+                    <>
+                      <KebabMenuItem>답변수정</KebabMenuItem>
+                      <KebabMenuItem>답변삭제</KebabMenuItem>
+                    </>
+                  ) : (
+                    // 답변이 완료된 경우
+                    <>
+                      <KebabMenuItem>답변수정</KebabMenuItem>
+                      <KebabMenuItem>답변거절</KebabMenuItem>
+                      <KebabMenuItem>답변삭제</KebabMenuItem>
+                    </>
+                  )
+                ) : (
+                  // 질문에 답변이 없는 경우
+                  <KebabMenuItem>답변거절</KebabMenuItem>
+                )}
+              </KebabMenu>
+            )}
           </QuestionToolbar>
           <TitleContainer>
             <TitleInfo>질문 · {getRelativeTime(question.createdAt)}</TitleInfo>
             <Title className='actor-regular'>{question.content}</Title>
           </TitleContainer>
-          {question.answer && (
+          {isFeedOwner ? ( // 질문자인 경우
             <AnswerContainer>
               <AnswerProfile src='/images/contents/profile.svg' alt='프로필 이미지' />
               <AnswerTextContainer>
                 <AnswerInfo>
                   <UserName className='actor-regular'>아초는 고양이</UserName>
-                  <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
+                  <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
                 </AnswerInfo>
-                <AnswerContent>{question.answer.content}</AnswerContent>
+                {question.answer ? (
+                  question.answer.isRejected ? (
+                    <AnswerContent isRejected>답변 거절</AnswerContent>
+                  ) : (
+                    <AnswerContent>{question.answer.content}</AnswerContent>
+                  )
+                ) : (
+                  <AnswerRegisterContainer>
+                    <AnswerTextArea
+                      placeholder='답변을 입력해주세요'
+                      value={answerText}
+                      onChange={handleChange}
+                    />
+                    <AnswerRegisterButton disabled={isButtonDisabled}>
+                      답변 완료
+                    </AnswerRegisterButton>
+                  </AnswerRegisterContainer> // 미답변인 경우 보여줄 답변창
+                )}
               </AnswerTextContainer>
             </AnswerContainer>
+          ) : (
+            question.answer && ( // 답변자인 경우에만 보여주고, 답변자 시점이지만 미답변인 경우는 아예 숨김
+              <AnswerContainer>
+                <AnswerProfile src='/images/contents/profile.svg' alt='프로필 이미지' />
+                <AnswerTextContainer>
+                  <AnswerInfo>
+                    <UserName className='actor-regular'>아초는 고양이</UserName>
+                    <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
+                  </AnswerInfo>
+                  <AnswerContent>{question.answer.content}</AnswerContent>
+                </AnswerTextContainer>
+              </AnswerContainer>
+            )
           )}
           <ReactionContainer>
             <ReactionBox>
-              <Reaction as='button' isActive={isActive}>
+              <Reaction isActive={isActive} type='like'>
                 <ThumbsUpIcon color={isActive ? theme.blue : theme.gray[40]} size={16} />
                 좋아요 {question.like}
               </Reaction>
-              <Reaction as='button' isActive={!isActive}>
-                <ThumbsDownIcon color={!isActive ? theme.blue : theme.gray[40]} size={16} />
+              <Reaction isActive={!isActive} type='dislike'>
+                <ThumbsDownIcon color={!isActive ? theme.gray[60] : theme.gray[40]} size={16} />
                 싫어요 {question.dislike}
               </Reaction>
             </ReactionBox>
