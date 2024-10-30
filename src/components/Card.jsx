@@ -1,10 +1,9 @@
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
 
 const CardContainer = styled.div`
   max-width: 155.5px;
   width: 100%;
-  border: 1px solid ${theme.gray[40]};
+  border: 1px solid ${({ theme }) => theme.gray[40]};
   border-radius: 16px;
 
   @media (min-width: 768px) {
@@ -32,14 +31,14 @@ const CardImage = styled.img`
 `;
 
 const CardName = styled.p`
-  font-size: ${theme.typography.body2.fontSize};
-  font-weight: ${theme.typography.body2.fontWeight};
+  font-size: ${({ theme }) => theme.typography.body2.fontSize};
+  font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   margin-top: 12px;
   margin-bottom: 30px;
 
   @media (min-width: 768px) {
-    font-size: ${theme.typography.body1.fontSize};
-    font-weight: ${theme.typography.body1.fontWeight};
+    font-size: ${({ theme }) => theme.typography.body1.fontSize};
+    font-weight: ${({ theme }) => theme.typography.body1.fontWeight};
     margin-bottom: 28px;
   }
 `;
@@ -61,21 +60,21 @@ const CardQuestionIcos = styled.img`
 `;
 
 const CardQuestionTxt = styled.p`
-  font-size: ${theme.typography.caption1.fontSize};
-  color: ${theme.gray[40]};
+  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
+  color: ${({ theme }) => theme.gray[40]};
   margin: 0;
 
   @media (min-width: 768px) {
-    font-size: ${theme.typography.body3.fontSize};
+    font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
 `;
 
 const CardQuestionCount = styled.div`
-  font-size: ${theme.typography.caption1.fontSize};
-  color: ${theme.gray[40]};
+  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
+  color: ${({ theme }) => theme.gray[40]};
 
   @media (min-width: 768px) {
-    font-size: ${theme.typography.body3.fontSize};
+    font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
 `;
 
