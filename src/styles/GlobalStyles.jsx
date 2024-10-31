@@ -25,7 +25,7 @@ const GlobalStyles = createGlobalStyle`
     font-size: ${({ theme }) => theme.typography.body3.fontSize}; 
     color: ${({ theme }) => theme.gray[60]};
   }
-
+ 
   div, h1, h2, h3, h4, h5, h6, p, ol, li, a, form, input, button {
     font-family: 'Pretendard-Regular', sans-serif;
   }

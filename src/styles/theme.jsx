@@ -71,6 +71,14 @@ const theme = {
       fontSize: '14px',
       fontWeight: 'bold',
     },
+    device: {
+      mobileMx: `(max-width: 600px)`,
+      tabletMx: `(max-width: 768px)`,
+      laptopMx: `(max-width: 1024px)`,
+      mobileMn: `(min-width: 600px)`,
+      tabletMn: `(min-width: 768px)`,
+      laptopMn: `(min-width: 1200px)`,
+    },
   },
 };
 export default theme;
