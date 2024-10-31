@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
 import Pagination from './Pagination';
+import { debounce } from 'lodash';
 
 const getPageSize = () => {
   const width = window.innerWidth;
@@ -19,7 +20,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background-color: var(--Grayscale-20);
+  background-color: ${({ theme }) => theme.gray[20]};
 
   @media ${theme.typography.device.tabletMn} {
     gap: 8px;
@@ -42,11 +43,11 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.p`
-  font-size: 1.5rem;
-  font-weight: normal;
+  font-size: ${theme.typography.h3.fontSize};
+  font-weight: ${theme.typography.h3.fontWeight};
 
   @media ${theme.typography.device.tabletMn} {
-    font-size: 2.5rem;
+    font-size: ${theme.typography.h1.fontSize};
   }
 `;
 
@@ -56,6 +57,7 @@ const GridContainer = styled.div`
   align-items: center;
   justify-content: space-evenly;
   gap: 1.5rem;
+  margin-top: 20px;
 `;
 
 const UserCardGrid = styled.div`
@@ -96,17 +98,17 @@ const PaginationContainer = styled.div`
 function AllSubjects() {
   const [pageSize, setPageSize] = useState(getPageSize());
   const [subjectList, setSubjectList] = useState([]);
-  const [orderBy, setOrderBy] = useState('createdAt');
+  const [sort, setSort] = useState('createdAt');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
 
   const handleSortCard = (sortOption) => {
-    setOrderBy(sortOption);
-    setPage(1);
+    console.log('Selected sort option:', sortOption);
+    setSort(sortOption);
   };
 
-  const fetchData = async ({ orderBy, page, pageSize }) => {
-    const subjects = await getSubjects({ orderBy, page, pageSize });
+  const fetchData = async ({ sort, page, pageSize }) => {
+    const subjects = await getSubjects({ sort, page, pageSize });
     setSubjectList(subjects.results);
     setTotalPage(Math.ceil(subjects.count / pageSize));
   };
@@ -116,16 +118,17 @@ function AllSubjects() {
       setPageSize(getPageSize());
     };
 
-    window.addEventListener('resize', handleResize);
-    fetchData({ orderBy, page, pageSize });
+    const debouncedHandleResize = debounce(handleResize, 250); // Debounce function
+
+    window.addEventListener('resize', debouncedHandleResize);
+    fetchData({ sort, page, pageSize });
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', debouncedHandleResize);
     };
-  }, [orderBy, page, pageSize]);
+  }, [sort, page, pageSize]);
 
   const pageChange = (pageNum) => {
-    console.log('page change', pageNum);
     setPage(pageNum);
   };
 
@@ -133,7 +136,7 @@ function AllSubjects() {
     <Container>
       <HeaderContainer>
         <Title>누구에게 질문할까요?</Title>
-        <Dropdown onSorCard={handleSortCard} />
+        <Dropdown onSortCard={handleSortCard} />
       </HeaderContainer>
       <GridContainer>
         <UserCardGrid>
