@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CommonBtn from '../../components/CommonButton';
 import theme from '../../styles/theme';
 
@@ -37,18 +37,24 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
-const AskLink = styled(Link)``;
-
 function Header() {
+  const navigate = useNavigate();
+
+  const handleAnswerBtn = () => {
+    const subjectId = localStorage.getItem('subjectId');
+    if (subjectId) {
+      navigate(`/post/${subjectId}/answer`);
+    } else {
+      navigate('/');
+    }
+  };
   return (
     <HeaderContainer>
       <Link to='/' aria-label='메인페이지이동'>
         <Logo src='/images/contents/logo.svg' alt='logo' />
       </Link>
       <HomePageBtn>
-        <AskLink to='/'>
-          <StyledCommonBtn text='답변하러가기' />
-        </AskLink>
+        <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
       </HomePageBtn>
     </HeaderContainer>
   );
