@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { createSubject } from '../../api/SubjectApi';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../hooks/useStore';
 
 function HomeForm() {
   const [inputValue, setInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+  const { setUserId } = useUser();
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -27,6 +31,10 @@ function HomeForm() {
 
         // 고유한 키 생성
         const uniqueKey = `${new Date().getTime()}`;
+        const feedId = data.id;
+
+        navigate(`/post/${feedId}/answer`);
+        setUserId(uniqueKey);
 
         // 로컬스토리지에 값 저장
         localStorage.setItem(uniqueKey, inputValue);
