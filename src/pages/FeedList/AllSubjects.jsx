@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
 import Pagination from './Pagination';
+import { debounce } from 'lodash';
 
 const getPageSize = () => {
   const width = window.innerWidth;
