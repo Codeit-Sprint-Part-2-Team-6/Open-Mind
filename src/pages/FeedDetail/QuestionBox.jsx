@@ -2,7 +2,6 @@ import styled, { useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
 import { useEffect, useRef, useState } from 'react';
-import initialQuestions from './mock.json';
 
 const BoxContainer = styled.div`
   display: flex;
@@ -273,7 +272,7 @@ const getRelativeTime = (dateString) => {
 };
 
 export default function QuestionBox() {
-  const [questions, setQuestions] = useState(initialQuestions);
+  const [questions, setQuestions] = useState([]);
   const [isFeedOwner, setIsFeedOwner] = useState(true);
 
   const [menuOpen, setMenuOpen] = useState({});
