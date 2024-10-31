@@ -12,7 +12,7 @@ const CardContainer = styled(Link)`
   border-radius: 16px;
 
   &:hover {
-    border-color: var(--Blue-50);
+    border-color: ${({ theme }) => theme.red};
   }
 
   @media (min-width: 640px) {
@@ -100,7 +100,7 @@ const CardQuestionCount = styled.div`
 
 export default function Card({ item }) {
   return (
-    <CardContainer to={'/post/${item.id}'}>
+    <CardContainer to={`post/${item.id}`}>
       <CardPadding>
         <CardImage src={item.imageSource} alt={`${item.name}의 이미지`} />
         <CardName>{item.name}</CardName>
