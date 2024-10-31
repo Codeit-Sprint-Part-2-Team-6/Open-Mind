@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
 import { useEffect, useRef, useState } from 'react';
-import questions from './mock.json';
+import initialQuestions from './mock.json';
 
 const BoxContainer = styled.div`
   display: flex;
@@ -273,16 +273,14 @@ const getRelativeTime = (dateString) => {
 };
 
 export default function QuestionBox() {
-  // false로
+  const [questions, setQuestions] = useState(initialQuestions);
   const [isFeedOwner, setIsFeedOwner] = useState(true);
 
   const [menuOpen, setMenuOpen] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editingAnswerId, setEditingAnswerId] = useState(null);
   const [isRejected, setIsRejected] = useState({});
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [answerText, setAnswerText] = useState('');
-  const [editedAnswer, setEditedAnswer] = useState('');
+  const [answerText, setAnswerText] = useState({});
   const [isLiked, setIsLiked] = useState(new Set());
   const [isDisliked, setIsDisliked] = useState(new Set());
 
@@ -297,7 +295,10 @@ export default function QuestionBox() {
         // questions 에서 해당 id와 일치하는 질문을 찾아 질문과 답변이 있는지 확인하고 기존 답변 내용 불러옴
         const editQuestion = questions.find((question) => question.id === questionId);
         if (editQuestion && editQuestion.answer) {
-          setAnswerText(editQuestion.answer.content);
+          setAnswerText((prev) => ({
+            ...prev,
+            [questionId]: editQuestion.answer.content, // 수정된 질문의 답변 내용을 올바르게 설정
+          }));
           setEditingAnswerId(questionId); // 현재 수정 중인 답변 ID 저장
           setIsEditing(true);
         }
@@ -305,22 +306,78 @@ export default function QuestionBox() {
       }
       case 'delete':
         setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
-        setIsDeleted((prev) => ({ ...prev, [questionId]: true }));
+        setQuestions((prevQuestions) =>
+          prevQuestions.map((question) =>
+            question.id === questionId ? { ...question, answer: null } : question,
+          ),
+        );
         setIsRejected((prev) => ({ ...prev, [questionId]: false })); // 거절 상태 초기화
         setEditingAnswerId(null); // // 이후 수정했을 때 수정모드에 진입하지 않도록
         setAnswerText((prev) => ({
           ...prev,
           [questionId]: '', // 답변 내용을 빈 문자열로 초기화
         }));
-
         break;
       case 'reject':
         setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
         setIsRejected((prev) => ({ ...prev, [questionId]: true }));
+        setQuestions((prevQuestions) =>
+          prevQuestions.map((question) =>
+            question.id === questionId
+              ? {
+                  ...question,
+                  answer: {
+                    ...question.answer,
+                    isRejected: true,
+                  },
+                } // 기존 답변 유지
+              : question,
+          ),
+        );
         break;
       default:
         break;
     }
+  };
+
+  const handleEditComplete = () => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) =>
+        question.id === editingAnswerId
+          ? {
+              ...question,
+              answer: { ...question.answer, content: answerText[editingAnswerId] },
+              isRejected: false,
+            }
+          : question,
+      ),
+    );
+    setIsRejected((prev) => ({ ...prev, [editingAnswerId]: false }));
+    setIsEditing(false);
+    setEditingAnswerId(null);
+    setAnswerText((prev) => ({ ...prev, [editingAnswerId]: '' }));
+  };
+
+  const handleAnswerComplete = (questionId) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) =>
+        question.id === questionId
+          ? {
+              ...question,
+              answer: { content: answerText[questionId], isRejected: false },
+            }
+          : question,
+      ),
+    );
+    setIsRejected((prev) => ({ ...prev, [questionId]: false }));
+    setAnswerText((prev) => ({ ...prev, [questionId]: '' }));
+  };
+
+  const handleChange = (questionId, event) => {
+    setAnswerText((prev) => ({
+      ...prev,
+      [questionId]: event.target.value,
+    }));
   };
 
   // 메뉴창에 ref 설정
@@ -340,13 +397,6 @@ export default function QuestionBox() {
   }, []);
 
   const isButtonDisabled = (questionId) => !answerText[questionId]?.trim();
-
-  const handleChange = (questionId, event) => {
-    setAnswerText((prev) => ({
-      ...prev,
-      [questionId]: event.target.value,
-    }));
-  };
 
   const handleReaction = (questionId, type) => {
     if (type === 'like') {
@@ -381,7 +431,7 @@ export default function QuestionBox() {
       {questions.map((question) => (
         <QuestionCard key={question.id}>
           <QuestionToolbar>
-            <AnswerTag answered={!!question.answer}>
+            <AnswerTag answered={!!question.answer || isRejected[question.id]}>
               {question.answer ? '답변 완료' : '미답변'}
             </AnswerTag>
             {isFeedOwner && (
@@ -443,7 +493,10 @@ export default function QuestionBox() {
                       value={answerText[question.id] || ''}
                       onChange={(event) => handleChange(question.id, event)}
                     />
-                    <AnswerRegisterButton disabled={isButtonDisabled(question.id)}>
+                    <AnswerRegisterButton
+                      onClick={handleEditComplete}
+                      disabled={isButtonDisabled(question.id)}
+                    >
                       수정 완료
                     </AnswerRegisterButton>
                   </AnswerRegisterContainer>
@@ -458,7 +511,10 @@ export default function QuestionBox() {
                       value={answerText[question.id] || ''}
                       onChange={(event) => handleChange(question.id, event)}
                     />
-                    <AnswerRegisterButton disabled={isButtonDisabled(question.id)}>
+                    <AnswerRegisterButton
+                      onClick={() => handleAnswerComplete(question.id)}
+                      disabled={isButtonDisabled(question.id)}
+                    >
                       답변 완료
                     </AnswerRegisterButton>
                   </AnswerRegisterContainer>
