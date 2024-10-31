@@ -96,12 +96,13 @@ const PaginationContainer = styled.div`
 function AllSubjects() {
   const [pageSize, setPageSize] = useState(getPageSize());
   const [subjectList, setSubjectList] = useState([]);
-  const [orderBy, setOrderBy] = useState('createAt');
+  const [orderBy, setOrderBy] = useState('createdAt');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
 
   const handleSortCard = (sortOption) => {
     setOrderBy(sortOption);
+    setPage(1);
   };
 
   const fetchData = async ({ orderBy, page, pageSize }) => {
@@ -132,7 +133,7 @@ function AllSubjects() {
     <Container>
       <HeaderContainer>
         <Title>누구에게 질문할까요?</Title>
-        <Dropdown onSortCard={handleSortCard} />
+        <Dropdown onSorCard={handleSortCard} />
       </HeaderContainer>
       <GridContainer>
         <UserCardGrid>
