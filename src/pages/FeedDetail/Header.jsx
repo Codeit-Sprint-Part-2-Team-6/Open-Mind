@@ -30,6 +30,7 @@ const Logo = styled.img`
 const ProfileImage = styled.img`
   height: 104px;
   margin-top: 10px;
+  border-radius: 50%;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     height: 136px;
@@ -51,6 +52,7 @@ const ShareContainer = styled.div`
 const ShareIconLink = styled.a`
   width: 40px;
   height: 40px;
+  cursor: pointer;
 `;
 
 const CopyUrlBtn = styled.div`
@@ -85,9 +87,8 @@ const ToastMessage = styled.div`
   z-index: 1000;
 `;
 
-function Header() {
+function Header({ image, name }) {
   const [showToast, setShowToast] = useState(false);
-
   const copyCurrentUrl = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -101,13 +102,13 @@ function Header() {
   return (
     <HeaderContainer>
       <Logo src='/images/contents/logo.svg' />
-      <ProfileImage src='/images/contents/profile.svg' />
-      <UserName as='h2'>이동훈</UserName>
+      <ProfileImage src={image} />
+      <UserName as='h2'>{name}</UserName>
       <ShareContainer>
         <CopyUrlBtn onClick={copyCurrentUrl}>
           <ShareIcon src='/images/icons/ic_share.svg' />
         </CopyUrlBtn>
-        <ShareIconLink onClick={shareKakao} href='/post'>
+        <ShareIconLink onClick={shareKakao}>
           <ShareIcon src='/images/icons/ic_kakao-share.svg' />
         </ShareIconLink>
         <ShareIconLink

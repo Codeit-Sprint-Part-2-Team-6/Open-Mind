@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
-import { getSubjects } from '../../api/api';
+import { getSubjects } from '../../api/subjectApi';
 import React, { useEffect, useState } from 'react';
 import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
