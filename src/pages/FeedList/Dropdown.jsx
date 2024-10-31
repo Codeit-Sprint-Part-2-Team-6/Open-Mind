@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const DropdownContainer = styled.div`
@@ -17,11 +17,6 @@ const DropdownButton = styled.button`
   gap: 4px;
   padding: 5px 12px;
   width: 100%;
-`;
-
-const DropdownIcon = styled.img`
-  width: 16px;
-  height: 16px;
 `;
 
 const DropdownList = styled.div`
