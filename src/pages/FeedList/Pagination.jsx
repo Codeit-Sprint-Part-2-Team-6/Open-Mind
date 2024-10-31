@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
 const PaginationBar = styled.div`
   display: flex;
@@ -12,7 +13,7 @@ const PaginationButton = styled.button`
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  font-size: 16px;
+  font-size: ${theme.typography.body3.fontSize};
 `;
 
 const Pagination = ({ totalPage, currentPage, pageChange }) => {

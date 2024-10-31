@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
 const DropdownContainer = styled.div`
   height: 34px;
   margin-top: 20px;
-  border: 1px solid var(--Grayscale-60);
-  background-color: var(--Grayscale-10);
+  border: 1px solid ${theme.gray[60]};
+  background-color: ${theme.gray[10]};
   border-radius: 8px;
-  font-size: 16px;
-  font-weight: 100;
+  font-size: ${theme.typography.body3.fontSize};
+  font-weight: ${theme.typography.body3.fontWeight};
 `;
 
-const DropdownButton = styled.button`
+const DropdownBtn = styled.button`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -35,12 +36,12 @@ const DropdownButton = styled.button`
 const DropdownList = styled.div`
   margin-top: 4px;
   height: 64px;
-  border: 1px solid #8c8c8c;
-  background-color: var(--Grayscale-10);
+  border: 1px solid ${theme.gray[40]};
+  background-color: ${theme.gray[10]};
   border-radius: 8px;
   text-align: center;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: ${theme.typography.caption1.fontSize};
+  font-weight: ${theme.typography.caption1Medium.fontWeight};
   cursor: pointer;
 `;
 
@@ -69,13 +70,13 @@ function Dropdown({ onSortCard }) {
 
   return (
     <DropdownContainer>
-      <DropdownButton onClick={toggleDropdown}>
+      <DropdownBtn onClick={toggleDropdown}>
         {orderBy}
         <img
           src={isDropDown ? 'images/icons/Arrow-up.svg' : 'images/icons/Arrow-down.svg'}
           alt={isDropDown ? '화살표위' : '화살표아래'}
         />
-      </DropdownButton>
+      </DropdownBtn>
 
       {isDropDown && (
         <DropdownList>

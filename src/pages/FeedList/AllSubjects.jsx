@@ -19,7 +19,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background-color: var(--Grayscale-20);
+  background-color: ${({ theme }) => theme.gray[20]};
 
   @media ${theme.typography.device.tabletMn} {
     gap: 8px;
@@ -42,11 +42,11 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.p`
-  font-size: 1.5rem;
-  font-weight: normal;
+  font-size: ${theme.typography.h3.fontSize};
+  font-weight: ${theme.typography.h3.fontWeight};
 
   @media ${theme.typography.device.tabletMn} {
-    font-size: 2.5rem;
+    font-size: ${theme.typography.h1.fontSize};
   }
 `;
 
