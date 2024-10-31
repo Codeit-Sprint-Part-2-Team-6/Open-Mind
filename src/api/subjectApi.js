@@ -24,11 +24,16 @@ export async function createSubject(name) {
 }
 
 // GET
-export async function getSubjects(params = {}) {
+export async function getSubjects({ orderBy, page, pageSize } = {}) {
+  const queryParams = {
+    limit: pageSize || undefined,
+    offset: page && pageSize ? (page - 1) * pageSize : undefined,
+    sort: orderBy || undefined,
+  };
+
   try {
     const response = await axios.get(`${BASE_URL}/subjects/`, {
-      headers: DEFAULT_HEADERS,
-      params, // axios가 자동으로 쿼리 문자열로 변환해줍니다.
+      params: queryParams,
     });
 
     return response.data;
