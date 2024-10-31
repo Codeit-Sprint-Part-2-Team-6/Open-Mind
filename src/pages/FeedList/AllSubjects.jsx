@@ -118,11 +118,13 @@ function AllSubjects() {
       setPageSize(getPageSize());
     };
 
-    window.addEventListener('resize', handleResize);
+    const debouncedHandleResize = debounce(handleResize, 250); // Debounce function
+
+    window.addEventListener('resize', debouncedHandleResize);
     fetchData({ sort, page, pageSize });
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', debouncedHandleResize);
     };
   }, [sort, page, pageSize]);
 
