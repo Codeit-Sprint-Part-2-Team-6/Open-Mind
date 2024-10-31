@@ -55,7 +55,7 @@ function HomeHeader() {
         <HomePageLogo src='/images/contents/logo.svg' alt='로고'></HomePageLogo>
       </LogoLink>
       <HomePageBtn>
-        <AskLink to='/'>
+        <AskLink to='/list'>
           <StyledCommonBtn text='질문하러가기'></StyledCommonBtn>
         </AskLink>
       </HomePageBtn>
