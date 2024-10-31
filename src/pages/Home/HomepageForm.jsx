@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { createSubject } from '../../api/SubjectApi';
+import { createSubject } from '../../api/subjectApi';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../hooks/useStore';
 

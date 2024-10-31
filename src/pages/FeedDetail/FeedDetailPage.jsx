@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 import Header from './Header.jsx';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
+import { getQuestionsBySubject, getSubjectById } from '../../api/subjectApi.js';
+import { useParams } from 'react-router-dom';
 
 const Main = styled.main`
   height: 100%;
@@ -101,9 +103,33 @@ const CreateQuestionBtn = styled.button`
 `;
 
 function FeedDetailPage() {
-  // const [questionCount, setQuestionCount] = useState(0);
-  const questionCount = 0;
+  const { id } = useParams();
+  const [subject, setSubject] = useState({});
+  const [questions, setQuestions] = useState([]);
+  const [questionsCount, setQuestionsCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      const response = await getSubjectById(id);
+      setSubject(response);
+
+      console.log(response);
+    };
+
+    const fetchQuestions = async () => {
+      const response = await getQuestionsBySubject(id);
+      const { count, results } = response;
+
+      setQuestions(results);
+      setQuestionsCount(count);
+
+      console.log(response);
+    };
+
+    fetchSubject();
+    fetchQuestions();
+  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -115,14 +141,14 @@ function FeedDetailPage() {
 
   return (
     <>
-      <Header />
+      <Header image={subject.imageSource} name={subject.name} />
       <Main>
         <QuestionsContainer>
-          {questionCount ? (
+          {questionsCount ? (
             <>
               <QuestionCounterContainer>
                 <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
-                <QuestionCountText>{`${questionCount}개의 질문이 있습니다.`}</QuestionCountText>
+                <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
 
               {/*질문 박스 들어갈 자리  */}
