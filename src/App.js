@@ -20,7 +20,7 @@ function App() {
           <Routes>
             <Route index element={<HomePage />} />
             <Route path='/list' element={<FeedList />} />
-            <Route path='/post' element={<FeedDetailPage />} />
+            <Route path='/post/:id' element={<FeedDetailPage />} />
           </Routes>
         </Router>
       </ThemeProvider>
