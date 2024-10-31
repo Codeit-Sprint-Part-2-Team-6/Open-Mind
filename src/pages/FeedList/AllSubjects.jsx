@@ -56,6 +56,7 @@ const GridContainer = styled.div`
   align-items: center;
   justify-content: space-evenly;
   gap: 1.5rem;
+  margin-top: 20px;
 `;
 
 const UserCardGrid = styled.div`
@@ -96,17 +97,17 @@ const PaginationContainer = styled.div`
 function AllSubjects() {
   const [pageSize, setPageSize] = useState(getPageSize());
   const [subjectList, setSubjectList] = useState([]);
-  const [orderBy, setOrderBy] = useState('createdAt');
+  const [sort, setSort] = useState('createdAt');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
 
   const handleSortCard = (sortOption) => {
-    setOrderBy(sortOption);
-    setPage(1);
+    console.log('Selected sort option:', sortOption);
+    setSort(sortOption);
   };
 
-  const fetchData = async ({ orderBy, page, pageSize }) => {
-    const subjects = await getSubjects({ orderBy, page, pageSize });
+  const fetchData = async ({ sort, page, pageSize }) => {
+    const subjects = await getSubjects({ sort, page, pageSize });
     setSubjectList(subjects.results);
     setTotalPage(Math.ceil(subjects.count / pageSize));
   };
@@ -117,15 +118,14 @@ function AllSubjects() {
     };
 
     window.addEventListener('resize', handleResize);
-    fetchData({ orderBy, page, pageSize });
+    fetchData({ sort, page, pageSize });
 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [orderBy, page, pageSize]);
+  }, [sort, page, pageSize]);
 
   const pageChange = (pageNum) => {
-    console.log('page change', pageNum);
     setPage(pageNum);
   };
 
@@ -133,7 +133,7 @@ function AllSubjects() {
     <Container>
       <HeaderContainer>
         <Title>누구에게 질문할까요?</Title>
-        <Dropdown onSorCard={handleSortCard} />
+        <Dropdown onSortCard={handleSortCard} />
       </HeaderContainer>
       <GridContainer>
         <UserCardGrid>
