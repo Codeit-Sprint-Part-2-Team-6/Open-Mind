@@ -1,8 +1,8 @@
 import styled, { useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
-import { useFeed } from '../../hooks/useStore';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import questions from './mock.json';
 
 const BoxContainer = styled.div`
   display: flex;
@@ -273,26 +273,106 @@ const getRelativeTime = (dateString) => {
 };
 
 export default function QuestionBox() {
-  //----- 추후 상태 받아오기 -----
-  // const {} = useFeed;
-  const isActive = false;
-  const isFeedOwner = false;
-
-  const [answerText, setAnswerText] = useState('');
-
-  const handleChange = (event) => {
-    setAnswerText(event.target.value);
-  };
-
-  const isButtonDisabled = answerText.trim() === '';
+  // false로
+  const [isFeedOwner, setIsFeedOwner] = useState(true);
 
   const [menuOpen, setMenuOpen] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingAnswerId, setEditingAnswerId] = useState(null);
+  const [isRejected, setIsRejected] = useState({});
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [answerText, setAnswerText] = useState('');
+  const [editedAnswer, setEditedAnswer] = useState('');
+  const [isLiked, setIsLiked] = useState(new Set());
+  const [isDisliked, setIsDisliked] = useState(new Set());
 
   const handleToggleMenu = (id) => {
     setMenuOpen((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  //---------------------------
+  const handleMenuItemClick = (action, questionId) => {
+    switch (action) {
+      case 'edit': {
+        setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
+        // questions 에서 해당 id와 일치하는 질문을 찾아 질문과 답변이 있는지 확인하고 기존 답변 내용 불러옴
+        const editQuestion = questions.find((question) => question.id === questionId);
+        if (editQuestion && editQuestion.answer) {
+          setAnswerText(editQuestion.answer.content);
+          setEditingAnswerId(questionId); // 현재 수정 중인 답변 ID 저장
+          setIsEditing(true);
+        }
+        break;
+      }
+      case 'delete':
+        setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
+        setIsDeleted((prev) => ({ ...prev, [questionId]: true }));
+        setIsRejected((prev) => ({ ...prev, [questionId]: false })); // 거절 상태 초기화
+        setEditingAnswerId(null); // // 이후 수정했을 때 수정모드에 진입하지 않도록
+        setAnswerText((prev) => ({
+          ...prev,
+          [questionId]: '', // 답변 내용을 빈 문자열로 초기화
+        }));
+
+        break;
+      case 'reject':
+        setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
+        setIsRejected((prev) => ({ ...prev, [questionId]: true }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  // 메뉴창에 ref 설정
+  const menuRef = useRef();
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setMenuOpen({});
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const isButtonDisabled = (questionId) => !answerText[questionId]?.trim();
+
+  const handleChange = (questionId, event) => {
+    setAnswerText((prev) => ({
+      ...prev,
+      [questionId]: event.target.value,
+    }));
+  };
+
+  const handleReaction = (questionId, type) => {
+    if (type === 'like') {
+      setIsLiked((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(questionId)) {
+          newSet.delete(questionId);
+        } else {
+          newSet.add(questionId);
+          isDisliked.delete(questionId);
+        }
+        return newSet;
+      });
+    } else if (type === 'dislike') {
+      setIsDisliked((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(questionId)) {
+          newSet.delete(questionId);
+        } else {
+          newSet.add(questionId);
+          isLiked.delete(questionId);
+        }
+        return newSet;
+      });
+    }
+  };
 
   const theme = useTheme();
 
@@ -310,24 +390,36 @@ export default function QuestionBox() {
               </KebabButton>
             )}
             {menuOpen[question.id] && (
-              <KebabMenu>
+              <KebabMenu ref={menuRef}>
                 {question.answer ? ( // 질문에 답변이 있을 때
                   question.answer.isRejected ? ( // 답변이 거절된 경우
                     <>
-                      <KebabMenuItem>답변수정</KebabMenuItem>
-                      <KebabMenuItem>답변삭제</KebabMenuItem>
+                      <KebabMenuItem onClick={() => handleMenuItemClick('edit', question.id)}>
+                        답변수정
+                      </KebabMenuItem>
+                      <KebabMenuItem onClick={() => handleMenuItemClick('delete', question.id)}>
+                        답변삭제
+                      </KebabMenuItem>
                     </>
                   ) : (
                     // 답변이 완료된 경우
                     <>
-                      <KebabMenuItem>답변수정</KebabMenuItem>
-                      <KebabMenuItem>답변거절</KebabMenuItem>
-                      <KebabMenuItem>답변삭제</KebabMenuItem>
+                      <KebabMenuItem onClick={() => handleMenuItemClick('edit', question.id)}>
+                        답변수정
+                      </KebabMenuItem>
+                      <KebabMenuItem onClick={() => handleMenuItemClick('reject', question.id)}>
+                        답변거절
+                      </KebabMenuItem>
+                      <KebabMenuItem onClick={() => handleMenuItemClick('delete', question.id)}>
+                        답변삭제
+                      </KebabMenuItem>
                     </>
                   )
                 ) : (
                   // 질문에 답변이 없는 경우
-                  <KebabMenuItem>답변거절</KebabMenuItem>
+                  <KebabMenuItem onClick={() => handleMenuItemClick('reject', question.id)}>
+                    답변거절
+                  </KebabMenuItem>
                 )}
               </KebabMenu>
             )}
@@ -344,23 +436,32 @@ export default function QuestionBox() {
                   <UserName className='actor-regular'>아초는 고양이</UserName>
                   <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
                 </AnswerInfo>
-                {question.answer ? (
-                  question.answer.isRejected ? (
-                    <AnswerContent isRejected>답변 거절</AnswerContent>
-                  ) : (
-                    <AnswerContent>{question.answer.content}</AnswerContent>
-                  )
+                {isEditing && editingAnswerId === question.id ? (
+                  <AnswerRegisterContainer>
+                    <AnswerTextArea
+                      placeholder='답변을 입력해주세요'
+                      value={answerText[question.id] || ''}
+                      onChange={(event) => handleChange(question.id, event)}
+                    />
+                    <AnswerRegisterButton disabled={isButtonDisabled(question.id)}>
+                      수정 완료
+                    </AnswerRegisterButton>
+                  </AnswerRegisterContainer>
+                ) : isRejected[question.id] || (question.answer && question.answer.isRejected) ? (
+                  <AnswerContent isRejected>답변 거절</AnswerContent>
+                ) : question.answer ? (
+                  <AnswerContent>{question.answer.content}</AnswerContent>
                 ) : (
                   <AnswerRegisterContainer>
                     <AnswerTextArea
                       placeholder='답변을 입력해주세요'
-                      value={answerText}
-                      onChange={handleChange}
+                      value={answerText[question.id] || ''}
+                      onChange={(event) => handleChange(question.id, event)}
                     />
-                    <AnswerRegisterButton disabled={isButtonDisabled}>
+                    <AnswerRegisterButton disabled={isButtonDisabled(question.id)}>
                       답변 완료
                     </AnswerRegisterButton>
-                  </AnswerRegisterContainer> // 미답변인 경우 보여줄 답변창
+                  </AnswerRegisterContainer>
                 )}
               </AnswerTextContainer>
             </AnswerContainer>
@@ -380,12 +481,26 @@ export default function QuestionBox() {
           )}
           <ReactionContainer>
             <ReactionBox>
-              <Reaction isActive={isActive} type='like'>
-                <ThumbsUpIcon color={isActive ? theme.blue : theme.gray[40]} size={16} />
+              <Reaction
+                isActive={isLiked.has(question.id)}
+                type='like'
+                onClick={() => handleReaction(question.id, 'like')}
+              >
+                <ThumbsUpIcon
+                  color={isLiked.has(question.id) ? theme.blue : theme.gray[40]}
+                  size={16}
+                />
                 좋아요 {question.like}
               </Reaction>
-              <Reaction isActive={!isActive} type='dislike'>
-                <ThumbsDownIcon color={!isActive ? theme.gray[60] : theme.gray[40]} size={16} />
+              <Reaction
+                isActive={isDisliked.has(question.id)}
+                type='dislike'
+                onClick={() => handleReaction(question.id, 'dislike')}
+              >
+                <ThumbsDownIcon
+                  color={isDisliked.has(question.id) ? theme.gray[60] : theme.gray[40]}
+                  size={16}
+                />
                 싫어요 {question.dislike}
               </Reaction>
             </ReactionBox>
