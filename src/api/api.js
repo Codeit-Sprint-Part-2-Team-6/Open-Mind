@@ -9,13 +9,23 @@
  * ...
  * @returns {Promise<Object>} 제품 목록과 관련 정보를 포함한 객체
  * @throws {Error} API 요청 실패 시 발생하는 에러
- 
+ * params 객체에서 pageSize, page, sort 속성을 분리하여 별도로 처리
 */
 
 const API_BASE_URL = 'https://openmind-api.vercel.app/11-6';
 
 export async function getSubjects(params = {}) {
-  const query = new URLSearchParams(params).toString();
+  const { pageSize, page, sort, ...rest } = params;
+
+  if (pageSize && page) {
+    rest.limit = pageSize;
+    rest.offset = (page - 1) * pageSize;
+  }
+  if (sort) {
+    rest.sort = sort;
+  }
+
+  const query = new URLSearchParams(rest).toString();
 
   try {
     const response = await fetch(`${API_BASE_URL}/subjects/?${query}`);
