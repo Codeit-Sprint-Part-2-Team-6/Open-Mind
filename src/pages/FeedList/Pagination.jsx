@@ -1,10 +1,19 @@
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
-const PaginationBar = styled.div`
+const PaginationContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
+
+  @media ${theme.typography.device.tabletMn} {
+    margin-top: 20px;
+  }
+
+  @media ${theme.typography.device.laptopMn} {
+    margin-top: 20px;
+  }
 `;
 
 const PaginationButton = styled.button`
@@ -12,7 +21,7 @@ const PaginationButton = styled.button`
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  font-size: 16px;
+  font-size: ${theme.typography.body3.fontSize};
 `;
 
 const Pagination = ({ totalPage, currentPage, pageChange }) => {
@@ -32,7 +41,7 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
   );
 
   return (
-    <PaginationBar>
+    <PaginationContainer>
       <PaginationButton disabled={currentPage === 1} onClick={() => pageChange(currentPage - 1)}>
         <img src='images/icons/Arrow-left.svg' alt='왼쪽화살표' />
       </PaginationButton>
@@ -47,7 +56,7 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
       >
         <img src='images/icons/Arrow-right.svg' alt='오른쪽화살표' />
       </PaginationButton>
-    </PaginationBar>
+    </PaginationContainer>
   );
 };
 

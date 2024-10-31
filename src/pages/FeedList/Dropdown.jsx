@@ -1,41 +1,54 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
 const DropdownContainer = styled.div`
   height: 34px;
-  border: 1px solid var(--Grayscale-60);
-  background-color: var(--Grayscale-10);
+  margin-top: 20px;
+  border: 1px solid ${theme.gray[60]};
+  background-color: ${theme.gray[10]};
   border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: ${theme.typography.body3.fontSize};
+  font-weight: ${theme.typography.body3.fontWeight};
 `;
 
-const DropdownButton = styled.button`
+const DropdownBtn = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 4px;
+  justify-content: center;
   padding: 5px 12px;
-  width: 100%;
+  cursor: pointer;
+  background: none;
+  border-color: black;
+  border-radius: 8px;
+  font-size: inherit;
+  font-weight: inherit;
+
+  img {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s;
+    transform: ${({ isDropDown }) => (isDropDown ? 'rotate(180deg)' : 'rotate(0)')};
+  }
 `;
 
 const DropdownList = styled.div`
   margin-top: 4px;
   height: 64px;
-  border: 1px solid #8c8c8c;
-  background-color: var(--Grayscale-10);
+  border: 1px solid ${theme.gray[40]};
+  background-color: ${theme.gray[10]};
   border-radius: 8px;
   text-align: center;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: ${theme.typography.caption1.fontSize};
+  font-weight: ${theme.typography.caption1Medium.fontWeight};
   cursor: pointer;
 `;
 
 const DropdownOption = styled.div`
   height: 28px;
-  padding: 4px;
+  padding: 8px;
   text-align: center;
-  color: ${(props) => (props.isActive ? '#1877F2' : '#515151')};
 `;
 
 function Dropdown({ onSortCard }) {
@@ -52,21 +65,24 @@ function Dropdown({ onSortCard }) {
   const handleSortCard = (value, label) => {
     onSortCard(value);
     setOrderBy(label);
-    onSortCard(false);
+    setIsDropDown(false);
   };
 
   return (
     <DropdownContainer>
-      <DropdownButton onClick={toggleDropdown}>
+      <DropdownBtn onClick={toggleDropdown}>
         {orderBy}
-        <img src='images/icons/Arrow-up.svg' alt='드롭다운 토글' />
-      </DropdownButton>
+        <img
+          src={isDropDown ? 'images/icons/Arrow-up.svg' : 'images/icons/Arrow-down.svg'}
+          alt={isDropDown ? '화살표위' : '화살표아래'}
+        />
+      </DropdownBtn>
+
       {isDropDown && (
         <DropdownList>
           {sortingOptions.map((option) => (
             <DropdownOption
               key={option.value}
-              isActive={orderBy === option.label}
               onClick={() => handleSortCard(option.value, option.label)}
             >
               {option.label}
