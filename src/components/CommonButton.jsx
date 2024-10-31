@@ -1,10 +1,9 @@
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
 
 const CommonButtonWrap = styled.div`
-  border: 1px solid ${theme.brown[40]};
+  border: 1px solid ${({ theme }) => theme.brown[40]};
   border-radius: 8px;
-  background-color: ${theme.brown[10]};
+  background-color: ${({ theme }) => theme.brown[10]};
 `;
 const CommonButtonFlex = styled.div`
   padding: 8px 12px;
@@ -19,11 +18,11 @@ const CommonButtonFlex = styled.div`
   }
 `;
 const CommonButtonTxt = styled.p`
-  color: ${theme.brown[40]};
-  font-size: ${theme.typography.caption1.fontSize};
+  color: ${({ theme }) => theme.brown[40]};
+  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
 
   @media (min-width: 768px) {
-    font-size: ${theme.typography.body3.fontSize};
+    font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
 `;
 const CommonButtonArrowIcon = styled.img`
@@ -31,9 +30,9 @@ const CommonButtonArrowIcon = styled.img`
   height: 18px;
 `;
 
-export default function CommonBtn({ text, onClick }) {
+export default function CommonBtn({ text, onClick, className }) {
   return (
-    <CommonButtonWrap as='button' onClick={onClick}>
+    <CommonButtonWrap as='button' className={className} onClick={onClick}>
       <CommonButtonFlex>
         <CommonButtonTxt>{text}</CommonButtonTxt>
         <CommonButtonArrowIcon src='/images/icons/arrow-right.svg' alt='화살표 이미지' />
