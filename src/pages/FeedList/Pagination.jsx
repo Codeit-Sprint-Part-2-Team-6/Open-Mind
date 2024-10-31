@@ -8,11 +8,29 @@ const PaginationBar = styled.div`
 `;
 
 const PaginationButton = styled.button`
-  border: 1px solid #e5e7eb;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
   font-size: 16px;
+  font-weight: 600;
+  color: ${({ disabled }) => (disabled ? '#d1d5db' : '#4b5563')};
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+`;
+
+const PageNumButton = styled.button`
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: ${({ active }) => (active ? 700 : 600)};
+  color: ${({ active }) => (active ? '#542f1a' : '#4b5563')};
+  background: none;
+  border: none;
+  cursor: pointer;
 `;
 
 const Pagination = ({ totalPage, currentPage, pageChange }) => {
@@ -37,15 +55,15 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
         <img src='images/icons/Arrow-left.svg' alt='왼쪽화살표' />
       </PaginationButton>
       {pages.map((page) => (
-        <PaginationButton key={page} active={currentPage === page} onClick={() => pageChange(page)}>
+        <PageNumButton key={page} active={currentPage === page} onClick={() => pageChange(page)}>
           {page}
-        </PaginationButton>
+        </PageNumButton>
       ))}
       <PaginationButton
         disabled={currentPage === totalPage}
         onClick={() => pageChange(currentPage + 1)}
       >
-        <img src='images/icons/Arrow-right.svg' alt='오른쪽화살표' />
+        <img src='images/icons/A-right.svg' alt='오른쪽화살표' />
       </PaginationButton>
     </PaginationBar>
   );
