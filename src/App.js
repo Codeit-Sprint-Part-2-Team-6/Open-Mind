@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
 import { Helmet } from 'react-helmet';
+import FeedList from './pages/FeedList/FeedList';
 import FeedDetailPage from './pages/FeedDetail/FeedDetailPage';
 
 function App() {
@@ -11,10 +12,12 @@ function App() {
       <Helmet>
         <link href='https://fonts.googleapis.com/css2?family=Actor&display=swap' rel='stylesheet' />
       </Helmet>
+
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <Router>
           <Routes>
+            <Route path='list' element={<FeedList />} />
             <Route path='/post' element={<FeedDetailPage />} />
           </Routes>
         </Router>
