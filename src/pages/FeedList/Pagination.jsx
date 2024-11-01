@@ -6,12 +6,18 @@ const PaginationContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 4px;
+  margin-top: 31px;
 
-  @media ${theme.typography.device.tabletMn} {
-    margin-top: 20px;
+  @media (min-width: 768px) {
+    margin-top: 11px;
   }
-  @media ${theme.typography.device.laptopMn} {
-    margin-top: 20px;
+
+  @media (min-width: 868px) {
+    margin-top: 11px;
+  }
+
+  @media (min-width: 1200px) {
+    margin-top: 11px;
   }
 `;
 

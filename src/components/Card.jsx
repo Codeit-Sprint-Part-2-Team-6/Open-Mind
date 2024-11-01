@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 const CardContainer = styled(Link)`
   display: block;
   height: 168px;
-  max-width: 155.5px;
-  min-width: 155.5px;
+  width: 155.5px;
   background-color: ${({ theme }) => theme.gray[10]};
   position: relative;
   border: 1px solid ${({ theme }) => theme.gray[40]};
@@ -15,18 +14,19 @@ const CardContainer = styled(Link)`
     border-color: ${({ theme }) => theme.red};
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 375px) {
     height: 187px;
-    max-width: 220px;
-    min-width: 220px;
+    width: 220px;
   }
 
   @media (min-width: 768px) {
-    max-width: 220px;
+    height: 187px;
+    max-width: 206.5px;
     min-width: 186px;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1200px) {
+    height: 187px;
     width: 220px;
   }
 `;

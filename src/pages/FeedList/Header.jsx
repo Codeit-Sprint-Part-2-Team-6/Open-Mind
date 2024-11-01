@@ -14,8 +14,8 @@ const HeaderContainer = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin-top: 40px;
-    padding-left: 130px;
-    padding-right: 130px;
+    padding-left: 50px;
+    padding-right: 50px;
   }
 `;
 
@@ -37,10 +37,12 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
-function Header() {
+function Header({ subjectId }) {
+  console.log(subjectId);
+
   const navigate = useNavigate();
 
-  const handleAnswerBtn = () => {
+  const handleAnswerBtn = (e) => {
     const subjectId = localStorage.getItem('subjectId');
     if (subjectId) {
       navigate(`/post/${subjectId}/answer`);
