@@ -104,7 +104,7 @@ const CreateQuestionBtn = styled.button`
 `;
 
 function FeedDetailPage() {
-  const { id } = useParams();
+  const { id, answer } = useParams();
   const [subject, setSubject] = useState({});
   const [questions, setQuestions] = useState([]);
   const [questionsCount, setQuestionsCount] = useState(0);
@@ -157,6 +157,7 @@ function FeedDetailPage() {
               </QuestionCounterContainer>
 
               {console.log(questions)}
+              {console.log(answer)}
             </>
           ) : (
             <>
