@@ -45,30 +45,12 @@ export async function getSubjects({ sort, page, pageSize } = {}) {
 
 export async function getSubjectById(subjectId) {
   try {
-    const response = await axios.get(
-      `${'https://openmind-api.vercel.app/11-6'}/subjects/${subjectId}/`,
-      {
-        headers: DEFAULT_HEADERS,
-      },
-    );
+    const response = await axios.get(`${BASE_URL}/subjects/${subjectId}/`, {
+      headers: DEFAULT_HEADERS,
+    });
 
     return response.data;
   } catch (error) {
     console.error('Error fetching subject:', error);
-  }
-}
-
-export async function getQuestionsBySubject(subjectId) {
-  try {
-    const response = await axios.get(
-      `${'https://openmind-api.vercel.app/11-6'}/subjects/${subjectId}/questions/`,
-      {
-        headers: DEFAULT_HEADERS,
-      },
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching questions:', error);
   }
 }
