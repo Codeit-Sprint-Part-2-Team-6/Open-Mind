@@ -41,6 +41,7 @@ export async function getQuestions(subjectId) {
   }
 }
 
+// 답변 POST
 export const createAnswer = async ({ questionId, content, isRejected = false }) => {
   const params = {
     questionId,
@@ -59,6 +60,7 @@ export const createAnswer = async ({ questionId, content, isRejected = false }) 
   }
 };
 
+// 좋아요 POST
 export const createReaction = async ({ id, type }) => {
   const params = {
     type,
