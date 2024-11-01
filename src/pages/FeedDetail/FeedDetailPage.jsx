@@ -6,6 +6,7 @@ import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
 import { useParams } from 'react-router-dom';
+import QuestionBox from './QuestionBox.jsx';
 
 const Main = styled.main`
   height: 100%;
@@ -158,6 +159,15 @@ function FeedDetailPage() {
 
               {console.log(questions)}
               {console.log(answer)}
+
+              {questions.map((question) => (
+                <QuestionBox
+                  key={question.id}
+                  question={question}
+                  image={subject.imageSource}
+                  name={subject.name}
+                />
+              ))}
             </>
           ) : (
             <>
