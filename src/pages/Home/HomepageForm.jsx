@@ -118,7 +118,7 @@ const HomePageInput = styled.input`
   font-size: ${({ theme }) => theme.typography.body3.fontSize};
 
   &::placeholder {
-    font-family: 'Pretendard-Regular', sans-serif;
+    font-family: 'Pretendard';
     font-size: ${({ theme }) => theme.typography.body3.fontSize};
     transition: opacity 0.3s;
   }
@@ -163,6 +163,7 @@ const QuestionReceiveBtn = styled.div`
   background-color: ${({ theme }) => theme.brown[40]};
   color: ${({ theme }) => theme.gray[10]};
   font-size: ${({ theme }) => theme.typography.body3.fontSize};
+  cursor: pointer;
 `;
 
 const HomePageBackground = styled.img`

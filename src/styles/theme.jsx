@@ -80,5 +80,19 @@ const theme = {
       laptopMn: `(min-width: 1200px)`,
     },
   },
+  mixBlendMode: 'normal',
 };
+
+const lightTheme = {
+  ...theme,
+  mixBlendMode: 'normal',
+};
+
+const darkTheme = {
+  ...theme,
+  mixBlendMode: 'difference',
+};
+
 export default theme;
+
+export { lightTheme, darkTheme };

@@ -1,26 +1,30 @@
 import styled, { keyframes } from 'styled-components';
 import { shareKakao } from '../../utills/KakaoShare';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const HeaderContainer = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('/images/backgrounds/feed-detail-header.svg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 180px;
+  position: relative;
+`;
+
+const BackGroundImage = styled.img`
+  height: 178px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     height: 234px;
   }
 `;
 
+const LogoWrapper = styled(Link)`
+  margin-top: 40px;
+  position: absolute;
+`;
+
 const Logo = styled.img`
   height: 50px;
-  margin-top: 40px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     height: 68px;
@@ -29,17 +33,19 @@ const Logo = styled.img`
 
 const ProfileImage = styled.img`
   height: 104px;
-  margin-top: 10px;
+  margin-top: 100px;
   border-radius: 50%;
+  position: absolute;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    margin-top: 130px;
     height: 136px;
     width: 136px;
   }
 `;
 
 const UserName = styled.h1`
-  margin: 12px 0 0 0;
+  margin-top: 40px;
   font-weight: 400;
   font-size: ${({ theme }) => theme.typography.h3.fontSize};
   line-height: 1.875rem;
@@ -47,6 +53,7 @@ const UserName = styled.h1`
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     font-size: ${({ theme }) => theme.typography.h2.fontSize};
     line-height: 2.5rem;
+    margin-top: 46px;
   }
 `;
 
@@ -108,7 +115,10 @@ function Header({ image, name }) {
 
   return (
     <HeaderContainer>
-      <Logo src='/images/contents/logo.svg' />
+      <BackGroundImage src='/images/backgrounds/feed-detail-header.svg' />
+      <LogoWrapper to='/'>
+        <Logo src='/images/contents/logo.svg' />
+      </LogoWrapper>
       <ProfileImage src={image} />
       <UserName>{name}</UserName>
       <ShareContainer>

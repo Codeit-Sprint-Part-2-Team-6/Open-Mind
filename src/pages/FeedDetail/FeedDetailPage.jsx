@@ -3,7 +3,8 @@ import Header from './Header.jsx';
 
 import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
-import { getQuestionsBySubject, getSubjectById } from '../../api/subjectApi.js';
+import { getSubjectById } from '../../api/subjectApi.js';
+import { getQuestions } from '../../api/questionApi.js';
 import { useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 
@@ -13,7 +14,7 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   padding: 0 24px;
-  margin-top: 174px;
+  margin-top: 54px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     padding: 0 32px;
@@ -104,13 +105,16 @@ const CreateQuestionBtn = styled.button`
 `;
 
 function FeedDetailPage() {
-  const { id } = useParams();
+  const { id, answer } = useParams();
   const [subject, setSubject] = useState({});
   const [questions, setQuestions] = useState([]);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
 
   useEffect(() => {
+    if (!isQuestionSubmitted) return;
+
     const fetchSubject = async () => {
       const response = await getSubjectById(id);
       setSubject(response);
@@ -119,7 +123,7 @@ function FeedDetailPage() {
     };
 
     const fetchQuestions = async () => {
-      const response = await getQuestionsBySubject(id);
+      const response = await getQuestions(id);
       const { count, results } = response;
 
       setQuestions(results);
@@ -130,7 +134,8 @@ function FeedDetailPage() {
 
     fetchSubject();
     fetchQuestions();
-  }, [id]);
+    setIsQuestionSubmitted(false);
+  }, [id, isQuestionSubmitted]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -151,6 +156,9 @@ function FeedDetailPage() {
                 <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
                 <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
+
+              {console.log(questions)}
+              {console.log(answer)}
 
               {questions.map((question) => (
                 <QuestionBox
@@ -176,8 +184,10 @@ function FeedDetailPage() {
 
         {isModalOpen && (
           <CreateQuestionModal
+            id={id}
             image={subject.imageSource}
             name={subject.name}
+            setIsQuestionSubmitted={setIsQuestionSubmitted}
             onClose={handleCloseModal}
           />
         )}
