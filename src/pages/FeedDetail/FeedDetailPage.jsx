@@ -3,7 +3,8 @@ import Header from './Header.jsx';
 
 import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
-import { getQuestionsBySubject, getSubjectById } from '../../api/subjectApi.js';
+import { getSubjectById } from '../../api/subjectApi.js';
+import { getQuestions } from '../../api/questionApi.js';
 import { useParams } from 'react-router-dom';
 
 const Main = styled.main`
@@ -108,8 +109,11 @@ function FeedDetailPage() {
   const [questions, setQuestions] = useState([]);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
 
   useEffect(() => {
+    if (!isQuestionSubmitted) return;
+
     const fetchSubject = async () => {
       const response = await getSubjectById(id);
       setSubject(response);
@@ -118,7 +122,7 @@ function FeedDetailPage() {
     };
 
     const fetchQuestions = async () => {
-      const response = await getQuestionsBySubject(id);
+      const response = await getQuestions(id);
       const { count, results } = response;
 
       setQuestions(results);
@@ -129,7 +133,8 @@ function FeedDetailPage() {
 
     fetchSubject();
     fetchQuestions();
-  }, [id]);
+    setIsQuestionSubmitted(false);
+  }, [id, isQuestionSubmitted]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -151,7 +156,7 @@ function FeedDetailPage() {
                 <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
 
-              {questions}
+              {console.log(questions)}
             </>
           ) : (
             <>
@@ -168,8 +173,10 @@ function FeedDetailPage() {
 
         {isModalOpen && (
           <CreateQuestionModal
+            id={id}
             image={subject.imageSource}
             name={subject.name}
+            setIsQuestionSubmitted={setIsQuestionSubmitted}
             onClose={handleCloseModal}
           />
         )}
