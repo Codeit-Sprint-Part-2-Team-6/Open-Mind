@@ -12,7 +12,7 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   padding: 0 24px;
-  margin-top: 150px;
+  margin-top: 174px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     padding: 0 32px;
@@ -151,7 +151,7 @@ function FeedDetailPage() {
                 <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
 
-              {/*질문 박스 들어갈 자리  */}
+              {questions}
             </>
           ) : (
             <>
@@ -166,7 +166,13 @@ function FeedDetailPage() {
         </QuestionsContainer>
         <CreateQuestionBtn onClick={handleOpenModal} />
 
-        {isModalOpen && <CreateQuestionModal onClose={handleCloseModal} />}
+        {isModalOpen && (
+          <CreateQuestionModal
+            image={subject.imageSource}
+            name={subject.name}
+            onClose={handleCloseModal}
+          />
+        )}
       </Main>
     </>
   );
