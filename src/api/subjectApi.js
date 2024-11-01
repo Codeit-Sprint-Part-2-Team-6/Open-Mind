@@ -24,11 +24,11 @@ export async function createSubject(name) {
 }
 
 // GET
-export async function getSubjects({ orderBy, page, pageSize } = {}) {
+export async function getSubjects({ sort, page, pageSize } = {}) {
   const queryParams = {
     limit: pageSize || undefined,
     offset: page && pageSize ? (page - 1) * pageSize : undefined,
-    sort: orderBy || undefined,
+    sort: sort || undefined,
   };
 
   try {
