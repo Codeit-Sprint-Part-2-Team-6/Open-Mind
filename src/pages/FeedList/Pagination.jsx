@@ -10,24 +10,26 @@ const PaginationContainer = styled.div`
   @media ${theme.typography.device.tabletMn} {
     margin-top: 20px;
   }
-
   @media ${theme.typography.device.laptopMn} {
     margin-top: 20px;
   }
 `;
 
-const PaginationButton = styled.button`
-  border: 1px solid #e5e7eb;
-  border-radius: 50%;
+const PaginationButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: ${({ $isCurrentPage }) => ($isCurrentPage ? '900' : '300')};
+  color: ${({ $isCurrentPage }) => ($isCurrentPage ? theme.brown[40] : theme.gray[40])};
   width: 40px;
   height: 40px;
-  font-size: ${theme.typography.body3.fontSize};
+  cursor: pointer;
 `;
 
 const Pagination = ({ totalPage, currentPage, pageChange }) => {
   const maxPage = 5;
   let startPage;
-
   if (totalPage <= maxPage) {
     startPage = 1;
   } else {
@@ -46,7 +48,11 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
         <img src='images/icons/Arrow-left.svg' alt='왼쪽화살표' />
       </PaginationButton>
       {pages.map((page) => (
-        <PaginationButton key={page} active={currentPage === page} onClick={() => pageChange(page)}>
+        <PaginationButton
+          key={page}
+          $isCurrentPage={currentPage === page} /* Pass the active state */
+          onClick={() => pageChange(page)}
+        >
           {page}
         </PaginationButton>
       ))}
@@ -54,7 +60,7 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
         disabled={currentPage === totalPage}
         onClick={() => pageChange(currentPage + 1)}
       >
-        <img src='images/icons/Arrow-right.svg' alt='오른쪽화살표' />
+        <img src='images/icons/A-right.svg' alt='오른쪽화살표' />
       </PaginationButton>
     </PaginationContainer>
   );
