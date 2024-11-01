@@ -3,16 +3,8 @@ import reset from 'styled-reset';
 
 const GlobalStyles = createGlobalStyle`
   
-
   ${reset} // reset.css 적용
   
-  @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-  }
-
   * {
     box-sizing: border-box;
     margin: 0;
@@ -20,14 +12,15 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Pretendard-Regular', sans-serif;
+    font-family: 'Pretendard';
     background-color: ${({ theme }) => theme.gray[10]}; 
     font-size: ${({ theme }) => theme.typography.body3.fontSize}; 
     color: ${({ theme }) => theme.gray[60]};
+    mix-blend-mode: ${(props) => props.theme.mixBlendMode};
   }
  
   div, h1, h2, h3, h4, h5, h6, p, ol, li, a, form, input, button {
-    font-family: 'Pretendard-Regular', sans-serif;
+    font-family: 'Pretendard';
   }
 
   a {

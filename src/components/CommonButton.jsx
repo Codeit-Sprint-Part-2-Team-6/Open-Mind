@@ -28,6 +28,11 @@ const CommonButtonTxt = styled.p`
 const CommonButtonArrowIcon = styled.img`
   width: 18px;
   height: 18px;
+  transition: transform 0.2s ease;
+
+  ${CommonButtonWrap}:hover & {
+    transform: translateX(4px);
+  }
 `;
 
 export default function CommonBtn({ text, onClick, className }) {
