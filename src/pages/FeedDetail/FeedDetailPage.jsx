@@ -129,7 +129,7 @@ function FeedDetailPage() {
 
     fetchSubject();
     fetchQuestions();
-  }, []);
+  }, [id]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
