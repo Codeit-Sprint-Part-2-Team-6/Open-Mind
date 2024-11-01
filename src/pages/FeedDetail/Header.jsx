@@ -41,6 +41,13 @@ const ProfileImage = styled.img`
 const UserName = styled.h1`
   margin: 12px 0 0 0;
   font-weight: 400;
+  font-size: ${({ theme }) => theme.typography.h3.fontSize};
+  line-height: 1.875rem;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    font-size: ${({ theme }) => theme.typography.h2.fontSize};
+    line-height: 2.5rem;
+  }
 `;
 
 const ShareContainer = styled.div`
@@ -103,7 +110,7 @@ function Header({ image, name }) {
     <HeaderContainer>
       <Logo src='/images/contents/logo.svg' />
       <ProfileImage src={image} />
-      <UserName as='h2'>{name}</UserName>
+      <UserName>{name}</UserName>
       <ShareContainer>
         <CopyUrlBtn onClick={copyCurrentUrl}>
           <ShareIcon src='/images/icons/ic_share.svg' />
