@@ -2,14 +2,8 @@ import styled, { useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
 import { useEffect, useRef, useState } from 'react';
-
-const BoxContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
-  background-color: transparent;
-`;
+import { getAnswerById, updateAnswer, deleteAnswer } from '../../api/answerApi';
+import { createAnswer } from '../../api/questionApi';
 
 const QuestionCard = styled.div`
   display: flex;
@@ -38,11 +32,11 @@ const AnswerTag = styled.div`
   align-items: center;
   padding: 4px 12px;
   background-color: ${({ theme }) => theme.gray[10]};
-  border: 1px solid ${({ answered, theme }) => (answered ? theme.brown[40] : theme.gray[40])};
+  border: 1px solid ${({ $answered, theme }) => ($answered ? theme.brown[40] : theme.gray[40])};
   border-radius: 8px;
   font-weight: ${({ theme }) => theme.typography.caption1Medium.fontWeight};
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
-  color: ${({ answered, theme }) => (answered ? theme.brown[40] : theme.gray[40])};
+  color: ${({ $answered, theme }) => ($answered ? theme.brown[40] : theme.gray[40])};
   line-height: 18px;
 `;
 
@@ -131,6 +125,7 @@ const AnswerContainer = styled.div`
 const AnswerProfile = styled.img`
   width: 2rem;
   height: auto;
+  border-radius: 50%;
 
   @media ${({ theme }) => theme.typography.device.tabletMn} {
     width: 3rem;
@@ -241,8 +236,8 @@ const Reaction = styled.a`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   font-weight: ${({ theme }) => theme.typography.caption1.fontWeight};
   line-height: 18px;
-  color: ${({ isActive, type, theme }) =>
-    isActive ? (type === 'like' ? theme.blue : theme.gray[60]) : theme.gray[40]};
+  color: ${({ $isActive, type, theme }) =>
+    $isActive ? (type === 'like' ? theme.blue : theme.gray[60]) : theme.gray[40]};
   cursor: pointer;
 `;
 
@@ -271,122 +266,129 @@ const getRelativeTime = (dateString) => {
   return '방금 전';
 };
 
-export default function QuestionBox() {
-  const [questions, setQuestions] = useState([]);
-  const [isFeedOwner, setIsFeedOwner] = useState(true);
-
-  const [menuOpen, setMenuOpen] = useState({});
+export default function QuestionBox({ question, image, name, isFeedOwner = true }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [currentAnswer, setCurrentAnswer] = useState(question.answer);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingAnswerId, setEditingAnswerId] = useState(null);
-  const [isRejected, setIsRejected] = useState({});
-  const [answerText, setAnswerText] = useState({});
-  const [isLiked, setIsLiked] = useState(new Set());
-  const [isDisliked, setIsDisliked] = useState(new Set());
+  const [answerText, setAnswerText] = useState('');
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
 
-  const handleToggleMenu = (id) => {
-    setMenuOpen((prev) => ({ ...prev, [id]: !prev[id] }));
+  const handleToggleMenu = () => {
+    setMenuOpen((prev) => !prev);
   };
 
-  const handleMenuItemClick = (action, questionId) => {
+  const handleMenuItemClick = async (action) => {
     switch (action) {
       case 'edit': {
-        setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
-        // questions 에서 해당 id와 일치하는 질문을 찾아 질문과 답변이 있는지 확인하고 기존 답변 내용 불러옴
-        const editQuestion = questions.find((question) => question.id === questionId);
-        if (editQuestion && editQuestion.answer) {
-          setAnswerText((prev) => ({
-            ...prev,
-            [questionId]: editQuestion.answer.content, // 수정된 질문의 답변 내용을 올바르게 설정
-          }));
-          setEditingAnswerId(questionId); // 현재 수정 중인 답변 ID 저장
+        setMenuOpen(false);
+        try {
+          const answerContent = await getAnswerById(question.answer.id);
+          setAnswerText(answerContent.content);
           setIsEditing(true);
+        } catch (error) {
+          console.log('답변 정보를 불러오지 못했습니다');
         }
         break;
       }
       case 'delete':
-        setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
-        setQuestions((prevQuestions) =>
-          prevQuestions.map((question) =>
-            question.id === questionId ? { ...question, answer: null } : question,
-          ),
-        );
-        setIsRejected((prev) => ({ ...prev, [questionId]: false })); // 거절 상태 초기화
-        setEditingAnswerId(null); // // 이후 수정했을 때 수정모드에 진입하지 않도록
-        setAnswerText((prev) => ({
-          ...prev,
-          [questionId]: '', // 답변 내용을 빈 문자열로 초기화
-        }));
+        setMenuOpen(false);
+        try {
+          await deleteAnswer(question.answer.id);
+          setCurrentAnswer(null);
+        } catch (error) {
+          console.error('답변 삭제 중 오류가 발생했습니다:', error);
+        }
         break;
       case 'reject':
-        setMenuOpen((prev) => ({ ...prev, [questionId]: false }));
-        setIsRejected((prev) => ({ ...prev, [questionId]: true }));
-        setQuestions((prevQuestions) =>
-          prevQuestions.map((question) =>
-            question.id === questionId
-              ? {
-                  ...question,
-                  answer: {
-                    ...question.answer,
-                    isRejected: true,
-                  },
-                } // 기존 답변 유지
-              : question,
-          ),
-        );
+        setMenuOpen(false);
+        if (question.answer && question.answer.id) {
+          // 기존 답변이 있을 때
+          try {
+            const response = await updateAnswer(question.answer.id, question.answer.content, true); // 답변 거절 API 호출
+            setCurrentAnswer((prev) => ({ ...prev, isRejected: true }));
+            console.log('답변 생성 응답:', response);
+          } catch (error) {
+            console.error('답변 거절 중 오류가 발생했습니다:', error);
+          }
+        } else {
+          // 기존 답변이 없을 때
+          try {
+            await createAnswer({ questionId: question.id, content: '답변 거절', isRejected: true }); // POST 요청으로 새로운 답변 생성
+            setCurrentAnswer({ isRejected: true });
+            console.log(question.id);
+          } catch (error) {
+            console.error('답변 거절 중 오류가 발생했습니다:', error);
+          }
+        }
         break;
       default:
         break;
     }
   };
 
-  const handleEditComplete = () => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((question) =>
-        question.id === editingAnswerId
-          ? {
-              ...question,
-              answer: { ...question.answer, content: answerText[editingAnswerId] },
-              isRejected: false,
-            }
-          : question,
-      ),
-    );
-    setIsRejected((prev) => ({ ...prev, [editingAnswerId]: false }));
-    setIsEditing(false);
-    setEditingAnswerId(null);
-    setAnswerText((prev) => ({ ...prev, [editingAnswerId]: '' }));
+  const handleEditComplete = async () => {
+    try {
+      await updateAnswer(question.answer.id, answerText);
+      // 사용자 경험을 위해 GET 요청을 추가하지 않고 상태 업데이트
+      setCurrentAnswer((prev) => ({ ...prev, content: answerText, isRejected: false }));
+      setIsEditing(false);
+      setAnswerText('');
+    } catch (error) {
+      console.error('답변 수정 중 오류가 발생했습니다');
+    }
   };
 
-  const handleAnswerComplete = (questionId) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((question) =>
-        question.id === questionId
-          ? {
-              ...question,
-              answer: { content: answerText[questionId], isRejected: false },
-            }
-          : question,
-      ),
-    );
-    setIsRejected((prev) => ({ ...prev, [questionId]: false }));
-    setAnswerText((prev) => ({ ...prev, [questionId]: '' }));
+  const handleAnswerComplete = async () => {
+    try {
+      await createAnswer({ questionId: question.id, content: answerText }); // POST 요청으로 새로운 답변 생성
+      setCurrentAnswer({
+        content: answerText,
+        isRejected: false,
+      });
+      console.log(question.id);
+    } catch (error) {
+      console.error('답변 거절 중 오류가 발생했습니다:', error);
+    }
+    setAnswerText('');
   };
 
-  const handleChange = (questionId, event) => {
-    setAnswerText((prev) => ({
-      ...prev,
-      [questionId]: event.target.value,
-    }));
+  const handleAnswerTextChange = (event) => {
+    setAnswerText(event.target.value);
   };
 
   // 메뉴창에 ref 설정
   const menuRef = useRef();
 
   const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setMenuOpen({});
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target) &&
+      !event.target.closest('.kebab-button-class')
+    ) {
+      setMenuOpen(false);
     }
   };
+
+  const isButtonDisabled = () => !answerText.trim();
+
+  const handleReaction = async (type) => {
+    if (type === 'like') {
+      setIsLiked((prev) => !prev);
+      setIsDisliked(false);
+      // await createReaction({ id: question.id, type: 'like' });
+    } else if (type === 'dislike') {
+      setIsDisliked((prev) => !prev);
+      setIsLiked(false);
+      // await createReaction({ id: question.id, type: 'dislike' });
+    }
+  };
+
+  const theme = useTheme();
+
+  useEffect(() => {
+    setCurrentAnswer(question.answer);
+  }, [question.answer]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -395,173 +397,125 @@ export default function QuestionBox() {
     };
   }, []);
 
-  const isButtonDisabled = (questionId) => !answerText[questionId]?.trim();
-
-  const handleReaction = (questionId, type) => {
-    if (type === 'like') {
-      setIsLiked((prev) => {
-        const newSet = new Set(prev);
-        if (newSet.has(questionId)) {
-          newSet.delete(questionId);
-        } else {
-          newSet.add(questionId);
-          isDisliked.delete(questionId);
-        }
-        return newSet;
-      });
-    } else if (type === 'dislike') {
-      setIsDisliked((prev) => {
-        const newSet = new Set(prev);
-        if (newSet.has(questionId)) {
-          newSet.delete(questionId);
-        } else {
-          newSet.add(questionId);
-          isLiked.delete(questionId);
-        }
-        return newSet;
-      });
-    }
-  };
-
-  const theme = useTheme();
-
   return (
-    <BoxContainer>
-      {questions.map((question) => (
-        <QuestionCard key={question.id}>
-          <QuestionToolbar>
-            <AnswerTag answered={!!question.answer || isRejected[question.id]}>
-              {question.answer ? '답변 완료' : '미답변'}
-            </AnswerTag>
-            {isFeedOwner && (
-              <KebabButton onClick={() => handleToggleMenu(question.id)}>
-                <img src='/images/icons/kebab-button.svg' alt='케밥 메뉴' />
-              </KebabButton>
-            )}
-            {menuOpen[question.id] && (
-              <KebabMenu ref={menuRef}>
-                {question.answer ? ( // 질문에 답변이 있을 때
-                  question.answer.isRejected ? ( // 답변이 거절된 경우
-                    <>
-                      <KebabMenuItem onClick={() => handleMenuItemClick('edit', question.id)}>
-                        답변수정
-                      </KebabMenuItem>
-                      <KebabMenuItem onClick={() => handleMenuItemClick('delete', question.id)}>
-                        답변삭제
-                      </KebabMenuItem>
-                    </>
-                  ) : (
-                    // 답변이 완료된 경우
-                    <>
-                      <KebabMenuItem onClick={() => handleMenuItemClick('edit', question.id)}>
-                        답변수정
-                      </KebabMenuItem>
-                      <KebabMenuItem onClick={() => handleMenuItemClick('reject', question.id)}>
-                        답변거절
-                      </KebabMenuItem>
-                      <KebabMenuItem onClick={() => handleMenuItemClick('delete', question.id)}>
-                        답변삭제
-                      </KebabMenuItem>
-                    </>
-                  )
-                ) : (
-                  // 질문에 답변이 없는 경우
-                  <KebabMenuItem onClick={() => handleMenuItemClick('reject', question.id)}>
+    <QuestionCard key={question.id}>
+      <QuestionToolbar>
+        <AnswerTag $answered={!!currentAnswer || (currentAnswer && currentAnswer.isRejected)}>
+          {currentAnswer ? '답변 완료' : '미답변'}
+        </AnswerTag>
+        {isFeedOwner && (
+          <KebabButton className='kebab-button-class' onClick={handleToggleMenu}>
+            <img src='/images/icons/kebab-button.svg' alt='케밥 메뉴' />
+          </KebabButton>
+        )}
+        {menuOpen && (
+          <KebabMenu ref={menuRef}>
+            {currentAnswer ? ( // 질문에 답변이 있을 때
+              currentAnswer.isRejected ? ( // 답변이 거절된 경우
+                <>
+                  <KebabMenuItem onClick={() => handleMenuItemClick('edit')}>
+                    답변수정
+                  </KebabMenuItem>
+                  <KebabMenuItem onClick={() => handleMenuItemClick('delete')}>
+                    답변삭제
+                  </KebabMenuItem>
+                </>
+              ) : (
+                // 답변이 완료된 경우
+                <>
+                  <KebabMenuItem onClick={() => handleMenuItemClick('edit')}>
+                    답변수정
+                  </KebabMenuItem>
+                  <KebabMenuItem onClick={() => handleMenuItemClick('reject')}>
                     답변거절
                   </KebabMenuItem>
-                )}
-              </KebabMenu>
+                  <KebabMenuItem onClick={() => handleMenuItemClick('delete')}>
+                    답변삭제
+                  </KebabMenuItem>
+                </>
+              )
+            ) : (
+              // 질문에 답변이 없는 경우
+              <KebabMenuItem onClick={() => handleMenuItemClick('reject')}>답변거절</KebabMenuItem>
             )}
-          </QuestionToolbar>
-          <TitleContainer>
-            <TitleInfo>질문 · {getRelativeTime(question.createdAt)}</TitleInfo>
-            <Title className='actor-regular'>{question.content}</Title>
-          </TitleContainer>
-          {isFeedOwner ? ( // 질문자인 경우
-            <AnswerContainer>
-              <AnswerProfile src='/images/contents/profile.svg' alt='프로필 이미지' />
-              <AnswerTextContainer>
-                <AnswerInfo>
-                  <UserName className='actor-regular'>아초는 고양이</UserName>
-                  <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
-                </AnswerInfo>
-                {isEditing && editingAnswerId === question.id ? (
-                  <AnswerRegisterContainer>
-                    <AnswerTextArea
-                      placeholder='답변을 입력해주세요'
-                      value={answerText[question.id] || ''}
-                      onChange={(event) => handleChange(question.id, event)}
-                    />
-                    <AnswerRegisterButton
-                      onClick={handleEditComplete}
-                      disabled={isButtonDisabled(question.id)}
-                    >
-                      수정 완료
-                    </AnswerRegisterButton>
-                  </AnswerRegisterContainer>
-                ) : isRejected[question.id] || (question.answer && question.answer.isRejected) ? (
-                  <AnswerContent isRejected>답변 거절</AnswerContent>
-                ) : question.answer ? (
-                  <AnswerContent>{question.answer.content}</AnswerContent>
-                ) : (
-                  <AnswerRegisterContainer>
-                    <AnswerTextArea
-                      placeholder='답변을 입력해주세요'
-                      value={answerText[question.id] || ''}
-                      onChange={(event) => handleChange(question.id, event)}
-                    />
-                    <AnswerRegisterButton
-                      onClick={() => handleAnswerComplete(question.id)}
-                      disabled={isButtonDisabled(question.id)}
-                    >
-                      답변 완료
-                    </AnswerRegisterButton>
-                  </AnswerRegisterContainer>
-                )}
-              </AnswerTextContainer>
-            </AnswerContainer>
-          ) : (
-            question.answer && ( // 답변자인 경우에만 보여주고, 답변자 시점이지만 미답변인 경우는 아예 숨김
-              <AnswerContainer>
-                <AnswerProfile src='/images/contents/profile.svg' alt='프로필 이미지' />
-                <AnswerTextContainer>
-                  <AnswerInfo>
-                    <UserName className='actor-regular'>아초는 고양이</UserName>
-                    <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
-                  </AnswerInfo>
-                  <AnswerContent>{question.answer.content}</AnswerContent>
-                </AnswerTextContainer>
-              </AnswerContainer>
-            )
-          )}
-          <ReactionContainer>
-            <ReactionBox>
-              <Reaction
-                isActive={isLiked.has(question.id)}
-                type='like'
-                onClick={() => handleReaction(question.id, 'like')}
-              >
-                <ThumbsUpIcon
-                  color={isLiked.has(question.id) ? theme.blue : theme.gray[40]}
-                  size={16}
+          </KebabMenu>
+        )}
+      </QuestionToolbar>
+      <TitleContainer>
+        <TitleInfo>질문 · {getRelativeTime(question.createdAt)}</TitleInfo>
+        <Title className='actor-regular'>{question.content}</Title>
+      </TitleContainer>
+      {isFeedOwner ? ( // 질문자인 경우
+        <AnswerContainer>
+          <AnswerProfile src={image} alt='프로필 이미지' />
+          <AnswerTextContainer>
+            <AnswerInfo>
+              <UserName className='actor-regular'>{name}</UserName>
+              <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
+            </AnswerInfo>
+            {isEditing && question.answer ? (
+              <AnswerRegisterContainer>
+                <AnswerTextArea
+                  placeholder='답변을 입력해주세요'
+                  value={answerText}
+                  onChange={handleAnswerTextChange}
                 />
-                좋아요 {question.like}
-              </Reaction>
-              <Reaction
-                isActive={isDisliked.has(question.id)}
-                type='dislike'
-                onClick={() => handleReaction(question.id, 'dislike')}
-              >
-                <ThumbsDownIcon
-                  color={isDisliked.has(question.id) ? theme.gray[60] : theme.gray[40]}
-                  size={16}
+                <AnswerRegisterButton
+                  onClick={() => handleEditComplete()}
+                  disabled={isButtonDisabled()}
+                >
+                  수정 완료
+                </AnswerRegisterButton>
+              </AnswerRegisterContainer>
+            ) : currentAnswer ? (
+              currentAnswer.isRejected ? (
+                <AnswerContent isRejected>답변 거절</AnswerContent>
+              ) : (
+                <AnswerContent>{currentAnswer.content}</AnswerContent>
+              )
+            ) : (
+              <AnswerRegisterContainer>
+                <AnswerTextArea
+                  placeholder='답변을 입력해주세요'
+                  value={answerText}
+                  onChange={handleAnswerTextChange}
                 />
-                싫어요 {question.dislike}
-              </Reaction>
-            </ReactionBox>
-          </ReactionContainer>
-        </QuestionCard>
-      ))}
-    </BoxContainer>
+                <AnswerRegisterButton
+                  onClick={() => handleAnswerComplete()}
+                  disabled={isButtonDisabled()}
+                >
+                  답변 완료
+                </AnswerRegisterButton>
+              </AnswerRegisterContainer>
+            )}
+          </AnswerTextContainer>
+        </AnswerContainer>
+      ) : (
+        question.answer && ( // 답변자인 경우에만 보여주고, 답변자 시점이지만 미답변인 경우는 아예 숨김
+          <AnswerContainer>
+            <AnswerProfile src={image} alt='프로필 이미지' />
+            <AnswerTextContainer>
+              <AnswerInfo>
+                <UserName className='actor-regular'>{name}</UserName>
+                <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
+              </AnswerInfo>
+              <AnswerContent>{question.answer.content}</AnswerContent>
+            </AnswerTextContainer>
+          </AnswerContainer>
+        )
+      )}
+      <ReactionContainer>
+        <ReactionBox>
+          <Reaction $isActive={isLiked} type='like' onClick={() => handleReaction('like')}>
+            <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
+            좋아요 {question.like}
+          </Reaction>
+          <Reaction $isActive={isDisliked} type='dislike' onClick={() => handleReaction('dislike')}>
+            <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
+            싫어요 {question.dislike}
+          </Reaction>
+        </ReactionBox>
+      </ReactionContainer>
+    </QuestionCard>
   );
 }

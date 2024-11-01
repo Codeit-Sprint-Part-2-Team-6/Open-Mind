@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { getQuestionsBySubject, getSubjectById } from '../../api/subjectApi.js';
 import { useParams } from 'react-router-dom';
+import QuestionBox from './QuestionBox.jsx';
 
 const Main = styled.main`
   height: 100%;
@@ -151,7 +152,14 @@ function FeedDetailPage() {
                 <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
 
-              {questions}
+              {questions.map((question) => (
+                <QuestionBox
+                  key={question.id}
+                  question={question}
+                  image={subject.imageSource}
+                  name={subject.name}
+                />
+              ))}
             </>
           ) : (
             <>
