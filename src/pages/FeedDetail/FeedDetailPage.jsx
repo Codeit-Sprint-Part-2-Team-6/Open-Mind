@@ -12,7 +12,7 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   padding: 0 24px;
-  margin-top: 174px;
+  margin-top: 54px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     padding: 0 32px;
