@@ -14,15 +14,14 @@ const CardContainer = styled(Link)`
     border-color: ${({ theme }) => theme.red};
   }
 
-  @media (min-width: 375px) {
+  @media (min-width: 768px) {
     height: 187px;
     width: 220px;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 868px) {
     height: 187px;
-    max-width: 206.5px;
-    min-width: 186px;
+    width: clamp(186px, 2.5vw + 186px, 206.5px);
   }
 
   @media (min-width: 1200px) {
