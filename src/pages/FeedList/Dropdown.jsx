@@ -4,12 +4,20 @@ import theme from '../../styles/theme';
 
 const DropdownContainer = styled.div`
   height: 34px;
-  margin-top: 20px;
   border: 1px solid ${theme.gray[60]};
   background-color: ${theme.gray[10]};
   border-radius: 8px;
-  font-size: ${theme.typography.body3.fontSize};
-  font-weight: ${theme.typography.body3.fontWeight};
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Pretendard-Regular';
+  line-height: 18px;
+
+  @media ${theme.typography.device.tabletMn} {
+    margin-top: 20px;
+  }
+  @media ${theme.typography.device.laptopMn} {
+    margin-top: 20px;
+  }
 `;
 
 const DropdownBtn = styled.button`
@@ -40,8 +48,10 @@ const DropdownList = styled.div`
   background-color: ${theme.gray[10]};
   border-radius: 8px;
   text-align: center;
-  font-size: ${theme.typography.caption1.fontSize};
-  font-weight: ${theme.typography.caption1Medium.fontWeight};
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Pretendard-Regular', sans-serif;
+  line-height: 18px;
   cursor: pointer;
 `;
 

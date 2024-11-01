@@ -43,11 +43,13 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.p`
-  font-size: ${theme.typography.h3.fontSize};
-  font-weight: ${theme.typography.h3.fontWeight};
+  font-family: 'Actor';
+  font-size: 24px;
+  font-weight: 400;
+  margin-left: 24px;
 
   @media ${theme.typography.device.tabletMn} {
-    font-size: ${theme.typography.h1.fontSize};
+    font-size: 40px;
   }
 `;
 
