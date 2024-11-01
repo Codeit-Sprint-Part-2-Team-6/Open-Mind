@@ -67,6 +67,7 @@ const ToReceiveText = styled.p`
 const ReceiverProfileImage = styled.img`
   width: 28px;
   height: 28px;
+  border-radius: 50%;
 `;
 
 const ReceiverNickname = styled.p`
@@ -121,7 +122,7 @@ const QuestionRegisterButton = styled.button`
   }
 `;
 
-function CreateQuestionModal({ onClose }) {
+function CreateQuestionModal({ image, name, onClose }) {
   const [questionText, setQuestionText] = useState('');
 
   const handleChange = (event) => {
@@ -143,8 +144,8 @@ function CreateQuestionModal({ onClose }) {
 
         <ReceiverNicknameWrapper>
           <ToReceiveText>To.</ToReceiveText>
-          <ReceiverProfileImage src='/images/contents/profile.svg' />
-          <ReceiverNickname>이동훈</ReceiverNickname>
+          <ReceiverProfileImage src={image} />
+          <ReceiverNickname>{name}</ReceiverNickname>
         </ReceiverNicknameWrapper>
 
         <QuestionTextArea
