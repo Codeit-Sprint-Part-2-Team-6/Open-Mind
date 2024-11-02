@@ -8,7 +8,7 @@ const DropdownContainer = styled.div`
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  font-family: 'Pretendard', sans-serif;
+  font-family: 'Pretendard';
   line-height: 18px;
   margin-right: 24px;
   @media ${theme.typography.device.tabletMn} {
@@ -44,7 +44,7 @@ const DropdownList = styled.div`
   text-align: center;
   font-size: 14px;
   font-weight: 500;
-  font-family: 'Pretendard', sans-serif;
+  font-family: 'Pretendard';
   line-height: 18px;
   cursor: pointer;
 `;
