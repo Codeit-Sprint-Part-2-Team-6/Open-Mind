@@ -23,12 +23,11 @@ const CardContainer = styled(Link)`
   }
 
   @media (min-width: 868px) {
-    height: 187px;
-    width: clamp(186px, 2.5vw + 186px, 206.5px);
+    min-width: 186px;
+    max-width: 206.5px;
   }
 
   @media (min-width: 1200px) {
-    height: 187px;
     width: 220px;
   }
 `;
