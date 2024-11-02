@@ -45,9 +45,11 @@ const StyledCommonBtn = styled(CommonBtn)`
 
 function Header() {
   const navigate = useNavigate();
-  const key = localStorage.key(0);
-
-  console.log(key);
+  const data = localStorage.getItem('user-storage');
+  const parsedData = JSON.parse(data);
+  const userIds = Object.keys(parsedData.state.users);
+  console.log(userIds[0]);
+  const key = userIds[0];
 
   const handleAnswerBtn = () => {
     const nextPath = key ? `/post/${key}/answer` : '/';
