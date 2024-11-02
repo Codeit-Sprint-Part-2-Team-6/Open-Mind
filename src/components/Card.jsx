@@ -12,6 +12,9 @@ const CardContainer = styled(Link)`
 
   &:hover {
     border-color: ${({ theme }) => theme.red};
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   @media (min-width: 768px) {
