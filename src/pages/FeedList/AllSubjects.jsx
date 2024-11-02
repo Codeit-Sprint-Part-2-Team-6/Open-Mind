@@ -43,7 +43,7 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.p`
-  font-family: 'Actor';
+  font-family: 'Actor', sans-serif;
   font-size: 24px;
   font-weight: 400;
   margin-left: 24px;

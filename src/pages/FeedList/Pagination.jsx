@@ -26,6 +26,7 @@ const PaginationButton = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 20px;
+  font-family: 'Actor', sans-serif;
   font-weight: ${({ $isCurrentPage }) => ($isCurrentPage ? '900' : '300')};
   color: ${({ $isCurrentPage }) => ($isCurrentPage ? theme.brown[40] : theme.gray[40])};
   width: 40px;

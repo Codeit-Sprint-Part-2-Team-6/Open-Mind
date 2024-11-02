@@ -22,6 +22,11 @@ const HeaderContainer = styled.div`
 const Logo = styled.img`
   width: 146px;
   height: 57px;
+  margin-top: 40px;
+
+  @media ${theme.typography.device.tabletMn} {
+    margin-top: 0px;
+  }
 `;
 
 const HomePageBtn = styled.div`
