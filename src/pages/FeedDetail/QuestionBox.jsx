@@ -4,6 +4,7 @@ import ThumbsDownIcon from './SvgIcons/thumbs-down';
 import { useEffect, useRef, useState } from 'react';
 import { getAnswerById, updateAnswer, deleteAnswer } from '../../api/answerApi';
 import { createAnswer } from '../../api/questionApi';
+import { useLocation } from 'react-router-dom';
 
 const QuestionCard = styled.div`
   display: flex;
@@ -266,13 +267,16 @@ const getRelativeTime = (dateString) => {
   return '방금 전';
 };
 
-export default function QuestionBox({ question, image, name, isFeedOwner = true }) {
+export default function QuestionBox({ question, image, name }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState(question.answer);
   const [isEditing, setIsEditing] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+
+  const location = useLocation();
+  const isFeedOwner = location.pathname.includes('/post') && location.pathname.includes('/answer');
 
   const handleToggleMenu = () => {
     setMenuOpen((prev) => !prev);
