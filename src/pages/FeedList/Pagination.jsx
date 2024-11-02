@@ -32,6 +32,11 @@ const PaginationButton = styled.div`
   width: 40px;
   height: 40px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 
 const Pagination = ({ totalPage, currentPage, pageChange }) => {

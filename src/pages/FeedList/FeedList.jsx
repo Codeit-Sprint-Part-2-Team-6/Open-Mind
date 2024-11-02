@@ -4,10 +4,14 @@ import AllSubjects from './AllSubjects';
 import theme from '../../styles/theme';
 
 const Container = styled.div`
-  height: 100vh;
+  height: 105vh;
   display: flex;
   flex-direction: column;
   background-color: ${theme.gray[20]};
+
+  @media (min-width: 768px) {
+    height: 100vh;
+  }
 `;
 
 function FeedList() {
