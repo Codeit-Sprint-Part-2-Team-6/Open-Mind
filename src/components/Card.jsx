@@ -43,6 +43,7 @@ const CardImage = styled.img`
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  mix-blend-mode: ${(props) => props.theme.mixBlendMode};
 
   @media (min-width: 768px) {
     width: 60px;
