@@ -104,7 +104,6 @@ function AllSubjects() {
   const [totalPage, setTotalPage] = useState();
 
   const handleSortCard = (sortOption) => {
-    console.log('Selected sort option:', sortOption);
     setSort(sortOption);
   };
 

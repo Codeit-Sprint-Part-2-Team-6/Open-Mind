@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import CommonBtn from '../../components/CommonButton';
 import theme from '../../styles/theme';
+import { useUser } from '../../hooks/useStore';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -42,19 +43,17 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
-function Header({ subjectId }) {
-  console.log(subjectId);
-
+function Header() {
   const navigate = useNavigate();
+  const key = localStorage.key(0);
 
-  const handleAnswerBtn = (e) => {
-    const subjectId = localStorage.getItem('subjectId');
-    if (subjectId) {
-      navigate(`/post/${subjectId}/answer`);
-    } else {
-      navigate('/');
-    }
+  console.log(key);
+
+  const handleAnswerBtn = () => {
+    const nextPath = key ? `/post/${key}/answer` : '/';
+    navigate(nextPath);
   };
+
   return (
     <HeaderContainer>
       <Link to='/' aria-label='메인페이지이동'>
