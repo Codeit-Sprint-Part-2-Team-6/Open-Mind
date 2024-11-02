@@ -4,7 +4,7 @@ import AllSubjects from './AllSubjects';
 import theme from '../../styles/theme';
 
 const Container = styled.div`
-  height: 105vh;
+  height: 120vh;
   display: flex;
   flex-direction: column;
   background-color: ${theme.gray[20]};
