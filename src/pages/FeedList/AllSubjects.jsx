@@ -43,7 +43,7 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.p`
-  font-family: 'Actor', sans-serif;
+  font-family: 'Actor';
   font-size: 24px;
   font-weight: 400;
   margin-left: 24px;
@@ -123,7 +123,7 @@ function AllSubjects() {
       setPageSize(getPageSize());
     };
 
-    const debouncedHandleResize = debounce(handleResize, 250); // Debounce function
+    const debouncedHandleResize = debounce(handleResize, 250);
 
     window.addEventListener('resize', debouncedHandleResize);
     fetchData({ sort, page, pageSize });
