@@ -8,11 +8,7 @@ import Pagination from './Pagination';
 import { debounce } from 'lodash';
 
 const getPageSize = () => {
-  const width = window.innerWidth;
-
-  if (width < 768) return 6;
-  else if (width < 868) return 6;
-  else if (width < 1200) return 8;
+  if (window.innerWidth < 868) return 6;
   else return 8;
 };
 
