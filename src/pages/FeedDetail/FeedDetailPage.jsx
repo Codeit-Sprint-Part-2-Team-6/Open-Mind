@@ -146,7 +146,12 @@ function FeedDetailPage() {
 
   return (
     <>
-      <Header image={subject.imageSource} name={subject.name} />
+      <Header
+        id={id}
+        image={subject.imageSource}
+        name={subject.name}
+        questionsCount={questionsCount}
+      />
       <Main>
         <QuestionsContainer>
           {questionsCount ? (
