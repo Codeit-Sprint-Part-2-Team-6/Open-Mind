@@ -14,14 +14,19 @@ const HeaderContainer = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin-top: 40px;
-    padding-left: 130px;
-    padding-right: 130px;
+    padding-left: 50px;
+    padding-right: 50px;
   }
 `;
 
 const Logo = styled.img`
   width: 146px;
   height: 57px;
+  margin-top: 40px;
+
+  @media ${theme.typography.device.tabletMn} {
+    margin-top: 0px;
+  }
 `;
 
 const HomePageBtn = styled.div`
@@ -37,10 +42,12 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
-function Header() {
+function Header({ subjectId }) {
+  console.log(subjectId);
+
   const navigate = useNavigate();
 
-  const handleAnswerBtn = () => {
+  const handleAnswerBtn = (e) => {
     const subjectId = localStorage.getItem('subjectId');
     if (subjectId) {
       navigate(`/post/${subjectId}/answer`);

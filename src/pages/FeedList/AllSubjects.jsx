@@ -12,7 +12,7 @@ const getPageSize = () => {
 
   if (width < 768) return 6;
   else if (width < 868) return 6;
-  else if (width < 1280) return 8;
+  else if (width < 1200) return 8;
   else return 8;
 };
 
@@ -43,11 +43,13 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.p`
-  font-size: ${theme.typography.h3.fontSize};
-  font-weight: ${theme.typography.h3.fontWeight};
+  font-family: 'Actor', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin-left: 24px;
 
   @media ${theme.typography.device.tabletMn} {
-    font-size: ${theme.typography.h1.fontSize};
+    font-size: 40px;
   }
 `;
 
@@ -58,22 +60,25 @@ const GridContainer = styled.div`
   justify-content: space-evenly;
   gap: 1.5rem;
   margin-top: 20px;
+  margin-left: 12px
+  margin-right: 12px;
 `;
 
 const UserCardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  padding: 0 32px;
 
-  @media ${theme.typography.device.tabletMn} {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  @media (min-width: 950px) {
+  @media (min-width: 868px) {
     grid-template-columns: repeat(4, 1fr);
   }
 
-  @media ${theme.typography.device.laptopMn} {
+  @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
