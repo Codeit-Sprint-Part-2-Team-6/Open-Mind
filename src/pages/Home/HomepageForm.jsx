@@ -8,7 +8,7 @@ function HomeForm() {
   const [inputValue, setInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  const { setUserId } = useUser();
+  const { setUser } = useUser();
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -29,17 +29,13 @@ function HomeForm() {
         const data = await createSubject(inputValue);
         console.log('API 응답:', data);
 
-        // 고유한 키 생성
-        const uniqueKey = `${new Date().getTime()}`;
-        const feedId = data.id;
-
-        navigate(`/post/${feedId}/answer`);
-        setUserId(uniqueKey);
-
-        // 로컬스토리지에 값 저장
-        localStorage.setItem(uniqueKey, inputValue);
+        // 생성한 subject의 id를 로컬 스토리지에 저장
+        const { id: feedId, name: ownerName } = data;
+        setUser(feedId, ownerName);
         setErrorMessage('');
         setInputValue('');
+
+        navigate(`/post/${feedId}/answer`);
       } catch (error) {
         setErrorMessage(error.message);
         console.error(error);

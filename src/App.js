@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { lightTheme, darkTheme } from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
@@ -8,6 +8,7 @@ import FeedList from './pages/FeedList/FeedList';
 import FeedDetailPage from './pages/FeedDetail/FeedDetailPage';
 import ToggleThemeBtn from './components/ToggleTheme';
 import { useState } from 'react';
+import ForbiddenPage from './pages/Errors/ForbiddenPage';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -55,7 +56,9 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path='/list' element={<FeedList />} />
             <Route path='/post/:id' element={<FeedDetailPage />} />
-            <Route path='/post/:id/answer' element={<FeedDetailPage />} />
+            <Route path='/post/:id/answer' element={<FeedDetailPage isAnswer={true} />} />
+            <Route path='/403' element={<ForbiddenPage />} />
+            <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>
         </Router>
       </ThemeProvider>

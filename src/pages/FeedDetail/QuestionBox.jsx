@@ -267,16 +267,13 @@ const getRelativeTime = (dateString) => {
   return '방금 전';
 };
 
-export default function QuestionBox({ question, image, name }) {
+export default function QuestionBox({ question, image, name, isOwner }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState(question.answer);
   const [isEditing, setIsEditing] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
-
-  const location = useLocation();
-  const isFeedOwner = location.pathname.includes('/post') && location.pathname.includes('/answer');
 
   const handleToggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -407,7 +404,7 @@ export default function QuestionBox({ question, image, name }) {
         <AnswerTag $answered={!!currentAnswer || (currentAnswer && currentAnswer.isRejected)}>
           {currentAnswer ? '답변 완료' : '미답변'}
         </AnswerTag>
-        {isFeedOwner && (
+        {isOwner && (
           <KebabButton className='kebab-button-class' onClick={handleToggleMenu}>
             <img src='/images/icons/kebab-button.svg' alt='케밥 메뉴' />
           </KebabButton>
@@ -449,7 +446,7 @@ export default function QuestionBox({ question, image, name }) {
         <TitleInfo>질문 · {getRelativeTime(question.createdAt)}</TitleInfo>
         <Title className='actor-regular'>{question.content}</Title>
       </TitleContainer>
-      {isFeedOwner ? ( // 질문자인 경우
+      {isOwner ? ( // 질문자인 경우
         <AnswerContainer>
           <AnswerProfile src={image} alt='프로필 이미지' />
           <AnswerTextContainer>
