@@ -10,6 +10,7 @@ const DropdownContainer = styled.div`
   font-weight: 500;
   font-family: 'Pretendard', sans-serif;
   line-height: 18px;
+  margin-right: 24px;
   @media ${theme.typography.device.tabletMn} {
     margin-top: 20px;
   }
