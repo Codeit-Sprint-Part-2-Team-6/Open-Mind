@@ -5,6 +5,7 @@ import { createAnswer } from '../../api/questionApi';
 import QuestionToolbar from './QuestionToolbar';
 import AnswerSection from './AnswerSection';
 import ReactionSection from './ReactionSection';
+import Toast from '../../components/Toast';
 
 const QuestionCard = styled.div`
   display: flex;
@@ -81,6 +82,12 @@ export default function QuestionBox({ question, image, name, isOwner }) {
   const [answerText, setAnswerText] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const showToastMessage = (message) => {
+    setShowToast(message);
+    setTimeout(() => setShowToast(''), 5000); // 5초 후 메시지 초기화
+  };
 
   const handleToggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -91,7 +98,6 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       case 'edit': {
         setMenuOpen(false);
         try {
-          console.log(currentAnswer.id);
           setIsEditing(true);
           setAnswerText(currentAnswer.content);
         } catch (error) {
@@ -105,6 +111,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
           await deleteAnswer(currentAnswer.id);
           setCurrentAnswer(null);
           setAnswerText('');
+          showToastMessage('답변이 삭제되었습니다');
         } catch (error) {
           console.error('답변 삭제 중 오류가 발생했습니다:', error);
         }
@@ -114,9 +121,9 @@ export default function QuestionBox({ question, image, name, isOwner }) {
         if (currentAnswer && currentAnswer.id) {
           // 기존 답변이 있을 때
           try {
-            const response = await updateAnswer(currentAnswer.id, currentAnswer.content, true); // 답변 거절 API 호출
+            await updateAnswer(currentAnswer.id, currentAnswer.content, true); // 답변 거절 API 호출
             setCurrentAnswer((prev) => ({ ...prev, isRejected: true }));
-            console.log('거절: 기존 답변이 있을 때:', response);
+            showToastMessage('답변이 거절되었습니다');
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
@@ -129,7 +136,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
               isRejected: true,
             }); // POST 요청으로 새로운 답변 생성
             setCurrentAnswer({ id: response.id, content: '답변 거절', isRejected: true });
-            console.log('거절: 기존 답변이 없을 때:', response);
+            showToastMessage('답변이 거절되었습니다');
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
@@ -147,6 +154,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       setCurrentAnswer((prev) => ({ ...prev, content: answerText, isRejected: false }));
       setIsEditing(false);
       setAnswerText('');
+      showToastMessage('답변이 수정되었습니다');
     } catch (error) {
       console.error('답변 수정 중 오류가 발생했습니다');
     }
@@ -156,8 +164,9 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     try {
       const response = await createAnswer({ questionId: question.id, content: answerText }); // POST 요청으로 새로운 답변 생성
       setCurrentAnswer({ id: response.id, content: answerText, isRejected: false });
+      showToastMessage('답변이 등록되었습니다');
     } catch (error) {
-      console.error('답변 거절 중 오류가 발생했습니다:', error);
+      console.error('답변 등록 중 오류가 발생했습니다:', error);
     }
     setAnswerText('');
   };
@@ -241,6 +250,8 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       </TitleContainer>
       <AnswerSection {...answerSectionProps} />
       <ReactionSection {...reactionSectionProps} />
+
+      {showToast && <Toast message={showToast} onClose={() => setShowToast('')} />}
     </QuestionCard>
   );
 }
