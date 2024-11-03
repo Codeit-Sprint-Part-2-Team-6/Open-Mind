@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { updateAnswer, deleteAnswer } from '../../api/answerApi';
+import { createReaction } from '../../api/questionApi';
 import { createAnswer } from '../../api/questionApi';
 import QuestionToolbar from './QuestionToolbar';
 import AnswerSection from './AnswerSection';
@@ -82,6 +83,8 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
   const [answerText, setAnswerText] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+  const [likeCount, setLikeCount] = useState(question.like);
+  const [dislikeCount, setDislikeCount] = useState(question.dislike);
   const [showToast, setShowToast] = useState(false);
 
   const showToastMessage = (message) => {
@@ -191,13 +194,23 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
 
   const handleReaction = async (type) => {
     if (type === 'like') {
-      setIsLiked((prev) => !prev);
-      setIsDisliked(false);
-      // await createReaction({ id: question.id, type: 'like' });
+      if (!isLiked) {
+        setIsLiked((prev) => !prev);
+        setIsDisliked(false);
+        setLikeCount((prev) => prev + 1);
+        await createReaction({ id: question.id, type: 'like' });
+      } else {
+        setIsLiked((prev) => !prev);
+      }
     } else if (type === 'dislike') {
-      setIsDisliked((prev) => !prev);
-      setIsLiked(false);
-      // await createReaction({ id: question.id, type: 'dislike' });
+      if (!isDisliked) {
+        setIsDisliked((prev) => !prev);
+        setIsLiked(false);
+        setDislikeCount((prev) => prev + 1);
+        await createReaction({ id: question.id, type: 'dislike' });
+      } else {
+        setIsDisliked((prev) => !prev);
+      }
     }
   };
 
@@ -240,6 +253,8 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
     isDisliked,
     question,
     handleReaction,
+    likeCount,
+    dislikeCount,
   };
 
   return (
