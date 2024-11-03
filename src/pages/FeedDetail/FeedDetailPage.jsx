@@ -148,7 +148,7 @@ function FeedDetailPage({ isAnswer }) {
     fetchQuestions();
 
     setIsQuestionSubmitted(false);
-  }, [id, isQuestionSubmitted]);
+  }, [id, isQuestionSubmitted, isOwner, isAnswer, navigate]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
