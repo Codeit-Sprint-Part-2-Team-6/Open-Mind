@@ -38,6 +38,10 @@ const Title = styled.p`
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
   color: ${({ theme }) => theme.gray[60]};
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  text-align: left;
 
   @media ${({ theme }) => theme.typography.device.tabletMn} {
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
