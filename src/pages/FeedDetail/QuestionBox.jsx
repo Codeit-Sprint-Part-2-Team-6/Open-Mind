@@ -1,9 +1,10 @@
-import styled, { useTheme } from 'styled-components';
-import ThumbsUpIcon from './SvgIcons/thumbs-up';
-import ThumbsDownIcon from './SvgIcons/thumbs-down';
+import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 import { updateAnswer, deleteAnswer } from '../../api/answerApi';
 import { createAnswer } from '../../api/questionApi';
+import QuestionToolbar from './QuestionToolbar';
+import AnswerSection from './AnswerSection';
+import ReactionSection from './ReactionSection';
 
 const QuestionCard = styled.div`
   display: flex;
@@ -15,77 +16,6 @@ const QuestionCard = styled.div`
   background-color: ${({ theme }) => theme.gray[10]};
   box-shadow: ${({ theme }) => theme.shadows.small};
   border-radius: 16px;
-`;
-
-const QuestionToolbar = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 26px;
-`;
-
-const AnswerTag = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4px 12px;
-  background-color: ${({ theme }) => theme.gray[10]};
-  border: 1px solid ${({ $answered, theme }) => ($answered ? theme.brown[40] : theme.gray[40])};
-  border-radius: 8px;
-  font-weight: ${({ theme }) => theme.typography.caption1Medium.fontWeight};
-  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
-  color: ${({ $answered, theme }) => ($answered ? theme.brown[40] : theme.gray[40])};
-  line-height: 18px;
-`;
-
-const KebabButton = styled.button`
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-`;
-
-const KebabMenu = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  box-shadow: ${({ theme }) => theme.shadows.small};
-  border: 0.5px solid ${({ theme }) => theme.gray[20]};
-  border-radius: 8px;
-  z-index: 1000;
-`;
-
-const KebabMenuItem = styled.div`
-  padding: 10px 15px;
-  cursor: pointer;
-  position: relative;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.gray[20]};
-  }
-
-  &:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 5px;
-    right: 5px;
-    bottom: 0;
-    height: 1px;
-    background-color: ${({ theme }) => theme.gray[30]};
-  }
-
-  &:first-child {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-
-  &:last-child {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
 `;
 
 const TitleContainer = styled.div`
@@ -113,132 +43,6 @@ const Title = styled.p`
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
     font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   }
-`;
-
-const AnswerContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  width: 100%;
-`;
-
-const AnswerProfile = styled.img`
-  width: 2rem;
-  height: auto;
-  border-radius: 50%;
-
-  @media ${({ theme }) => theme.typography.device.tabletMn} {
-    width: 3rem;
-  }
-`;
-
-const AnswerTextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  flex-grow: 1;
-`;
-
-const AnswerInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const UserName = styled.p`
-  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
-  font-weight: ${({ theme }) => theme.typography.caption1.fontWeight};
-
-  @media ${({ theme }) => theme.typography.device.tabletMn} {
-    font-size: ${({ theme }) => theme.typography.body2.fontSize};
-    font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
-  }
-`;
-
-const AnswerAt = styled.p`
-  font-size: ${({ theme }) => theme.typography.caption1Medium.fontSize};
-  font-weight: ${({ theme }) => theme.typography.caption1Medium.fontWeight};
-  line-height: 18px;
-  color: ${({ theme }) => theme.gray[40]};
-`;
-
-const AnswerContent = styled.p`
-  font-size: ${({ theme }) => theme.typography.body3.fontSize};
-  font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
-  line-height: 22px;
-  color: ${({ $isRejected, theme }) => ($isRejected ? theme.red : theme.gray[60])};
-`;
-
-const AnswerRegisterContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-const AnswerTextArea = styled.textarea`
-  width: 100%;
-  height: 186px;
-  padding: 16px;
-  border: none;
-  background-color: ${({ theme }) => theme.gray[20]};
-  transition: outline-color 0.2s ease;
-  border-radius: 8px;
-
-  font-size: ${({ theme }) => theme.typography.body3.fontSize};
-  font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
-  line-height: 22px;
-  color: ${({ theme }) => theme.gray[60]};
-  resize: none;
-
-  &::placeholder {
-    color: ${({ theme }) => theme.gray[40]};
-    border: none;
-  }
-  &:focus {
-    outline-color: ${({ theme }) => theme.gray[50]};
-    border-radius: 8px;
-  }
-`;
-
-const AnswerRegisterButton = styled.button`
-  width: 100%;
-  height: 46px;
-  padding: 12px 24px;
-  margin-top: 8px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 1rem;
-  background-color: ${({ theme }) => theme.brown[40]};
-  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
-  &:disabled {
-    background-color: ${({ theme }) => theme.brown[30]};
-  }
-`;
-
-const ReactionContainer = styled.div`
-  width: 100%;
-  border-top: 1px solid ${({ theme }) => theme.gray[30]};
-`;
-
-const ReactionBox = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 32px;
-  padding-top: 24px;
-`;
-
-const Reaction = styled.a`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
-  font-weight: ${({ theme }) => theme.typography.caption1.fontWeight};
-  line-height: 18px;
-  color: ${({ $isActive, type, theme }) =>
-    $isActive ? (type === 'like' ? theme.blue : theme.gray[60]) : theme.gray[40]};
-  cursor: pointer;
 `;
 
 // 상대 시간
@@ -371,8 +175,6 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     }
   };
 
-  const isButtonDisabled = () => !answerText.trim();
-
   const handleReaction = async (type) => {
     if (type === 'like') {
       setIsLiked((prev) => !prev);
@@ -385,8 +187,6 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     }
   };
 
-  const theme = useTheme();
-
   useEffect(() => {
     setCurrentAnswer(question.answer);
   }, [question.answer]);
@@ -398,127 +198,45 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     };
   }, []);
 
+  const questionToolbarProps = {
+    isOwner,
+    menuOpen,
+    handleToggleMenu,
+    handleMenuItemClick,
+    currentAnswer,
+    menuRef,
+  };
+
+  const answerSectionProps = {
+    isOwner,
+    image,
+    name,
+    getRelativeTime,
+    question,
+    isEditing,
+    currentAnswer,
+    answerText,
+    handleAnswerComplete,
+    handleEditComplete,
+    handleAnswerTextChange,
+  };
+
+  const reactionSectionProps = {
+    isLiked,
+    isDisliked,
+    question,
+    handleReaction,
+  };
+
   return (
     <QuestionCard key={question.id}>
-      <QuestionToolbar>
-        <AnswerTag $answered={!!currentAnswer || (currentAnswer && currentAnswer.isRejected)}>
-          {currentAnswer ? '답변 완료' : '미답변'}
-        </AnswerTag>
-        {isOwner && (
-          <KebabButton className='kebab-button-class' onClick={handleToggleMenu}>
-            <img src='/images/icons/kebab-button.svg' alt='케밥 메뉴' />
-          </KebabButton>
-        )}
-        {menuOpen && (
-          <KebabMenu ref={menuRef}>
-            {currentAnswer ? ( // 질문에 답변이 있을 때
-              currentAnswer.isRejected ? ( // 답변이 거절된 경우
-                <>
-                  <KebabMenuItem onClick={() => handleMenuItemClick('edit')}>
-                    답변수정
-                  </KebabMenuItem>
-                  <KebabMenuItem onClick={() => handleMenuItemClick('delete')}>
-                    답변삭제
-                  </KebabMenuItem>
-                </>
-              ) : (
-                // 답변이 완료된 경우
-                <>
-                  <KebabMenuItem onClick={() => handleMenuItemClick('edit')}>
-                    답변수정
-                  </KebabMenuItem>
-                  <KebabMenuItem onClick={() => handleMenuItemClick('reject')}>
-                    답변거절
-                  </KebabMenuItem>
-                  <KebabMenuItem onClick={() => handleMenuItemClick('delete')}>
-                    답변삭제
-                  </KebabMenuItem>
-                </>
-              )
-            ) : (
-              // 질문에 답변이 없는 경우
-              <KebabMenuItem onClick={() => handleMenuItemClick('reject')}>답변거절</KebabMenuItem>
-            )}
-          </KebabMenu>
-        )}
-      </QuestionToolbar>
+      <QuestionToolbar {...questionToolbarProps} />
       <TitleContainer>
         <TitleInfo>질문 · {getRelativeTime(question.createdAt)}</TitleInfo>
         <Title className='actor-regular'>{question.content}</Title>
       </TitleContainer>
-      {isOwner ? ( // 질문자인 경우
-        <AnswerContainer>
-          <AnswerProfile src={image} alt='프로필 이미지' />
-          <AnswerTextContainer>
-            <AnswerInfo>
-              <UserName className='actor-regular'>{name}</UserName>
-              <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
-            </AnswerInfo>
-            {isEditing && currentAnswer ? (
-              <AnswerRegisterContainer>
-                <AnswerTextArea
-                  placeholder='답변을 입력해주세요'
-                  value={answerText}
-                  onChange={handleAnswerTextChange}
-                />
-                <AnswerRegisterButton
-                  onClick={() => handleEditComplete()}
-                  disabled={isButtonDisabled()}
-                >
-                  수정 완료
-                </AnswerRegisterButton>
-              </AnswerRegisterContainer>
-            ) : currentAnswer ? (
-              currentAnswer.isRejected ? (
-                <AnswerContent $isRejected>답변 거절</AnswerContent>
-              ) : (
-                <AnswerContent>{currentAnswer.content}</AnswerContent>
-              )
-            ) : (
-              <AnswerRegisterContainer>
-                <AnswerTextArea
-                  placeholder='답변을 입력해주세요'
-                  value={answerText}
-                  onChange={handleAnswerTextChange}
-                />
-                <AnswerRegisterButton
-                  onClick={() => handleAnswerComplete()}
-                  disabled={isButtonDisabled()}
-                >
-                  답변 완료
-                </AnswerRegisterButton>
-              </AnswerRegisterContainer>
-            )}
-          </AnswerTextContainer>
-        </AnswerContainer>
-      ) : (
-        question.answer && ( // 답변자인 경우에만 보여주고, 답변자 시점이지만 미답변인 경우는 아예 숨김
-          <AnswerContainer>
-            <AnswerProfile src={image} alt='프로필 이미지' />
-            <AnswerTextContainer>
-              <AnswerInfo>
-                <UserName className='actor-regular'>{name}</UserName>
-                <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
-              </AnswerInfo>
-              <AnswerContent $isRejected={question.answer.isRejected}>
-                {question.answer.content}
-              </AnswerContent>
-            </AnswerTextContainer>
-          </AnswerContainer>
-        )
-      )}
-      <ReactionContainer>
-        <ReactionBox>
-          <Reaction $isActive={isLiked} type='like' onClick={() => handleReaction('like')}>
-            <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
-            좋아요 {question.like}
-          </Reaction>
-          <Reaction $isActive={isDisliked} type='dislike' onClick={() => handleReaction('dislike')}>
-            <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
-            싫어요 {question.dislike}
-          </Reaction>
-        </ReactionBox>
-      </ReactionContainer>
+      <AnswerSection {...answerSectionProps} />
+      <ReactionSection {...reactionSectionProps} />
     </QuestionCard>
   );
 }
