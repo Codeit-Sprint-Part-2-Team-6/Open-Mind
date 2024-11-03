@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
 import { useEffect, useRef, useState } from 'react';
-import { getAnswerById, updateAnswer, deleteAnswer } from '../../api/answerApi';
+import { updateAnswer, deleteAnswer } from '../../api/answerApi';
 import { createAnswer } from '../../api/questionApi';
 
 const QuestionCard = styled.div`
@@ -167,7 +167,7 @@ const AnswerContent = styled.p`
   font-size: ${({ theme }) => theme.typography.body3.fontSize};
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
-  color: ${({ isRejected, theme }) => (isRejected ? theme.red : theme.gray[60])};
+  color: ${({ $isRejected, theme }) => ($isRejected ? theme.red : theme.gray[60])};
 `;
 
 const AnswerRegisterContainer = styled.div`
@@ -283,9 +283,9 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       case 'edit': {
         setMenuOpen(false);
         try {
-          const answerContent = await getAnswerById(question.answer.id);
-          setAnswerText(answerContent.content);
+          console.log(currentAnswer.id);
           setIsEditing(true);
+          setAnswerText(currentAnswer.content);
         } catch (error) {
           console.log('답변 정보를 불러오지 못했습니다');
         }
@@ -294,29 +294,34 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       case 'delete':
         setMenuOpen(false);
         try {
-          await deleteAnswer(question.answer.id);
+          await deleteAnswer(currentAnswer.id);
           setCurrentAnswer(null);
+          setAnswerText('');
         } catch (error) {
           console.error('답변 삭제 중 오류가 발생했습니다:', error);
         }
         break;
       case 'reject':
         setMenuOpen(false);
-        if (question.answer && question.answer.id) {
+        if (currentAnswer && currentAnswer.id) {
           // 기존 답변이 있을 때
           try {
-            const response = await updateAnswer(question.answer.id, question.answer.content, true); // 답변 거절 API 호출
+            const response = await updateAnswer(currentAnswer.id, currentAnswer.content, true); // 답변 거절 API 호출
             setCurrentAnswer((prev) => ({ ...prev, isRejected: true }));
-            console.log('답변 생성 응답:', response);
+            console.log('거절: 기존 답변이 있을 때:', response);
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
         } else {
           // 기존 답변이 없을 때
           try {
-            await createAnswer({ questionId: question.id, content: '답변 거절', isRejected: true }); // POST 요청으로 새로운 답변 생성
-            setCurrentAnswer({ isRejected: true });
-            console.log(question.id);
+            const response = await createAnswer({
+              questionId: question.id,
+              content: '답변 거절',
+              isRejected: true,
+            }); // POST 요청으로 새로운 답변 생성
+            setCurrentAnswer({ id: response.id, content: '답변 거절', isRejected: true });
+            console.log('거절: 기존 답변이 없을 때:', response);
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
@@ -329,7 +334,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
 
   const handleEditComplete = async () => {
     try {
-      await updateAnswer(question.answer.id, answerText);
+      await updateAnswer(currentAnswer.id, answerText);
       // 사용자 경험을 위해 GET 요청을 추가하지 않고 상태 업데이트
       setCurrentAnswer((prev) => ({ ...prev, content: answerText, isRejected: false }));
       setIsEditing(false);
@@ -341,12 +346,8 @@ export default function QuestionBox({ question, image, name, isOwner }) {
 
   const handleAnswerComplete = async () => {
     try {
-      await createAnswer({ questionId: question.id, content: answerText }); // POST 요청으로 새로운 답변 생성
-      setCurrentAnswer({
-        content: answerText,
-        isRejected: false,
-      });
-      console.log(question.id);
+      const response = await createAnswer({ questionId: question.id, content: answerText }); // POST 요청으로 새로운 답변 생성
+      setCurrentAnswer({ id: response.id, content: answerText, isRejected: false });
     } catch (error) {
       console.error('답변 거절 중 오류가 발생했습니다:', error);
     }
@@ -453,7 +454,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
               <UserName className='actor-regular'>{name}</UserName>
               <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
             </AnswerInfo>
-            {isEditing && question.answer ? (
+            {isEditing && currentAnswer ? (
               <AnswerRegisterContainer>
                 <AnswerTextArea
                   placeholder='답변을 입력해주세요'
@@ -469,7 +470,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
               </AnswerRegisterContainer>
             ) : currentAnswer ? (
               currentAnswer.isRejected ? (
-                <AnswerContent isRejected>답변 거절</AnswerContent>
+                <AnswerContent $isRejected>답변 거절</AnswerContent>
               ) : (
                 <AnswerContent>{currentAnswer.content}</AnswerContent>
               )
@@ -499,7 +500,9 @@ export default function QuestionBox({ question, image, name, isOwner }) {
                 <UserName className='actor-regular'>{name}</UserName>
                 <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
               </AnswerInfo>
-              <AnswerContent>{question.answer.content}</AnswerContent>
+              <AnswerContent $isRejected={question.answer.isRejected}>
+                {question.answer.content}
+              </AnswerContent>
             </AnswerTextContainer>
           </AnswerContainer>
         )
