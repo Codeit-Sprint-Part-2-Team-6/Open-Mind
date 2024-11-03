@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { updateAnswer, deleteAnswer } from '../../api/answerApi';
 import { createAnswer } from '../../api/questionApi';
 import QuestionToolbar from './QuestionToolbar';
@@ -75,8 +75,8 @@ const getRelativeTime = (dateString) => {
   return '방금 전';
 };
 
-export default function QuestionBox({ question, image, name, isOwner }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function QuestionBox({ question, image, name, isOwner, isMenuOpen, onToggleMenu }) {
+  // const [menuOpen, setMenuOpen] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState(question.answer);
   const [isEditing, setIsEditing] = useState(false);
   const [answerText, setAnswerText] = useState('');
@@ -89,14 +89,13 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     setTimeout(() => setShowToast(''), 5000); // 5초 후 메시지 초기화
   };
 
-  const handleToggleMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
+  // const handleToggleMenu = () => {
+  //   setMenuOpen((prev) => !prev);
+  // };
 
   const handleMenuItemClick = async (action) => {
     switch (action) {
       case 'edit': {
-        setMenuOpen(false);
         try {
           setIsEditing(true);
           setAnswerText(currentAnswer.content);
@@ -106,7 +105,6 @@ export default function QuestionBox({ question, image, name, isOwner }) {
         break;
       }
       case 'delete':
-        setMenuOpen(false);
         try {
           await deleteAnswer(currentAnswer.id);
           setCurrentAnswer(null);
@@ -117,7 +115,6 @@ export default function QuestionBox({ question, image, name, isOwner }) {
         }
         break;
       case 'reject':
-        setMenuOpen(false);
         if (currentAnswer && currentAnswer.id) {
           // 기존 답변이 있을 때
           try {
@@ -145,6 +142,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       default:
         break;
     }
+    onToggleMenu();
   };
 
   const handleEditComplete = async () => {
@@ -178,15 +176,18 @@ export default function QuestionBox({ question, image, name, isOwner }) {
   // 메뉴창에 ref 설정
   const menuRef = useRef();
 
-  const handleClickOutside = (event) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target) &&
-      !event.target.closest('.kebab-button-class')
-    ) {
-      setMenuOpen(false);
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !event.target.closest('.kebab-button-class')
+      ) {
+        onToggleMenu();
+      }
+    },
+    [onToggleMenu],
+  );
 
   const handleReaction = async (type) => {
     if (type === 'like') {
@@ -209,12 +210,12 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   const questionToolbarProps = {
     isOwner,
-    menuOpen,
-    handleToggleMenu,
+    menuOpen: isMenuOpen,
+    handleToggleMenu: onToggleMenu,
     handleMenuItemClick,
     currentAnswer,
     menuRef,

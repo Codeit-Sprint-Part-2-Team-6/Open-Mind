@@ -113,6 +113,7 @@ function FeedDetailPage({ isAnswer }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
   const { canEditFeed } = useUser();
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const navigate = useNavigate();
   const isOwner = canEditFeed(id);
@@ -158,6 +159,13 @@ function FeedDetailPage({ isAnswer }) {
     setIsModalOpen(false);
   };
 
+  const handleToggleMenu = (questionId) => {
+    setOpenMenuId((prevId) => {
+      const newId = prevId === questionId ? null : questionId;
+      return newId;
+    });
+  };
+
   return (
     <>
       <Header
@@ -182,6 +190,8 @@ function FeedDetailPage({ isAnswer }) {
                   image={subject.imageSource}
                   name={subject.name}
                   isOwner={isOwner}
+                  isMenuOpen={openMenuId === question.id}
+                  onToggleMenu={() => handleToggleMenu(question.id)}
                 />
               ))}
             </>
