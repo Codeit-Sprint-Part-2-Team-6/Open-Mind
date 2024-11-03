@@ -4,7 +4,6 @@ import ThumbsDownIcon from './SvgIcons/thumbs-down';
 import { useEffect, useRef, useState } from 'react';
 import { getAnswerById, updateAnswer, deleteAnswer } from '../../api/answerApi';
 import { createAnswer } from '../../api/questionApi';
-import { useLocation } from 'react-router-dom';
 
 const QuestionCard = styled.div`
   display: flex;

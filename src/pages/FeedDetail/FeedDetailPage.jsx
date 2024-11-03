@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 
