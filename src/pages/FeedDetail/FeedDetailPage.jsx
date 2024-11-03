@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
+import { useUser } from '../../hooks/useStore.js';
 
 const Main = styled.main`
   height: 100%;
@@ -104,38 +105,50 @@ const CreateQuestionBtn = styled.button`
   }
 `;
 
-function FeedDetailPage() {
-  const { id, answer } = useParams();
+function FeedDetailPage({ isAnswer }) {
+  const { id } = useParams();
   const [subject, setSubject] = useState({});
   const [questions, setQuestions] = useState([]);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
+  const { canEditFeed } = useUser();
+
+  const navigate = useNavigate();
+  const isOwner = canEditFeed(id);
 
   useEffect(() => {
+    if (isAnswer && !isOwner) {
+      navigate('/403');
+    }
+
     if (!isQuestionSubmitted) return;
 
     const fetchSubject = async () => {
-      const response = await getSubjectById(id);
-      setSubject(response);
-
-      console.log(response);
+      try {
+        const response = await getSubjectById(id);
+        setSubject(response);
+      } catch (error) {
+        console.error('Error fetching subject:', error);
+      }
     };
 
     const fetchQuestions = async () => {
-      const response = await getQuestions(id);
-      const { count, results } = response;
-
-      setQuestions(results);
-      setQuestionsCount(count);
-
-      console.log(response);
+      try {
+        const response = await getQuestions(id);
+        const { count, results } = response;
+        setQuestions(results);
+        setQuestionsCount(count);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
     };
 
     fetchSubject();
     fetchQuestions();
+
     setIsQuestionSubmitted(false);
-  }, [id, isQuestionSubmitted]);
+  }, [id, isQuestionSubmitted, isOwner, isAnswer, navigate]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -147,7 +160,12 @@ function FeedDetailPage() {
 
   return (
     <>
-      <Header image={subject.imageSource} name={subject.name} />
+      <Header
+        id={id}
+        image={subject.imageSource}
+        name={subject.name}
+        questionsCount={questionsCount}
+      />
       <Main>
         <QuestionsContainer>
           {questionsCount ? (
@@ -157,15 +175,13 @@ function FeedDetailPage() {
                 <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
               </QuestionCounterContainer>
 
-              {console.log(questions)}
-              {console.log(answer)}
-
               {questions.map((question) => (
                 <QuestionBox
                   key={question.id}
                   question={question}
                   image={subject.imageSource}
                   name={subject.name}
+                  isOwner={isOwner}
                 />
               ))}
             </>

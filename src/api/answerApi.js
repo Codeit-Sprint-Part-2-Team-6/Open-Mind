@@ -5,18 +5,6 @@ const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 };
 
-// GET
-export async function getAnswerById(answerId) {
-  try {
-    const response = await axios.get(`${BASE_URL}/answers/${answerId}/`, {
-      headers: DEFAULT_HEADERS,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching answer:', error);
-  }
-}
-
 // PATCH
 export async function updateAnswer(answerId, content, isRejected = false) {
   try {

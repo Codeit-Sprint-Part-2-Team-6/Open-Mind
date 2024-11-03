@@ -2,14 +2,34 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { useShallow } from 'zustand/shallow';
 
-// 사용자 상태 (로컬스토리지로 관리)
 const userStore = devtools(
   persist(
-    (set) => ({
-      userId: null, // 사용자 ID
-      setUserId: (id) => {
-        set({ userId: id });
-        localStorage.setItem('userId', id);
+    (set, get) => ({
+      users: {}, // 사용자 정보를 { id: name } 형태로 저장
+
+      // 새로운 사용자 추가 또는 기존 사용자 업데이트
+      setUser: (id, name) => {
+        const updatedUsers = { ...get().users, [id]: name };
+        set({ users: updatedUsers });
+      },
+
+      // 특정 사용자 정보 가져오기
+      getUser: (id) => get().users[id],
+
+      // 모든 userId 가져오기
+      getUserIds: () => Object.keys(get().users),
+
+      // 사용자 삭제 기능
+      removeUser: (id) => {
+        const updatedUsers = { ...get().users };
+        delete updatedUsers[id];
+        set({ users: updatedUsers });
+      },
+
+      // 피드 수정 권한 확인
+      canEditFeed: (feedOwnerId) => {
+        // feedOwnerId가 로컬 스토리지에 저장된 사용자인지 확인
+        return Boolean(get().users[feedOwnerId]);
       },
     }),
     { name: 'user-storage' },

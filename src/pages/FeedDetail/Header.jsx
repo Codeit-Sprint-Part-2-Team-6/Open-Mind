@@ -101,8 +101,9 @@ const ToastMessage = styled.div`
   z-index: 1000;
 `;
 
-function Header({ image, name }) {
+function Header({ id, image, name, questionsCount }) {
   const [showToast, setShowToast] = useState(false);
+
   const copyCurrentUrl = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -111,6 +112,10 @@ function Header({ image, name }) {
     } catch (error) {
       alert('URL 복사에 실패했습니다.');
     }
+  };
+
+  const handleKakaoShare = () => {
+    shareKakao(id, image, name, questionsCount);
   };
 
   return (
@@ -125,7 +130,7 @@ function Header({ image, name }) {
         <CopyUrlBtn onClick={copyCurrentUrl}>
           <ShareIcon src='/images/icons/ic_share.svg' />
         </CopyUrlBtn>
-        <ShareIconLink onClick={shareKakao}>
+        <ShareIconLink onClick={handleKakaoShare}>
           <ShareIcon src='/images/icons/ic_kakao-share.svg' />
         </ShareIconLink>
         <ShareIconLink
