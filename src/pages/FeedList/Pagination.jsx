@@ -32,6 +32,11 @@ const PaginationButton = styled.div`
   width: 40px;
   height: 40px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 
 const Pagination = ({ totalPage, currentPage, pageChange }) => {
@@ -51,13 +56,17 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
 
   return (
     <PaginationContainer>
-      <PaginationButton disabled={currentPage === 1} onClick={() => pageChange(currentPage - 1)}>
+      <PaginationButton
+        disabled={currentPage === 1}
+        onClick={() => currentPage > 1 && pageChange(currentPage - 1)}
+        type='button'
+      >
         <img src='images/icons/Arrow-left.svg' alt='왼쪽화살표' />
       </PaginationButton>
       {pages.map((page) => (
         <PaginationButton
           key={page}
-          $isCurrentPage={currentPage === page} /* Pass the active state */
+          $isCurrentPage={currentPage === page}
           onClick={() => pageChange(page)}
         >
           {page}
@@ -65,7 +74,8 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
       ))}
       <PaginationButton
         disabled={currentPage === totalPage}
-        onClick={() => pageChange(currentPage + 1)}
+        onClick={() => currentPage < totalPage && pageChange(currentPage + 1)}
+        type='button'
       >
         <img src='images/icons/A-right.svg' alt='오른쪽화살표' />
       </PaginationButton>
