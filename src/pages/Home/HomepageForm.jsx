@@ -14,8 +14,8 @@ function HomeForm() {
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    if (value.length > 8) {
-      setErrorMessage('8글자 안에 이름을 적어주세요');
+    if (value.length > 7) {
+      setErrorMessage('7글자 안에 이름을 적어주세요');
       setIsDisabled(true);
     } else {
       setInputValue(value);
@@ -23,7 +23,7 @@ function HomeForm() {
       setIsDisabled(false);
     }
 
-    if (value.trim() !== '' && value.length <= 8) {
+    if (value.trim() !== '' && value.length <= 7) {
       setErrorMessage('');
     }
   };
