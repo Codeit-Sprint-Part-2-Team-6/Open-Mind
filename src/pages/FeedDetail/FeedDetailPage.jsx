@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from 'styled-components';
 import Header from './Header.jsx';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
@@ -94,6 +95,7 @@ const CreateQuestionBtn = styled.button`
   box-shadow: ${(props) => props.theme.shadows['medium']};
   line-height: 26px;
   cursor: pointer;
+  overflow: auto;
 
   &::after {
     content: '질문 작성';
@@ -111,57 +113,82 @@ const CreateQuestionBtn = styled.button`
 
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { canEditFeed } = useUser();
+  const isOwner = canEditFeed(id);
+
   const [subject, setSubject] = useState({});
   const [questions, setQuestions] = useState([]);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
-  const { canEditFeed } = useUser();
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [createdQuestoinsCount, setCreatedQuestionsCount] = useState(0);
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  const navigate = useNavigate();
-  const isOwner = canEditFeed(id);
+  const limit = window.innerWidth <= 768 ? 5 : 10;
+
+  const fetchSubject = useCallback(async () => {
+    try {
+      const response = await getSubjectById(id);
+      setSubject(response);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, [id]);
+
+  const fetchQuestions = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await getQuestions(id, limit, (page - 1) * limit + createdQuestoinsCount);
+      const { count, results } = response;
+      setQuestions((prevQuestions) => [...prevQuestions, ...results]);
+      setQuestionsCount(count);
+    } catch (error) {
+      console.error(error.message);
+    } finally {
+      setIsLoading(false);
+      setIsInitialLoad(false);
+    }
+  }, [id, limit, page]);
 
   useEffect(() => {
     if (isAnswer && !isOwner) {
       navigate('/403');
     }
-
-    if (!isQuestionSubmitted) return;
-
-    const fetchSubject = async () => {
-      try {
-        const response = await getSubjectById(id);
-        setSubject(response);
-      } catch (error) {
-        console.error('Error fetching subject:', error);
-      }
-    };
-
-    const fetchQuestions = async () => {
-      try {
-        const response = await getQuestions(id);
-        const { count, results } = response;
-        setQuestions(results);
-        setQuestionsCount(count);
-      } catch (error) {
-        console.error('Error fetching questions:', error);
-      }
-    };
-
     fetchSubject();
+  }, [fetchSubject, isAnswer, isOwner, navigate]);
+
+  useEffect(() => {
     fetchQuestions();
+  }, [fetchQuestions]);
 
-    setIsQuestionSubmitted(false);
-  }, [id, isQuestionSubmitted, isOwner, isAnswer, navigate]);
+  useEffect(() => {
+    if (isInitialLoad) return;
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+    const observer = new IntersectionObserver(handleObserver, { threshold: 0 });
+    const observerTarget = document.getElementById('observer');
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    if (observerTarget) {
+      observer.observe(observerTarget);
+    }
+    return () => observer.disconnect();
+  }, [isInitialLoad]);
+
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+
+      if (target.isIntersecting && !isLoading && !isInitialLoad) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    },
+    [isLoading, isInitialLoad],
+  );
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const handleToggleMenu = (questionId) => {
     setOpenMenuId((prevId) => {
@@ -217,10 +244,13 @@ function FeedDetailPage({ isAnswer }) {
             id={id}
             image={subject.imageSource}
             name={subject.name}
-            setIsQuestionSubmitted={setIsQuestionSubmitted}
+            setCreatedQuestionsCount={setCreatedQuestionsCount}
+            setQuestions={setQuestions}
             onClose={handleCloseModal}
           />
         )}
+
+        <div id='observer' style={{ height: '10px' }}></div>
       </Main>
     </FeedDetailPageWrapper>
   );

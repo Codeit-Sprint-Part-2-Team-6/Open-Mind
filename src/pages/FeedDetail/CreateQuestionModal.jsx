@@ -124,7 +124,7 @@ const QuestionRegisterButton = styled.button`
   }
 `;
 
-function CreateQuestionModal({ id, image, name, setIsQuestionSubmitted, onClose }) {
+function CreateQuestionModal({ id, image, name, setCreatedQuestionsCount, setQuestions, onClose }) {
   const [questionText, setQuestionText] = useState('');
 
   const handleChange = (event) => {
@@ -133,11 +133,12 @@ function CreateQuestionModal({ id, image, name, setIsQuestionSubmitted, onClose 
 
   const handleSubmit = async () => {
     try {
-      await createQuestions(id, questionText);
+      const newQuestion = await createQuestions(id, questionText);
+      setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
+      setCreatedQuestionsCount((prev) => prev + 1);
+
       alert('질문이 성공적으로 전송되었습니다.');
-      setIsQuestionSubmitted(true);
       onClose();
-      window.location.reload();
     } catch (error) {
       alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
     }
