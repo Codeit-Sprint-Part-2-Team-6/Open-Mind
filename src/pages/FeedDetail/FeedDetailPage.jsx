@@ -117,7 +117,7 @@ const DeleteSubjectBtn = styled.button`
   width: 70px;
   height: 25px;
   padding: 0 12px;
-  margin: 20px 0 8px;
+  margin: 20px 0 12px;
   font-size: 0.625rem;
   align-self: end;
   color: ${(props) => props.theme.gray[10]};
@@ -125,6 +125,25 @@ const DeleteSubjectBtn = styled.button`
   border: none;
   border-radius: 200px;
   box-shadow: ${(props) => props.theme.shadows['medium']};
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: ${(props) => props.theme.brown[30]};
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 116px;
+    height: 40px;
+    font-size: ${(props) => props.theme.typography.body3.fontSize};
+  }
 `;
 
 function FeedDetailPage({ isAnswer }) {
