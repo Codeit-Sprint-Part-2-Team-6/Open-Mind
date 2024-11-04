@@ -6,6 +6,7 @@ import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
 import Pagination from './Pagination';
 import { debounce } from 'lodash';
+import Loding from './Loading';
 
 const getPageSize = () => (window.innerWidth < 868 ? 6 : 8);
 
@@ -84,30 +85,29 @@ const PaginationContainer = styled.div`
   }
 `;
 
-const LoadingIndicator = styled.div`
-  text-align: center;
-  font-size: 18px;
-  color: ${({ theme }) => theme.gray[60]};
-`;
-
 function AllSubjects() {
   const [pageSize, setPageSize] = useState(8);
   const [subjectList, setSubjectList] = useState([]);
   const [sort, setSort] = useState('createdAt');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSortCard = (sortOption) => {
     setSort(sortOption);
   };
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
-    const subjects = await getSubjects({ sort, page, pageSize });
-    setLoading(false);
-    setSubjectList(subjects.results);
-    setTotalPage(Math.ceil(subjects.count / pageSize));
+    setIsLoading(true);
+    try {
+      const subjects = await getSubjects({ sort, page, pageSize });
+      setSubjectList(subjects.results);
+      setTotalPage(Math.ceil(subjects.count / pageSize));
+    } catch (error) {
+      console.log('Error fetchingdata:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [sort, pageSize, page]);
 
   useEffect(() => {
@@ -139,8 +139,8 @@ function AllSubjects() {
         <Dropdown onSortCard={handleSortCard} />
       </HeaderContainer>
       <GridContainer>
-        {loading ? (
-          <LoadingIndicator>Loading...</LoadingIndicator>
+        {isLoading ? (
+          <Loding />
         ) : (
           <UserCardGrid>
             {subjectList?.map((subject) => (
