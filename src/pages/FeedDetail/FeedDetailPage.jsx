@@ -121,6 +121,8 @@ function FeedDetailPage({ isAnswer }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createdQuestoinsCount, setCreatedQuestionsCount] = useState(0);
+  const [openMenuId, setOpenMenuId] = useState(null);
+
   const limit = window.innerWidth <= 768 ? 5 : 10;
 
   const fetchSubject = useCallback(async () => {
@@ -131,9 +133,6 @@ function FeedDetailPage({ isAnswer }) {
       console.error(error.message);
     }
   }, [id]);
-  const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
-  const { canEditFeed } = useUser();
-  const [openMenuId, setOpenMenuId] = useState(null);
 
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
@@ -148,7 +147,6 @@ function FeedDetailPage({ isAnswer }) {
       setIsLoading(false);
       setIsInitialLoad(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, limit, page]);
 
   useEffect(() => {
@@ -160,7 +158,6 @@ function FeedDetailPage({ isAnswer }) {
 
   useEffect(() => {
     fetchQuestions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchQuestions]);
 
   useEffect(() => {
