@@ -28,16 +28,19 @@ export async function createQuestions(subjectId, content) {
   }
 }
 
-// GET
-export async function getQuestions(subjectId) {
+export async function getQuestions(subjectId, limit = 10, offset = 0) {
   try {
     const response = await axios.get(`${BASE_URL}/subjects/${subjectId}/questions/`, {
       headers: DEFAULT_HEADERS,
+      params: { limit, offset },
     });
-
     return response.data;
   } catch (error) {
-    console.error('Error fetching questions:', error);
+    console.error(
+      `Error fetching questions for subject ${subjectId}:`,
+      error.response?.data || error.message,
+    );
+    throw error;
   }
 }
 
