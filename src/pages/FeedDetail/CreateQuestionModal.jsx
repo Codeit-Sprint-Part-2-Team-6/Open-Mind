@@ -69,6 +69,7 @@ const ReceiverProfileImage = styled.img`
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  mix-blend-mode: ${(props) => props.theme.mixBlendMode};
 `;
 
 const ReceiverNickname = styled.p`

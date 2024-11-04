@@ -37,6 +37,7 @@ const ProfileImage = styled.img`
   margin-top: 100px;
   border-radius: 50%;
   position: absolute;
+  mix-blend-mode: ${(props) => props.theme.mixBlendMode};
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     margin-top: 130px;
