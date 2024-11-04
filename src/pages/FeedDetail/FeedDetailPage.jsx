@@ -22,7 +22,6 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   padding: 0 24px;
-  // margin-top: 54px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     padding: 0 32px;
@@ -146,6 +145,17 @@ const DeleteSubjectBtn = styled.button`
   }
 `;
 
+const Spacer = styled.div`
+  width: 70px;
+  height: 25px;
+  margin: 20px 0 12px;
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 116px;
+    height: 40px;
+  }
+`;
+
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -260,7 +270,7 @@ function FeedDetailPage({ isAnswer }) {
 
     setTimeout(() => {
       setIsDeleteCompleteModalOpen(false);
-      navigate('/list'); // 모달이 닫힌 후 이동
+      navigate('/list');
     }, 400);
   };
 
@@ -292,7 +302,11 @@ function FeedDetailPage({ isAnswer }) {
         questionsCount={questionsCount}
       />
       <Main>
-        <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
+        {isAnswer && isOwner ? (
+          <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
+        ) : (
+          <Spacer />
+        )}
         <QuestionsContainer>
           {questionsCount ? (
             <>
@@ -307,7 +321,7 @@ function FeedDetailPage({ isAnswer }) {
                   question={question}
                   image={subject.imageSource}
                   name={subject.name}
-                  isOwner={isOwner}
+                  isOwner={isAnswer && isOwner}
                   isMenuOpen={openMenuId === question.id}
                   onToggleMenu={() => handleToggleMenu(question.id)}
                 />
