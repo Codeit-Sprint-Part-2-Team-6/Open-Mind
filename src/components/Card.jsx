@@ -6,7 +6,6 @@ const CardContainer = styled(Link)`
   height: 168px;
   width: 155.5px;
   background-color: ${({ theme }) => theme.gray[10]};
-  position: relative;
   border: 1px solid ${({ theme }) => theme.gray[40]};
   border-radius: 16px;
   &:hover {
@@ -20,8 +19,7 @@ const CardContainer = styled(Link)`
     width: 220px;
   }
   @media (min-width: 868px) {
-    min-width: 186px;
-    max-width: 206.5px;
+    width: calc(186px + (220 - 186) * ((100vw - 868px) / (1200 - 868)));
   }
   @media (min-width: 1200px) {
     width: 220px;
