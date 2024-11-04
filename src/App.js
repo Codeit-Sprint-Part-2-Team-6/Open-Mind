@@ -34,9 +34,9 @@ function App() {
         />
         <meta
           property='og:image'
-          content='https://open-mind-team-6.netlify.app/public/images/meta/SumMeta.png'
+          content='https://open-mind-team-6.netlify.app/images/meta/SumMeta.png'
         />
-        <meta property='og:url' content='https://open-mind-team-6.netlify.app' />
+        <meta property='og:url' content='https://open-mind-team-6.netlify.app/' />
         <link rel='icon' href='/images/meta/favicon.ico' type='image/x-icon' />
         <link href='https://fonts.googleapis.com/css2?family=Actor&display=swap' rel='stylesheet' />
         <link
