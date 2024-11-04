@@ -19,30 +19,11 @@ function App() {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>11-6팀 오픈마인드</title>
-        <meta name='keywords' content='기초프로젝트, 프론트앤드 11기 6팀, 오픈마인드, 코드잇' />
-        <meta
-          name='description'
-          content='익명성을 보장하며 CRUD(Create, Read, Update, Delete) 기능을 구현하는 웹 애플리케이션입니다.'
-        />
-        <meta property='og:site_name' content='11-6팀 오픈마인드' />
-        <meta property='og:title' content='11-6팀 오픈마인드' />
-        <meta property='og:type' content='website' />
-        <meta
-          property='og:description'
-          content='익명성을 보장하며 CRUD(Create, Read, Update, Delete) 기능을 구현하는 웹 애플리케이션입니다.'
-        />
-        <meta
-          property='og:image'
-          content='https://open-mind-team-6.netlify.app/images/meta/SumMeta.png'
-        />
-        <meta property='og:url' content='https://open-mind-team-6.netlify.app/' />
-        <link rel='icon' href='/images/meta/favicon.ico' type='image/x-icon' />
         <link href='https://fonts.googleapis.com/css2?family=Actor&display=swap' rel='stylesheet' />
         <link
           rel='stylesheet'
           as='style'
-          crossorigin
+          crossorigin='anonymous'
           href='https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css'
         />
       </Helmet>
