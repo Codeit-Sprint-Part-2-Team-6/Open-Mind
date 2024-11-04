@@ -157,8 +157,6 @@ function FeedDetailPage({ isAnswer }) {
 
   useEffect(() => {
     fetchQuestions();
-    console.log(questions);
-    console.log(createdQuestoinsCount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchQuestions]);
 
@@ -177,6 +175,7 @@ function FeedDetailPage({ isAnswer }) {
   const handleObserver = useCallback(
     (entries) => {
       const target = entries[0];
+
       if (target.isIntersecting && !isLoading && !isInitialLoad) {
         setPage((prevPage) => prevPage + 1);
       }
