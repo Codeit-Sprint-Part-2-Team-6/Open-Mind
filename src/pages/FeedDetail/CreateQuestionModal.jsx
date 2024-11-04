@@ -1,7 +1,46 @@
-import styled from 'styled-components';
-import { useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { useEffect, useState } from 'react';
 import { createQuestions } from '../../api/questionApi';
-import Toast from '../../components/Toast';
+
+const overlayFadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const overlayFadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
+const modalSlideUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const modalSlideDown = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+`;
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -15,6 +54,8 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: ${({ isVisible }) => (isVisible ? overlayFadeIn : overlayFadeOut)} 0.2s ease-out
+    forwards;
 `;
 
 const ModalContainer = styled.div`
@@ -25,6 +66,7 @@ const ModalContainer = styled.div`
   padding: 24px;
   border-radius: 24px;
   box-shadow: ${(props) => props.theme.shadows['large']};
+  animation: ${({ isVisible }) => (isVisible ? modalSlideUp : modalSlideDown)} 0.4s ease forwards;
 `;
 
 const ModalTitle = styled.div`
@@ -135,6 +177,8 @@ function CreateQuestionModal({
   onToastshow,
 }) {
   const [questionText, setQuestionText] = useState('');
+  const [isVisible, setIsVisible] = useState(true);
+
   const handleChange = (event) => {
     setQuestionText(event.target.value);
   };
@@ -152,17 +196,22 @@ function CreateQuestionModal({
     }
   };
 
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onModalClose, 400);
+  };
+
   const isButtonDisabled = questionText.trim() === '';
 
   return (
-    <ModalOverlay onClick={onModalClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay isVisible={isVisible} onClick={handleClose}>
+      <ModalContainer isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
         <ModalTitle>
           <ModalTitleWrapper>
             <MessageIcon src='/images/icons/ic_messages_black.svg' />
             <ModalTitleText>질문을 작성하세요</ModalTitleText>
           </ModalTitleWrapper>
-          <CloseIcon onClick={onModalClose} src='/images/icons/ic_close.svg' />
+          <CloseIcon onClick={handleClose} src='/images/icons/ic_close.svg' />
         </ModalTitle>
 
         <ReceiverNicknameWrapper>
