@@ -1,10 +1,12 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { updateAnswer, deleteAnswer } from '../../api/answerApi';
+import { createReaction } from '../../api/questionApi';
 import { createAnswer } from '../../api/questionApi';
 import QuestionToolbar from './QuestionToolbar';
 import AnswerSection from './AnswerSection';
 import ReactionSection from './ReactionSection';
+import Toast from '../../components/Toast';
 
 const QuestionCard = styled.div`
   display: flex;
@@ -38,6 +40,10 @@ const Title = styled.p`
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
   color: ${({ theme }) => theme.gray[60]};
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  text-align: left;
 
   @media ${({ theme }) => theme.typography.device.tabletMn} {
     font-size: ${({ theme }) => theme.typography.body2.fontSize};
@@ -70,24 +76,30 @@ const getRelativeTime = (dateString) => {
   return '방금 전';
 };
 
-export default function QuestionBox({ question, image, name, isOwner }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function QuestionBox({ question, image, name, isOwner, isMenuOpen, onToggleMenu }) {
+  // const [menuOpen, setMenuOpen] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState(question.answer);
   const [isEditing, setIsEditing] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+  const [likeCount, setLikeCount] = useState(question.like);
+  const [dislikeCount, setDislikeCount] = useState(question.dislike);
+  const [showToast, setShowToast] = useState(false);
 
-  const handleToggleMenu = () => {
-    setMenuOpen((prev) => !prev);
+  const showToastMessage = (message) => {
+    setShowToast(message);
+    setTimeout(() => setShowToast(''), 5000); // 5초 후 메시지 초기화
   };
+
+  // const handleToggleMenu = () => {
+  //   setMenuOpen((prev) => !prev);
+  // };
 
   const handleMenuItemClick = async (action) => {
     switch (action) {
       case 'edit': {
-        setMenuOpen(false);
         try {
-          console.log(currentAnswer.id);
           setIsEditing(true);
           setAnswerText(currentAnswer.content);
         } catch (error) {
@@ -96,23 +108,22 @@ export default function QuestionBox({ question, image, name, isOwner }) {
         break;
       }
       case 'delete':
-        setMenuOpen(false);
         try {
           await deleteAnswer(currentAnswer.id);
           setCurrentAnswer(null);
           setAnswerText('');
+          showToastMessage('답변이 삭제되었습니다');
         } catch (error) {
           console.error('답변 삭제 중 오류가 발생했습니다:', error);
         }
         break;
       case 'reject':
-        setMenuOpen(false);
         if (currentAnswer && currentAnswer.id) {
           // 기존 답변이 있을 때
           try {
-            const response = await updateAnswer(currentAnswer.id, currentAnswer.content, true); // 답변 거절 API 호출
+            await updateAnswer(currentAnswer.id, currentAnswer.content, true); // 답변 거절 API 호출
             setCurrentAnswer((prev) => ({ ...prev, isRejected: true }));
-            console.log('거절: 기존 답변이 있을 때:', response);
+            showToastMessage('답변이 거절되었습니다');
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
@@ -125,7 +136,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
               isRejected: true,
             }); // POST 요청으로 새로운 답변 생성
             setCurrentAnswer({ id: response.id, content: '답변 거절', isRejected: true });
-            console.log('거절: 기존 답변이 없을 때:', response);
+            showToastMessage('답변이 거절되었습니다');
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
@@ -134,6 +145,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       default:
         break;
     }
+    onToggleMenu();
   };
 
   const handleEditComplete = async () => {
@@ -143,6 +155,7 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       setCurrentAnswer((prev) => ({ ...prev, content: answerText, isRejected: false }));
       setIsEditing(false);
       setAnswerText('');
+      showToastMessage('답변이 수정되었습니다');
     } catch (error) {
       console.error('답변 수정 중 오류가 발생했습니다');
     }
@@ -152,8 +165,9 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     try {
       const response = await createAnswer({ questionId: question.id, content: answerText }); // POST 요청으로 새로운 답변 생성
       setCurrentAnswer({ id: response.id, content: answerText, isRejected: false });
+      showToastMessage('답변이 등록되었습니다');
     } catch (error) {
-      console.error('답변 거절 중 오류가 발생했습니다:', error);
+      console.error('답변 등록 중 오류가 발생했습니다:', error);
     }
     setAnswerText('');
   };
@@ -165,25 +179,38 @@ export default function QuestionBox({ question, image, name, isOwner }) {
   // 메뉴창에 ref 설정
   const menuRef = useRef();
 
-  const handleClickOutside = (event) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target) &&
-      !event.target.closest('.kebab-button-class')
-    ) {
-      setMenuOpen(false);
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !event.target.closest('.kebab-button-class')
+      ) {
+        onToggleMenu();
+      }
+    },
+    [onToggleMenu],
+  );
 
   const handleReaction = async (type) => {
     if (type === 'like') {
-      setIsLiked((prev) => !prev);
-      setIsDisliked(false);
-      // await createReaction({ id: question.id, type: 'like' });
+      if (!isLiked) {
+        setIsLiked((prev) => !prev);
+        setIsDisliked(false);
+        setLikeCount((prev) => prev + 1);
+        await createReaction({ id: question.id, type: 'like' });
+      } else {
+        setIsLiked((prev) => !prev);
+      }
     } else if (type === 'dislike') {
-      setIsDisliked((prev) => !prev);
-      setIsLiked(false);
-      // await createReaction({ id: question.id, type: 'dislike' });
+      if (!isDisliked) {
+        setIsDisliked((prev) => !prev);
+        setIsLiked(false);
+        setDislikeCount((prev) => prev + 1);
+        await createReaction({ id: question.id, type: 'dislike' });
+      } else {
+        setIsDisliked((prev) => !prev);
+      }
     }
   };
 
@@ -196,12 +223,12 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   const questionToolbarProps = {
     isOwner,
-    menuOpen,
-    handleToggleMenu,
+    menuOpen: isMenuOpen,
+    handleToggleMenu: onToggleMenu,
     handleMenuItemClick,
     currentAnswer,
     menuRef,
@@ -226,6 +253,8 @@ export default function QuestionBox({ question, image, name, isOwner }) {
     isDisliked,
     question,
     handleReaction,
+    likeCount,
+    dislikeCount,
   };
 
   return (
@@ -237,6 +266,8 @@ export default function QuestionBox({ question, image, name, isOwner }) {
       </TitleContainer>
       <AnswerSection {...answerSectionProps} />
       <ReactionSection {...reactionSectionProps} />
+
+      {showToast && <Toast message={showToast} onClose={() => setShowToast('')} />}
     </QuestionCard>
   );
 }

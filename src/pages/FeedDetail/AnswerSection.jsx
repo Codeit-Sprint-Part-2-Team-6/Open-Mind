@@ -53,6 +53,10 @@ const AnswerContent = styled.p`
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
   color: ${({ $isRejected, theme }) => ($isRejected ? theme.red : theme.gray[60])};
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  text-align: left;
 `;
 
 const AnswerRegisterContainer = styled.div`

@@ -26,18 +26,25 @@ const Reaction = styled.a`
   cursor: pointer;
 `;
 
-export default function ReactionSection({ isLiked, isDisliked, question, handleReaction }) {
+export default function ReactionSection({
+  isLiked,
+  isDisliked,
+  question,
+  handleReaction,
+  likeCount,
+  dislikeCount,
+}) {
   const theme = useTheme();
   return (
     <ReactionContainer>
       <ReactionBox>
         <Reaction $isActive={isLiked} type='like' onClick={() => handleReaction('like')}>
           <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
-          좋아요 {question.like}
+          좋아요 {likeCount}
         </Reaction>
         <Reaction $isActive={isDisliked} type='dislike' onClick={() => handleReaction('dislike')}>
           <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
-          싫어요 {question.dislike}
+          싫어요 {dislikeCount}
         </Reaction>
       </ReactionBox>
     </ReactionContainer>

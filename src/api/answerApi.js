@@ -16,7 +16,6 @@ export async function updateAnswer(answerId, content, isRejected = false) {
       },
       { headers: DEFAULT_HEADERS },
     );
-    console.log('답변 수정');
     return response.data;
   } catch (error) {
     console.error('Error updating answer:', error);
