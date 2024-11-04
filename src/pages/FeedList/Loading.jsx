@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
-// import SyncLoader from 'react-spinners/SyncLoader'; -> 스피너 회의 후 예상?
+import RotateLoader from 'react-spinners/RotateLoader';
 
 const StyledLoding = styled.div`
   position: fixed;
@@ -24,7 +23,7 @@ const Loding = () => {
   return (
     <StyledLoding>
       <StyledContainer>
-        <div>loading</div>
+        <RotateLoader />
       </StyledContainer>
     </StyledLoding>
   );
