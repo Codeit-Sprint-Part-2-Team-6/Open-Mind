@@ -9,6 +9,7 @@ import { getQuestions } from '../../api/questionApi.js';
 import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
+import Toast from '../../components/Toast.jsx';
 
 const FeedDetailPageWrapper = styled.div`
   background-color: ${({ theme }) => theme.gray[20]};
@@ -126,6 +127,7 @@ function FeedDetailPage({ isAnswer }) {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createdQuestoinsCount, setCreatedQuestionsCount] = useState(0);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   const limit = window.innerWidth <= 768 ? 5 : 10;
 
@@ -189,6 +191,8 @@ function FeedDetailPage({ isAnswer }) {
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+  const handleShowToast = () => setShowToast(true);
+  const handleHideToast = () => setShowToast(false);
 
   const handleToggleMenu = (questionId) => {
     setOpenMenuId((prevId) => {
@@ -246,8 +250,13 @@ function FeedDetailPage({ isAnswer }) {
             name={subject.name}
             setCreatedQuestionsCount={setCreatedQuestionsCount}
             setQuestions={setQuestions}
-            onClose={handleCloseModal}
+            onModalClose={handleCloseModal}
+            onToastshow={handleShowToast}
           />
+        )}
+
+        {showToast && (
+          <Toast message={'질문이 성공적으로 작성되었습니다.'} onClose={handleHideToast} />
         )}
 
         <div id='observer' style={{ height: '10px' }}></div>

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { createQuestions } from '../../api/questionApi';
+import Toast from '../../components/Toast';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -124,9 +125,16 @@ const QuestionRegisterButton = styled.button`
   }
 `;
 
-function CreateQuestionModal({ id, image, name, setCreatedQuestionsCount, setQuestions, onClose }) {
+function CreateQuestionModal({
+  id,
+  image,
+  name,
+  setCreatedQuestionsCount,
+  setQuestions,
+  onModalClose,
+  onToastshow,
+}) {
   const [questionText, setQuestionText] = useState('');
-
   const handleChange = (event) => {
     setQuestionText(event.target.value);
   };
@@ -137,8 +145,8 @@ function CreateQuestionModal({ id, image, name, setCreatedQuestionsCount, setQue
       setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
       setCreatedQuestionsCount((prev) => prev + 1);
 
-      alert('질문이 성공적으로 전송되었습니다.');
-      onClose();
+      onModalClose();
+      onToastshow();
     } catch (error) {
       alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
     }
@@ -147,14 +155,14 @@ function CreateQuestionModal({ id, image, name, setCreatedQuestionsCount, setQue
   const isButtonDisabled = questionText.trim() === '';
 
   return (
-    <ModalOverlay onClick={onClose}>
+    <ModalOverlay onClick={onModalClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalTitle>
           <ModalTitleWrapper>
             <MessageIcon src='/images/icons/ic_messages_black.svg' />
             <ModalTitleText>질문을 작성하세요</ModalTitleText>
           </ModalTitleWrapper>
-          <CloseIcon onClick={onClose} src='/images/icons/ic_close.svg' />
+          <CloseIcon onClick={onModalClose} src='/images/icons/ic_close.svg' />
         </ModalTitle>
 
         <ReceiverNicknameWrapper>
