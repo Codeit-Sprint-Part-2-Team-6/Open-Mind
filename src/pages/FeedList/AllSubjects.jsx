@@ -1,23 +1,19 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 import { getSubjects } from '../../api/subjectApi';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Dropdown from './Dropdown';
 import UserCard from '../../components/Card';
 import Pagination from './Pagination';
 import { debounce } from 'lodash';
 
-const getPageSize = () => {
-  if (window.innerWidth < 868) return 6;
-  else return 8;
-};
+const getPageSize = () => (window.innerWidth < 868 ? 6 : 8);
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
   background-color: ${({ theme }) => theme.gray[20]};
-
   @media ${theme.typography.device.tabletMn} {
     gap: 8px;
   }
@@ -30,7 +26,6 @@ const HeaderContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 6px 0;
-
   @media ${theme.typography.device.tabletMn} {
     flex-direction: column;
     padding: 8px;
@@ -43,7 +38,6 @@ const Title = styled.p`
   font-size: 24px;
   font-weight: 400;
   margin-left: 24px;
-
   @media ${theme.typography.device.tabletMn} {
     font-size: 40px;
   }
@@ -56,7 +50,7 @@ const GridContainer = styled.div`
   justify-content: space-evenly;
   gap: 1.5rem;
   margin-top: 20px;
-  margin-left: 12px
+  margin-left: 12px;
   margin-right: 12px;
 `;
 
@@ -65,15 +59,12 @@ const UserCardGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   padding: 0 32px;
-
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
-
   @media (min-width: 868px) {
     grid-template-columns: repeat(4, 1fr);
   }
-
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -82,36 +73,46 @@ const UserCardGrid = styled.div`
 const PaginationContainer = styled.div`
   position: absolute;
   top: 820px;
-
   @media ${theme.typography.device.tabletMn} {
     top: 718px;
   }
-
   @media (min-width: 950px) {
     top: 701px;
   }
-
   @media ${theme.typography.device.laptopMn} {
     top: 695px;
   }
 `;
 
+const LoadingIndicator = styled.div`
+  text-align: center;
+  font-size: 18px;
+  color: ${({ theme }) => theme.gray[60]};
+`;
+
 function AllSubjects() {
-  const [pageSize, setPageSize] = useState(getPageSize());
+  const [pageSize, setPageSize] = useState(8);
   const [subjectList, setSubjectList] = useState([]);
   const [sort, setSort] = useState('createdAt');
   const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState();
+  const [totalPage, setTotalPage] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleSortCard = (sortOption) => {
     setSort(sortOption);
   };
 
-  const fetchData = async ({ sort, page, pageSize }) => {
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     const subjects = await getSubjects({ sort, page, pageSize });
+    setLoading(false);
     setSubjectList(subjects.results);
     setTotalPage(Math.ceil(subjects.count / pageSize));
-  };
+  }, [sort, pageSize, page]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -121,12 +122,11 @@ function AllSubjects() {
     const debouncedHandleResize = debounce(handleResize, 250);
 
     window.addEventListener('resize', debouncedHandleResize);
-    fetchData({ sort, page, pageSize });
 
     return () => {
       window.removeEventListener('resize', debouncedHandleResize);
     };
-  }, [sort, page, pageSize]);
+  }, []);
 
   const pageChange = (pageNum) => {
     setPage(pageNum);
@@ -139,11 +139,15 @@ function AllSubjects() {
         <Dropdown onSortCard={handleSortCard} />
       </HeaderContainer>
       <GridContainer>
-        <UserCardGrid>
-          {subjectList?.map((subject) => (
-            <UserCard item={subject} key={subject.id} />
-          ))}
-        </UserCardGrid>
+        {loading ? (
+          <LoadingIndicator>Loading...</LoadingIndicator>
+        ) : (
+          <UserCardGrid>
+            {subjectList?.map((subject) => (
+              <UserCard item={subject} key={subject.id} />
+            ))}
+          </UserCardGrid>
+        )}
         <PaginationContainer>
           <Pagination totalPage={totalPage} currentPage={page} pageChange={pageChange} />
         </PaginationContainer>

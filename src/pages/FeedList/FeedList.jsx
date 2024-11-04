@@ -10,7 +10,7 @@ const Container = styled.div`
   background-color: ${theme.gray[20]};
 
   @media (min-width: 768px) {
-    height: 100vh;
+    height: 105vh;
   }
 `;
 

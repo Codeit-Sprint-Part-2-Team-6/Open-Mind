@@ -9,24 +9,20 @@ const CardContainer = styled(Link)`
   position: relative;
   border: 1px solid ${({ theme }) => theme.gray[40]};
   border-radius: 16px;
-
   &:hover {
     border-color: ${({ theme }) => theme.red};
     opacity: 1;
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-
   @media (min-width: 768px) {
     height: 187px;
     width: 220px;
   }
-
   @media (min-width: 868px) {
     min-width: 186px;
     max-width: 206.5px;
   }
-
   @media (min-width: 1200px) {
     width: 220px;
   }
@@ -34,7 +30,6 @@ const CardContainer = styled(Link)`
 
 const CardPadding = styled.div`
   padding: 16px;
-
   @media (min-width: 768px) {
     padding: 20px;
   }
@@ -45,7 +40,6 @@ const CardImage = styled.img`
   height: 48px;
   border-radius: 50%;
   mix-blend-mode: ${(props) => props.theme.mixBlendMode};
-
   @media (min-width: 768px) {
     width: 60px;
     height: 60px;
@@ -57,7 +51,6 @@ const CardName = styled.p`
   font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
   margin-top: 12px;
   margin-bottom: 30px;
-
   @media (min-width: 768px) {
     font-size: ${({ theme }) => theme.typography.body1.fontSize};
     font-weight: ${({ theme }) => theme.typography.body1.fontWeight};
@@ -85,7 +78,6 @@ const CardQuestionTxt = styled.p`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   color: ${({ theme }) => theme.gray[40]};
   margin: 0;
-
   @media (min-width: 768px) {
     font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
@@ -94,7 +86,6 @@ const CardQuestionTxt = styled.p`
 const CardQuestionCount = styled.div`
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
   color: ${({ theme }) => theme.gray[40]};
-
   @media (min-width: 768px) {
     font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
