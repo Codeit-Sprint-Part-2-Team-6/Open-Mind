@@ -1,46 +1,12 @@
-import styled, { keyframes } from 'styled-components';
-import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useState } from 'react';
 import { createQuestions } from '../../api/questionApi';
-
-const overlayFadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const overlayFadeOut = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
-const modalSlideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const modalSlideDown = keyframes`
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-`;
+import {
+  overlayFadeIn,
+  overlayFadeOut,
+  modalSlideUp,
+  modalSlideDown,
+} from '../../utills/modal-animation.js';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -189,8 +155,11 @@ function CreateQuestionModal({
       setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
       setCreatedQuestionsCount((prev) => prev + 1);
 
-      onModalClose();
-      onToastshow();
+      setIsVisible(false);
+      setTimeout(() => {
+        onModalClose();
+        onToastshow();
+      }, 400);
     } catch (error) {
       alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
     }
