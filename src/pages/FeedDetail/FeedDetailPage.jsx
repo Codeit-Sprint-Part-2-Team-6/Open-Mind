@@ -9,6 +9,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 
+const FeedDetailPageWrapper = styled.div`
+  background-color: ${({ theme }) => theme.gray[20]};
+`;
+
 const Main = styled.main`
   height: 100%;
   display: flex;
@@ -167,7 +171,7 @@ function FeedDetailPage({ isAnswer }) {
   };
 
   return (
-    <>
+    <FeedDetailPageWrapper>
       <Header
         id={id}
         image={subject.imageSource}
@@ -218,7 +222,7 @@ function FeedDetailPage({ isAnswer }) {
           />
         )}
       </Main>
-    </>
+    </FeedDetailPageWrapper>
   );
 }
 
