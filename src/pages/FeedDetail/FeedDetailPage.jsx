@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 
@@ -113,6 +113,7 @@ function FeedDetailPage({ isAnswer }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
   const { canEditFeed } = useUser();
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const navigate = useNavigate();
   const isOwner = canEditFeed(id);
@@ -148,7 +149,7 @@ function FeedDetailPage({ isAnswer }) {
     fetchQuestions();
 
     setIsQuestionSubmitted(false);
-  }, [id, isQuestionSubmitted]);
+  }, [id, isQuestionSubmitted, isOwner, isAnswer, navigate]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -156,6 +157,13 @@ function FeedDetailPage({ isAnswer }) {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleToggleMenu = (questionId) => {
+    setOpenMenuId((prevId) => {
+      const newId = prevId === questionId ? null : questionId;
+      return newId;
+    });
   };
 
   return (
@@ -182,6 +190,8 @@ function FeedDetailPage({ isAnswer }) {
                   image={subject.imageSource}
                   name={subject.name}
                   isOwner={isOwner}
+                  isMenuOpen={openMenuId === question.id}
+                  onToggleMenu={() => handleToggleMenu(question.id)}
                 />
               ))}
             </>

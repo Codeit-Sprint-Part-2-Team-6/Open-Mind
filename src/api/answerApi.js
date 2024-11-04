@@ -5,18 +5,6 @@ const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 };
 
-// GET
-export async function getAnswerById(answerId) {
-  try {
-    const response = await axios.get(`${BASE_URL}/answers/${answerId}/`, {
-      headers: DEFAULT_HEADERS,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching answer:', error);
-  }
-}
-
 // PATCH
 export async function updateAnswer(answerId, content, isRejected = false) {
   try {
@@ -28,7 +16,6 @@ export async function updateAnswer(answerId, content, isRejected = false) {
       },
       { headers: DEFAULT_HEADERS },
     );
-    console.log('답변 수정');
     return response.data;
   } catch (error) {
     console.error('Error updating answer:', error);
