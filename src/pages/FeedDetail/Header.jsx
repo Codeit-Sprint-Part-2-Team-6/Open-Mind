@@ -1,7 +1,8 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { shareKakao } from '../../utills/KakaoShare';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Toast from '../../components/Toast';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -80,27 +81,6 @@ const ShareIcon = styled.img`
   height: 100%;
 `;
 
-const fadeInOut = keyframes`
-  0% { opacity: 0; bottom: 30px; }
-  10% { opacity: 1; bottom: 64px; }
-  90% { opacity: 1; bottom: 64px; }
-  100% { opacity: 0; bottom: 30px; }
-`;
-
-const ToastMessage = styled.div`
-  position: fixed;
-  // bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: black;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  animation: ${fadeInOut} 5s ease-in-out forwards;
-  z-index: 1000;
-`;
-
 function Header({ id, image, name, questionsCount }) {
   const [showToast, setShowToast] = useState(false);
 
@@ -108,7 +88,6 @@ function Header({ id, image, name, questionsCount }) {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 5000);
     } catch (error) {
       alert('URL 복사에 실패했습니다.');
     }
@@ -142,7 +121,7 @@ function Header({ id, image, name, questionsCount }) {
         </ShareIconLink>
       </ShareContainer>
 
-      {showToast && <ToastMessage>URL이 복사되었습니다</ToastMessage>}
+      {showToast && <Toast message='URL이 복사되었습니다' onClose={() => setShowToast(false)} />}
     </HeaderContainer>
   );
 }

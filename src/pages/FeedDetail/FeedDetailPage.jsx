@@ -131,6 +131,9 @@ function FeedDetailPage({ isAnswer }) {
       console.error(error.message);
     }
   }, [id]);
+  const [isQuestionSubmitted, setIsQuestionSubmitted] = useState(true);
+  const { canEditFeed } = useUser();
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
@@ -186,6 +189,13 @@ function FeedDetailPage({ isAnswer }) {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
+  const handleToggleMenu = (questionId) => {
+    setOpenMenuId((prevId) => {
+      const newId = prevId === questionId ? null : questionId;
+      return newId;
+    });
+  };
+
   return (
     <>
       <Header
@@ -210,6 +220,8 @@ function FeedDetailPage({ isAnswer }) {
                   image={subject.imageSource}
                   name={subject.name}
                   isOwner={isOwner}
+                  isMenuOpen={openMenuId === question.id}
+                  onToggleMenu={() => handleToggleMenu(question.id)}
                 />
               ))}
             </>
