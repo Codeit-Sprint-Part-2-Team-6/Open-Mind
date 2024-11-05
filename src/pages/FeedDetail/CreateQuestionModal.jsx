@@ -139,6 +139,7 @@ function CreateQuestionModal({
   name,
   setCreatedQuestionsCount,
   setQuestions,
+  setQuestionsCount,
   onModalClose,
   onToastshow,
 }) {
@@ -153,6 +154,7 @@ function CreateQuestionModal({
     try {
       const newQuestion = await createQuestions(id, questionText);
       setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
+      setQuestionsCount((prevCount) => prevCount + 1);
       setCreatedQuestionsCount((prev) => prev + 1);
 
       setIsVisible(false);
