@@ -145,6 +145,9 @@ function CreateQuestionModal({
 }) {
   const [questionText, setQuestionText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isFormValid = questionText.trim() === '';
 
   const handleChange = (event) => {
     setQuestionText(event.target.value);
@@ -156,11 +159,13 @@ function CreateQuestionModal({
       setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
       setQuestionsCount((prevCount) => prevCount + 1);
       setCreatedQuestionsCount((prev) => prev + 1);
+      setIsSubmitting(true);
 
       setIsVisible(false);
       setTimeout(() => {
         onModalClose();
         onToastshow();
+        setIsSubmitting(false);
       }, 400);
     } catch (error) {
       alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
@@ -171,8 +176,6 @@ function CreateQuestionModal({
     setIsVisible(false);
     setTimeout(onModalClose, 400);
   };
-
-  const isButtonDisabled = questionText.trim() === '';
 
   return (
     <ModalOverlay isVisible={isVisible} onClick={handleClose}>
@@ -197,7 +200,7 @@ function CreateQuestionModal({
           onChange={handleChange}
         />
 
-        <QuestionRegisterButton onClick={handleSubmit} disabled={isButtonDisabled}>
+        <QuestionRegisterButton onClick={handleSubmit} disabled={isFormValid || isSubmitting}>
           질문 보내기
         </QuestionRegisterButton>
       </ModalContainer>
