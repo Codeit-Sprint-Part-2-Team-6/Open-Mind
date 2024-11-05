@@ -76,6 +76,7 @@ const AnswerTextArea = styled.textarea`
   transition: outline-color 0.2s ease;
   border-radius: 8px;
 
+  font-family: Pretendard-Regular;
   font-size: ${({ theme }) => theme.typography.body3.fontSize};
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
