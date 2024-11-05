@@ -39,32 +39,38 @@ const Title = styled.p`
   font-size: 24px;
   font-weight: 400;
   margin-left: 24px;
+  white-space: nowrap;
+
   @media ${theme.typography.device.tabletMn} {
     font-size: 40px;
   }
 `;
 
 const GridContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
   gap: 30px;
   margin-top: 20px;
-  margin-left: 12px;
-  margin-right: 12px;
+  padding: 0 24px;
 
   @media (min-width: 768px) {
     gap: 46px;
+    padding: 0 32px;
   }
 `;
 
 const UserCardGrid = styled.div`
+  width: 100%;
   display: grid;
+  justify-items: center;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   overflow: hidden;
   padding: 8px 0;
+  margin: 0 auto;
   max-height: 552px;
 
   @media (min-width: 768px) {
@@ -76,6 +82,7 @@ const UserCardGrid = styled.div`
   }
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
+    width: fit-content;
   }
 `;
 
