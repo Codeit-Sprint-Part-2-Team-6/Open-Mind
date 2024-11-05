@@ -4,11 +4,13 @@ import Header from './Header.jsx';
 
 import { useEffect, useState, useCallback } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
-import { getSubjectById } from '../../api/subjectApi.js';
+import { deleteSubjectById, getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
 import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
+import Toast from '../../components/Toast.jsx';
+import ConfirmModal from './ConFirmModal.jsx';
 
 const FeedDetailPageWrapper = styled.div`
   background-color: ${({ theme }) => theme.gray[20]};
@@ -20,7 +22,6 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   padding: 0 24px;
-  margin-top: 54px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     padding: 0 32px;
@@ -111,6 +112,50 @@ const CreateQuestionBtn = styled.button`
   }
 `;
 
+const DeleteSubjectBtn = styled.button`
+  width: 70px;
+  height: 25px;
+  padding: 0 12px;
+  margin: 20px 0 12px;
+  font-size: 0.625rem;
+  align-self: end;
+  color: ${(props) => props.theme.gray[10]};
+  background-color: ${(props) => props.theme.brown[40]};
+  border: none;
+  border-radius: 200px;
+  box-shadow: ${(props) => props.theme.shadows['medium']};
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: ${(props) => props.theme.brown[30]};
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 116px;
+    height: 40px;
+    font-size: ${(props) => props.theme.typography.body3.fontSize};
+  }
+`;
+
+const Spacer = styled.div`
+  width: 70px;
+  height: 25px;
+  margin: 20px 0 12px;
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 116px;
+    height: 40px;
+  }
+`;
+
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -126,6 +171,10 @@ function FeedDetailPage({ isAnswer }) {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [createdQuestoinsCount, setCreatedQuestionsCount] = useState(0);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const limit = window.innerWidth <= 768 ? 5 : 10;
 
@@ -187,8 +236,55 @@ function FeedDetailPage({ isAnswer }) {
     [isLoading, isInitialLoad],
   );
 
+  const handleDeleteSubject = async () => {
+    try {
+      await deleteSubjectById(id);
+      setIsConfirmModalOpen(false);
+      setIsDeleteCompleteModalOpen(true);
+      setIsModalVisible(true);
+    } catch (error) {
+      console.error('Error deleting subject:', error);
+    }
+  };
+
   const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleCloseQuestionModal = () => {
+    setIsModalVisible(false);
+
+    setTimeout(() => {
+      setIsModalOpen(false);
+    }, 400);
+  };
+
+  const handleCloseConfirmModal = () => {
+    setIsModalVisible(false);
+
+    setTimeout(() => {
+      setIsConfirmModalOpen(false);
+    }, 400);
+  };
+
+  const handleCloseDeleteCompleteModal = () => {
+    setIsModalVisible(false);
+
+    setTimeout(() => {
+      setIsDeleteCompleteModalOpen(false);
+      navigate('/list');
+    }, 400);
+  };
+
+  const handleShowToast = () => setShowToast(true);
+  const handleHideToast = () => setShowToast(false);
+
+  const handleOpenConfirmModal = () => {
+    setIsConfirmModalOpen(true);
+    setIsModalVisible(true);
+  };
+
+  const handleCompleteModalConfirm = () => {
+    handleCloseDeleteCompleteModal();
+  };
 
   const handleToggleMenu = (questionId) => {
     setOpenMenuId((prevId) => {
@@ -206,6 +302,11 @@ function FeedDetailPage({ isAnswer }) {
         questionsCount={questionsCount}
       />
       <Main>
+        {isAnswer && isOwner ? (
+          <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
+        ) : (
+          <Spacer />
+        )}
         <QuestionsContainer>
           {questionsCount ? (
             <>
@@ -220,7 +321,7 @@ function FeedDetailPage({ isAnswer }) {
                   question={question}
                   image={subject.imageSource}
                   name={subject.name}
-                  isOwner={isOwner}
+                  isOwner={isAnswer && isOwner}
                   isMenuOpen={openMenuId === question.id}
                   onToggleMenu={() => handleToggleMenu(question.id)}
                 />
@@ -246,7 +347,34 @@ function FeedDetailPage({ isAnswer }) {
             name={subject.name}
             setCreatedQuestionsCount={setCreatedQuestionsCount}
             setQuestions={setQuestions}
-            onClose={handleCloseModal}
+            onModalClose={handleCloseQuestionModal}
+            onToastshow={handleShowToast}
+          />
+        )}
+
+        {showToast && (
+          <Toast message={'질문이 성공적으로 작성되었습니다.'} onClose={handleHideToast} />
+        )}
+
+        {/* 삭제 확인 모달 */}
+        {isConfirmModalOpen && (
+          <ConfirmModal
+            message='정말 삭제하시겠습니까?'
+            confirmText='삭제'
+            onConfirm={handleDeleteSubject}
+            onCancel={handleCloseConfirmModal}
+            isVisible={isModalVisible}
+          />
+        )}
+
+        {/* 삭제 완료 모달 */}
+        {isDeleteCompleteModalOpen && (
+          <ConfirmModal
+            message='피드가 삭제되었습니다.'
+            confirmText='확인'
+            onConfirm={handleCompleteModalConfirm}
+            onCancel={handleCloseDeleteCompleteModal}
+            isVisible={isModalVisible}
           />
         )}
 

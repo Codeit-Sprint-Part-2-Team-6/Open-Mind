@@ -54,3 +54,17 @@ export async function getSubjectById(subjectId) {
     console.error('Error fetching subject:', error);
   }
 }
+
+// DELETE
+export async function deleteSubjectById(subjectId) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/subjects/${subjectId}/`, {
+      headers: DEFAULT_HEADERS,
+    });
+
+    console.log(`Subject with ID ${subjectId} has been deleted successfully.`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting subject:', error);
+  }
+}

@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { createQuestions } from '../../api/questionApi';
+import {
+  overlayFadeIn,
+  overlayFadeOut,
+  modalSlideUp,
+  modalSlideDown,
+} from '../../utills/modal-animation.js';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -14,6 +20,8 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: ${({ isVisible }) => (isVisible ? overlayFadeIn : overlayFadeOut)} 0.2s ease-out
+    forwards;
 `;
 
 const ModalContainer = styled.div`
@@ -24,6 +32,7 @@ const ModalContainer = styled.div`
   padding: 24px;
   border-radius: 24px;
   box-shadow: ${(props) => props.theme.shadows['large']};
+  animation: ${({ isVisible }) => (isVisible ? modalSlideUp : modalSlideDown)} 0.4s ease forwards;
 `;
 
 const ModalTitle = styled.div`
@@ -124,8 +133,17 @@ const QuestionRegisterButton = styled.button`
   }
 `;
 
-function CreateQuestionModal({ id, image, name, setCreatedQuestionsCount, setQuestions, onClose }) {
+function CreateQuestionModal({
+  id,
+  image,
+  name,
+  setCreatedQuestionsCount,
+  setQuestions,
+  onModalClose,
+  onToastshow,
+}) {
   const [questionText, setQuestionText] = useState('');
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleChange = (event) => {
     setQuestionText(event.target.value);
@@ -137,24 +155,32 @@ function CreateQuestionModal({ id, image, name, setCreatedQuestionsCount, setQue
       setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
       setCreatedQuestionsCount((prev) => prev + 1);
 
-      alert('질문이 성공적으로 전송되었습니다.');
-      onClose();
+      setIsVisible(false);
+      setTimeout(() => {
+        onModalClose();
+        onToastshow();
+      }, 400);
     } catch (error) {
       alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
     }
   };
 
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onModalClose, 400);
+  };
+
   const isButtonDisabled = questionText.trim() === '';
 
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay isVisible={isVisible} onClick={handleClose}>
+      <ModalContainer isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
         <ModalTitle>
           <ModalTitleWrapper>
             <MessageIcon src='/images/icons/ic_messages_black.svg' />
             <ModalTitleText>질문을 작성하세요</ModalTitleText>
           </ModalTitleWrapper>
-          <CloseIcon onClick={onClose} src='/images/icons/ic_close.svg' />
+          <CloseIcon onClick={handleClose} src='/images/icons/ic_close.svg' />
         </ModalTitle>
 
         <ReceiverNicknameWrapper>

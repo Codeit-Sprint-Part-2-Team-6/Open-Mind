@@ -18,15 +18,16 @@ const ToastMessage = styled.div`
   padding: 12px 20px;
   border-radius: 8px;
   font-size: 0.875rem;
-  animation: ${fadeInOut} 3s ease-in-out forwards;
-  z-index: 1000;
+  animation: ${fadeInOut} 5s ease-in-out forwards;
+  z-index: 1005;
 `;
 
 export default function Toast({ message, onClose }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 3000);
+    }, 5000);
+
     return () => clearTimeout(timer);
   }, [onClose]);
 
