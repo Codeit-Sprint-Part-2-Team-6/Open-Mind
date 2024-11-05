@@ -8,8 +8,15 @@ const CardContainer = styled(Link)`
   background-color: ${({ theme }) => theme.gray[10]};
   border: 1px solid ${({ theme }) => theme.gray[40]};
   border-radius: 16px;
+  transition: transform 0.2s ease;
+
   &:hover {
     border-color: ${({ theme }) => theme.red};
+    opacity: 1;
+    transform: translateY(-3px);
+    transition: transform 0.3s ease;
+    tran
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   @media (min-width: 768px) {
     height: 187px;
