@@ -11,6 +11,7 @@ const AnswerProfile = styled.img`
   width: 2rem;
   height: auto;
   border-radius: 50%;
+  mix-blend-mode: ${(props) => props.theme.mixBlendMode};
 
   @media ${({ theme }) => theme.typography.device.tabletMn} {
     width: 3rem;

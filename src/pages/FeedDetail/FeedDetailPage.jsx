@@ -13,6 +13,7 @@ import Toast from '../../components/Toast.jsx';
 import ConfirmModal from './ConFirmModal.jsx';
 
 const FeedDetailPageWrapper = styled.div`
+  height: 100%;
   background-color: ${({ theme }) => theme.gray[20]};
 `;
 
@@ -40,7 +41,8 @@ const QuestionsContainer = styled.div`
   width: 100%;
   aspect-ratio: ${(props) => (props.isNoQuestion ? null : 1)};
   text-align: center;
-  padding: 24px 16px;
+  padding: 24px 16px 60px;
+
   background-color: ${(props) => props.theme.brown[10]};
   border: 1px solid ${(props) => props.theme.brown[20]};
   border-radius: 16px;

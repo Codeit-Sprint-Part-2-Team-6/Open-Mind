@@ -69,6 +69,7 @@ const ShareIconLink = styled.a`
   width: 40px;
   height: 40px;
   cursor: pointer;
+  mix-blend-mode: ${(props) => props.theme.mixBlendMode};
 `;
 
 const CopyUrlBtn = styled.div`
