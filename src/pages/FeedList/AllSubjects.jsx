@@ -86,7 +86,7 @@ const PaginationContainer = styled.div`
 `;
 
 function AllSubjects() {
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(getPageSize());
   const [subjectList, setSubjectList] = useState([]);
   const [sort, setSort] = useState('createdAt');
   const [page, setPage] = useState(1);
