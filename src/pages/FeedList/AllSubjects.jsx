@@ -49,10 +49,14 @@ const GridContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  gap: 1.5rem;
+  gap: 30px;
   margin-top: 20px;
   margin-left: 12px;
   margin-right: 12px;
+
+  @media (min-width: 768px) {
+    gap: 46px;
+  }
 `;
 
 const UserCardGrid = styled.div`
@@ -60,28 +64,18 @@ const UserCardGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   overflow: hidden;
+  padding: 8px 0;
+  max-height: 552px;
+
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
+    max-height: 406px;
   }
   @media (min-width: 868px) {
     grid-template-columns: repeat(4, 1fr);
   }
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
-  }
-`;
-
-const PaginationContainer = styled.div`
-  position: absolute;
-  top: 820px;
-  @media (min-width: 768px) {
-    top: 718px;
-  }
-  @media (min-width: 950px) {
-    top: 701px;
-  }
-  @media (min-width: 1200px) {
-    top: 695px;
   }
 `;
 
@@ -148,9 +142,8 @@ function AllSubjects() {
             ))}
           </UserCardGrid>
         )}
-        <PaginationContainer>
-          <Pagination totalPage={totalPage} currentPage={page} pageChange={pageChange} />
-        </PaginationContainer>
+
+        <Pagination totalPage={totalPage} currentPage={page} pageChange={pageChange} />
       </GridContainer>
     </Container>
   );
