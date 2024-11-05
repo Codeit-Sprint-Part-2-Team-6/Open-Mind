@@ -30,13 +30,12 @@ export async function getSubjects({ sort, page, pageSize } = {}) {
     offset: page && pageSize ? (page - 1) * pageSize : undefined,
     sort: sort || undefined,
   };
-
   try {
     const response = await axios.get(`${BASE_URL}/subjects/`, {
       params: queryParams,
     });
-
-    return response.data;
+    const { results, count, next, previous } = response.data;
+    return { results, count, next, previous };
   } catch (error) {
     console.error('Failed to fetch subjects:', error);
     throw error;

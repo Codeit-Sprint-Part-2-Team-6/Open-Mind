@@ -49,7 +49,7 @@ const Dropdown = styled.div`
   top: 100%;
   left: 0;
   background-color: ${({ theme }) => theme.gray[20]};
-  border: 4px solid ${theme.brown[10]};
+  border: 1px solid ${theme.black};
   padding: 3px 0;
   width: 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -70,6 +70,8 @@ const DropdownOption = styled.div`
   font-family: 'Pretendard';
   line-height: 20px;
   cursor: pointer;
+  padding-top: 4px;
+  padding-bottom: 4px;
   &:hover {
     color: ${({ theme }) => theme.red};
     border-color: ${({ theme }) => theme.red};
