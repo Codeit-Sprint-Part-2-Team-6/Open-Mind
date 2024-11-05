@@ -7,20 +7,30 @@ import { useUser } from '../../hooks/useStore';
 function HomeForm() {
   const [inputValue, setInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isDisabled, setIsDisabled] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useUser();
 
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    if (value.trim() !== '') {
+    if (value.length > 7) {
+      setErrorMessage('7글자 안에 이름을 적어주세요');
+      setIsDisabled(true);
+    } else {
+      setInputValue(value);
+      setErrorMessage('');
+      setIsDisabled(false);
+    }
+
+    if (value.trim() !== '' && value.length <= 7) {
       setErrorMessage('');
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (inputValue.trim() === '') {
+    if (isDisabled || inputValue.trim() === '') {
       setErrorMessage('이름을 입력하세요.');
     } else {
       console.log('제출할 이름:', inputValue);
@@ -57,7 +67,7 @@ function HomeForm() {
             />
           </HomeInputWrap>
           {errorMessage && <ErrorTxt $isVisible>{errorMessage}</ErrorTxt>}
-          <QuestionReceiveBtn as='button' type='submit'>
+          <QuestionReceiveBtn as='button' type='submit' disabled={isDisabled}>
             질문 받기
           </QuestionReceiveBtn>
         </HomeInputCon>
