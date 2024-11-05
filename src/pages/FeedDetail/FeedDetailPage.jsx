@@ -13,12 +13,11 @@ import Toast from '../../components/Toast.jsx';
 import ConfirmModal from './ConFirmModal.jsx';
 
 const FeedDetailPageWrapper = styled.div`
-  height: 100%;
+  min-height: 100vh;
   background-color: ${({ theme }) => theme.gray[20]};
 `;
 
 const Main = styled.main`
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
