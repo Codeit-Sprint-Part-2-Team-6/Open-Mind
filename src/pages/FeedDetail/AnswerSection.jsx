@@ -54,6 +54,7 @@ const AnswerContent = styled.p`
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
   color: ${({ $isRejected, theme }) => ($isRejected ? theme.red : theme.gray[60])};
+  mix-blend-mode: ${({ $isRejected, theme }) => ($isRejected ? theme.mixBlendMode : 'normal')};
   white-space: pre-wrap;
   word-break: break-all;
   overflow-wrap: break-word;
@@ -178,7 +179,7 @@ export default function AnswerSection({
                 <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
               </AnswerInfo>
               <AnswerContent $isRejected={question.answer.isRejected}>
-                {question.answer.content}
+                {question.answer.isRejected ? '답변 거절' : question.answer.content}
               </AnswerContent>
             </AnswerTextContainer>
           </AnswerContainer>
