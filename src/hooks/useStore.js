@@ -19,6 +19,9 @@ const userStore = devtools(
       // 모든 userId 가져오기
       getUserIds: () => Object.keys(get().users),
 
+      // 모든 userName 가져오기
+      getUserNames: () => Object.values(get().users),
+
       // 사용자 삭제 기능
       removeUser: (id) => {
         const updatedUsers = { ...get().users };
