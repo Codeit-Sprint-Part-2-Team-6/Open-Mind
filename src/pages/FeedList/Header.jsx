@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import CommonBtn from '../../components/CommonButton';
 import theme from '../../styles/theme';
+import { useUser } from '../../hooks/useStore';
+import { useState } from 'react';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -9,7 +11,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   gap: 20px;
   margin-bottom: 54px;
-
+  position: relative;
   @media ${theme.typography.device.tabletMn} {
     flex-direction: row;
     justify-content: space-between;
@@ -23,13 +25,13 @@ const Logo = styled.img`
   width: 146px;
   height: 57px;
   margin-top: 40px;
-
   @media ${theme.typography.device.tabletMn} {
     margin-top: 0px;
   }
 `;
 
 const HomePageBtn = styled.div`
+  position: relative;
   @media ${theme.typography.device.tabletMn} {
     display: flex;
     justify-content: right;
@@ -42,16 +44,56 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
+const Dropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: ${({ theme }) => theme.gray[20]};
+  border: 4px solid ${theme.brown[10]};
+  padding: 3px 0;
+  width: 120px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  @media ${theme.typography.device.tabletMn} {
+    width: 160px;
+  }
+`;
+
+const DropdownOption = styled.div`
+  margin-top: 4px;
+  border: 1px solid ${theme.gray[40]};
+  border-radius: 5px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 400;
+  font-family: 'Pretendard';
+  line-height: 20px;
+  cursor: pointer;
+  &:hover {
+    color: ${({ theme }) => theme.red};
+    border-color: ${({ theme }) => theme.red};
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+`;
+
 function Header() {
   const navigate = useNavigate();
-  const data = localStorage.getItem('user-storage'); // user-storage 키와 연결된 데이터를 검색
-  const parsedData = JSON.parse(data); // JS 객체로 구문 분석해서 state 및 users와 같은 속성에 문자열 대신 개체로 액세스
-  const userIds = Object.keys(parsedData.state.users); // 사용자 ID를 나타내는 parsedData.state 내의 users 객체에서 키를 추출
-  // console.log(userIds[userIds.length - 1]);
-  const key = userIds[userIds.length - 1]; // 가장 최근의 값을 가져옴
+  const { getUserIds, getUserNames } = useUser();
+  const userKeys = getUserIds();
+  const userNames = getUserNames();
+  const [isDropDown, setIsDropDown] = useState(false);
 
   const handleAnswerBtn = () => {
-    const nextPath = key ? `/post/${key}/answer` : '/';
+    setIsDropDown((prev) => !prev);
+  };
+
+  const handleSelectName = (index) => {
+    setIsDropDown(false);
+    const selectedId = userKeys[index];
+    const nextPath = selectedId ? `/post/${selectedId}/answer` : '/';
     navigate(nextPath);
   };
 
@@ -62,6 +104,13 @@ function Header() {
       </Link>
       <HomePageBtn>
         <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
+        <Dropdown show={isDropDown}>
+          {userNames.map((name, index) => (
+            <DropdownOption key={index} onClick={() => handleSelectName(index)}>
+              {name}
+            </DropdownOption>
+          ))}
+        </Dropdown>
       </HomePageBtn>
     </HeaderContainer>
   );
