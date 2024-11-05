@@ -31,7 +31,7 @@ const Logo = styled.img`
 `;
 
 const HomePageBtn = styled.div`
-  position: relative; /* Ensures dropdown is aligned to this parent */
+  position: relative;
   @media ${theme.typography.device.tabletMn} {
     display: flex;
     justify-content: right;
@@ -54,6 +54,7 @@ const Dropdown = styled.div`
   width: 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  display: ${({ show }) => (show ? 'block' : 'none')};
   @media ${theme.typography.device.tabletMn} {
     width: 160px;
   }
@@ -80,17 +81,19 @@ const DropdownOption = styled.div`
 
 function Header() {
   const navigate = useNavigate();
-  const { getUserIds } = useUser();
+  const { getUserIds, getUserNames } = useUser();
   const userKeys = getUserIds();
+  const userNames = getUserNames();
   const [isDropDown, setIsDropDown] = useState(false);
 
   const handleAnswerBtn = () => {
     setIsDropDown((prev) => !prev);
   };
 
-  const handleSelectKey = (key) => {
+  const handleSelectName = (index) => {
     setIsDropDown(false);
-    const nextPath = key ? `/post/${key}/answer` : '/';
+    const selectedId = userKeys[index];
+    const nextPath = selectedId ? `/post/${selectedId}/answer` : '/';
     navigate(nextPath);
   };
 
@@ -102,9 +105,9 @@ function Header() {
       <HomePageBtn>
         <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
         <Dropdown show={isDropDown}>
-          {userKeys.map((key) => (
-            <DropdownOption key={key} onClick={() => handleSelectKey(key)}>
-              {key}
+          {userNames.map((name, index) => (
+            <DropdownOption key={index} onClick={() => handleSelectName(index)}>
+              {name}
             </DropdownOption>
           ))}
         </Dropdown>
