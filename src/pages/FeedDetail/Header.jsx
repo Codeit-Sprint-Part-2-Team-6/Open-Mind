@@ -12,7 +12,10 @@ const HeaderContainer = styled.header`
 `;
 
 const BackGroundImage = styled.img`
+  width: 100%;
+  max-width: 1200px;
   height: 178px;
+  object-fit: cover;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
     height: 234px;
@@ -25,6 +28,7 @@ const LogoWrapper = styled(Link)`
 `;
 
 const Logo = styled.img`
+  width: 126px;
   height: 50px;
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
@@ -32,15 +36,33 @@ const Logo = styled.img`
   }
 `;
 
-const ProfileImage = styled.img`
+const ProfileImageWrap = styled.div`
   height: 104px;
-  margin-top: 100px;
+  width: 104px;
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%);
+  background-color: ${({ theme }) => theme.gray[10]};
+  border-radius: 50%;
+  overflow: hidden;
+
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
+    height: 136px;
+    width: 136px;
+    top: 130px;
+  }
+`;
+
+const ProfileImage = styled.img`
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
   position: absolute;
   mix-blend-mode: ${(props) => props.theme.mixBlendMode};
+  background-color: #f0f0f0; /* 이미지가 로드되기 전 배경색 */
 
   @media (${({ theme }) => theme.typography.device.tabletMn}) {
-    margin-top: 130px;
     height: 136px;
     width: 136px;
   }
@@ -105,7 +127,9 @@ function Header({ id, image, name, questionsCount }) {
       <LogoWrapper to='/'>
         <Logo src='/images/contents/logo.svg' />
       </LogoWrapper>
-      <ProfileImage src={image} />
+      <ProfileImageWrap>
+        <ProfileImage src={image} />
+      </ProfileImageWrap>
       <UserName>{name}</UserName>
       <ShareContainer>
         <CopyUrlBtn onClick={copyCurrentUrl}>
