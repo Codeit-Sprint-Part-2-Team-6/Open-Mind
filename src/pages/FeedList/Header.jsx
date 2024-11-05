@@ -51,9 +51,12 @@ const Dropdown = styled.div`
   background-color: ${({ theme }) => theme.gray[20]};
   border: 4px solid ${theme.brown[10]};
   padding: 3px 0;
-  width: 160px;
+  width: 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  @media ${theme.typography.device.tabletMn} {
+    width: 160px;
+  }
 `;
 
 const DropdownOption = styled.div`
