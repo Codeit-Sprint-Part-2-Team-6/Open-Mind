@@ -48,8 +48,9 @@ const Dropdown = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: ${({ theme }) => theme.gray[20]};
-  border: 1px solid ${theme.black};
+  background-color: ${({ theme }) => theme.brown[10]};
+  border: 1px solid ${theme.brown[40]};
+  border-radius: 8px;
   padding: 3px 0;
   width: 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -61,17 +62,17 @@ const Dropdown = styled.div`
 `;
 
 const DropdownOption = styled.div`
-  margin-top: 4px;
-  border: 1px solid ${theme.gray[40]};
+  margin: 2px;
+  border: 1px solid ${theme.brown[40]};
   border-radius: 5px;
   text-align: center;
-  font-size: 20px;
-  font-weight: 400;
-  font-family: 'Pretendard';
-  line-height: 20px;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 14px;
   cursor: pointer;
   padding-top: 4px;
   padding-bottom: 4px;
+  color: ${theme.brown[40]};
   &:hover {
     color: ${({ theme }) => theme.red};
     border-color: ${({ theme }) => theme.red};
