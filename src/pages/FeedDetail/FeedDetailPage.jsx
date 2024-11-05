@@ -159,7 +159,7 @@ const Spacer = styled.div`
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { canEditFeed } = useUser();
+  const { canEditFeed, removeUser } = useUser();
   const isOwner = canEditFeed(id);
 
   const [subject, setSubject] = useState({});
@@ -189,6 +189,7 @@ function FeedDetailPage({ isAnswer }) {
 
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
+
     try {
       const response = await getQuestions(id, limit, (page - 1) * limit + createdQuestoinsCount);
       const { count, results } = response;
@@ -267,6 +268,7 @@ function FeedDetailPage({ isAnswer }) {
 
   const handleCloseDeleteCompleteModal = () => {
     setIsModalVisible(false);
+    removeUser(id);
 
     setTimeout(() => {
       setIsDeleteCompleteModalOpen(false);
@@ -347,6 +349,7 @@ function FeedDetailPage({ isAnswer }) {
             name={subject.name}
             setCreatedQuestionsCount={setCreatedQuestionsCount}
             setQuestions={setQuestions}
+            setQuestionsCount={setQuestionsCount}
             onModalClose={handleCloseQuestionModal}
             onToastshow={handleShowToast}
           />
