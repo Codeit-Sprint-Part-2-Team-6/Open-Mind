@@ -97,9 +97,17 @@ const CreateQuestionBtn = styled.button`
   line-height: 26px;
   cursor: pointer;
   overflow: auto;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 
   &::after {
     content: '질문 작성';
+  }
+
+  &:hover {
+    background-color: ${(props) => props.theme.brown[50]};
+    transform: scale(1.05);
   }
 
   @media (${(props) => props.theme.typography.device.tabletMn}) {
@@ -130,7 +138,7 @@ const DeleteSubjectBtn = styled.button`
     transform 0.2s ease;
 
   &:hover {
-    background-color: ${(props) => props.theme.brown[30]};
+    background-color: ${(props) => props.theme.brown[50]};
     transform: scale(1.05);
   }
 
@@ -340,7 +348,8 @@ function FeedDetailPage({ isAnswer }) {
             </>
           )}
         </QuestionsContainer>
-        <CreateQuestionBtn onClick={handleOpenModal} />
+
+        {!(isAnswer && isOwner) && <CreateQuestionBtn onClick={handleOpenModal} />}
 
         {isModalOpen && (
           <CreateQuestionModal
