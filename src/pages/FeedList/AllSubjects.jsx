@@ -59,7 +59,7 @@ const UserCardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  padding: 0 32px;
+  overflow: hidden;
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -74,13 +74,13 @@ const UserCardGrid = styled.div`
 const PaginationContainer = styled.div`
   position: absolute;
   top: 820px;
-  @media ${theme.typography.device.tabletMn} {
+  @media (min-width: 768px) {
     top: 718px;
   }
   @media (min-width: 950px) {
     top: 701px;
   }
-  @media ${theme.typography.device.laptopMn} {
+  @media (min-width: 1200px) {
     top: 695px;
   }
 `;
