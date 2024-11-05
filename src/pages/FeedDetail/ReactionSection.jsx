@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled, { keyframes, css, useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
 
@@ -14,6 +14,12 @@ const ReactionBox = styled.div`
   padding-top: 24px;
 `;
 
+const bounceUp = keyframes`
+  0% { transform: scale(1) translateY(0) translateX(0); }
+  50% { transform: scale(1.1) translateY(-4px) translateX(-2px); }
+  100% { transform: scale(1) translateY(0) translateX(0); }
+`;
+
 const Reaction = styled.a`
   display: flex;
   align-items: center;
@@ -24,6 +30,18 @@ const Reaction = styled.a`
   color: ${({ $isActive, type, theme }) =>
     $isActive ? (type === 'like' ? theme.blue : theme.gray[60]) : theme.gray[40]};
   cursor: pointer;
+`;
+
+const AnimatedIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${({ $isActive }) =>
+    $isActive
+      ? css`
+          ${bounceUp} 0.5s ease-in-out
+        `
+      : 'none'};
 `;
 
 export default function ReactionSection({
@@ -39,11 +57,15 @@ export default function ReactionSection({
     <ReactionContainer>
       <ReactionBox>
         <Reaction $isActive={isLiked} type='like' onClick={() => handleReaction('like')}>
-          <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
+          <AnimatedIcon $isActive={isLiked}>
+            <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
+          </AnimatedIcon>
           좋아요 {likeCount}
         </Reaction>
         <Reaction $isActive={isDisliked} type='dislike' onClick={() => handleReaction('dislike')}>
-          <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
+          <AnimatedIcon $isActive={isDisliked}>
+            <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
+          </AnimatedIcon>
           싫어요 {dislikeCount}
         </Reaction>
       </ReactionBox>
