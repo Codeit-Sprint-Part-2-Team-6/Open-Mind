@@ -54,6 +54,7 @@ const AnswerContent = styled.p`
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
   color: ${({ $isRejected, theme }) => ($isRejected ? theme.red : theme.gray[60])};
+  mix-blend-mode: ${({ $isRejected, theme }) => ($isRejected ? theme.mixBlendMode : 'normal')};
   white-space: pre-wrap;
   word-break: break-all;
   overflow-wrap: break-word;
@@ -75,6 +76,7 @@ const AnswerTextArea = styled.textarea`
   transition: outline-color 0.2s ease;
   border-radius: 8px;
 
+  font-family: Pretendard-Regular;
   font-size: ${({ theme }) => theme.typography.body3.fontSize};
   font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
   line-height: 22px;
@@ -122,7 +124,7 @@ export default function AnswerSection({
 }) {
   const isButtonDisabled = () => !answerText.trim();
   return (
-    <AnswerContainer>
+    <>
       {isOwner ? ( // 질문자인 경우
         <AnswerContainer>
           <AnswerProfile src={image} alt='프로필 이미지' />
@@ -178,12 +180,12 @@ export default function AnswerSection({
                 <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
               </AnswerInfo>
               <AnswerContent $isRejected={question.answer.isRejected}>
-                {question.answer.content}
+                {question.answer.isRejected ? '답변 거절' : question.answer.content}
               </AnswerContent>
             </AnswerTextContainer>
           </AnswerContainer>
         )
       )}
-    </AnswerContainer>
+    </>
   );
 }
