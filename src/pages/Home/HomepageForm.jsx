@@ -57,9 +57,12 @@ function HomeForm() {
             <InputIcon src='/images/icons/Person.svg' alt='사람아이콘' />
             <HomePageInput
               type='text'
+              id='username'
+              name='username'
               value={inputValue}
               onChange={handleChange}
               placeholder='이름을 입력하세요'
+              autoComplete='off'
             />
           </HomeInputWrap>
           {errorMessage && <ErrorTxt $isVisible>{errorMessage}</ErrorTxt>}
