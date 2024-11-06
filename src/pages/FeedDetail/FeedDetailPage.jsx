@@ -101,10 +101,19 @@ function FeedDetailPage({ isAnswer }) {
 
   const handleDeleteSubject = async () => {
     try {
-      await deleteSubjectById(id);
+      await deleteSubjectById(id); // 삭제 요청
+
       setIsConfirmModalOpen(false);
       setIsDeleteCompleteModalOpen(true);
-      setIsModalVisible(true);
+
+      setTimeout(() => {
+        setIsModalVisible(false);
+        navigate('/list');
+
+        setTimeout(() => {
+          removeUser(id);
+        }, 100);
+      }, 1000);
     } catch (error) {
       console.error('Error deleting subject:', error);
     }
@@ -128,11 +137,7 @@ function FeedDetailPage({ isAnswer }) {
     }, 400);
   };
 
-  const handleCloseDeleteCompleteModal = () => {
-    setIsModalVisible(false);
-    removeUser(id);
-    navigate('/list');
-  };
+  const handleCloseDeleteCompleteModal = () => {};
 
   const handleOpenConfirmModal = () => {
     setIsConfirmModalOpen(true);
@@ -237,9 +242,7 @@ function FeedDetailPage({ isAnswer }) {
         {isDeleteCompleteModalOpen && (
           <ConfirmModal
             message='피드가 삭제되었습니다.'
-            confirmText='확인'
-            onConfirm={handleCompleteModalConfirm}
-            onCancel={handleCloseDeleteCompleteModal}
+            isAccepted={true}
             $isVisible={isModalVisible}
           />
         )}
