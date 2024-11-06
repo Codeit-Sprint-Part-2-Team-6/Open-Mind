@@ -101,7 +101,7 @@ function FeedDetailPage({ isAnswer }) {
 
   const handleDeleteSubject = async () => {
     try {
-      await deleteSubjectById(id); // 삭제 요청
+      await deleteSubjectById(id);
 
       setIsConfirmModalOpen(false);
       setIsDeleteCompleteModalOpen(true);
@@ -137,15 +137,9 @@ function FeedDetailPage({ isAnswer }) {
     }, 400);
   };
 
-  const handleCloseDeleteCompleteModal = () => {};
-
   const handleOpenConfirmModal = () => {
     setIsConfirmModalOpen(true);
     setIsModalVisible(true);
-  };
-
-  const handleCompleteModalConfirm = () => {
-    handleCloseDeleteCompleteModal();
   };
 
   const handleShowToast = () => setShowToast(true);
