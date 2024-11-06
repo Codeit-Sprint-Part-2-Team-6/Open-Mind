@@ -47,6 +47,10 @@ function FeedDetailPage({ isAnswer }) {
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
 
+    if (questionsCount < (page - 1) * limit + createdQuestoinsCount) {
+      return;
+    }
+
     try {
       const response = await getQuestions(id, limit, (page - 1) * limit + createdQuestoinsCount);
       const { count, results } = response;
@@ -57,6 +61,7 @@ function FeedDetailPage({ isAnswer }) {
     } finally {
       setIsLoading(false);
       setIsInitialLoad(false);
+      console.log(page);
     }
   }, [id, limit, page]);
 
