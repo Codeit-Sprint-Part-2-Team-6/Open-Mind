@@ -13,6 +13,10 @@ function Header() {
   const [isDropDown, setIsDropDown] = useState(false);
 
   const handleAnswerBtn = () => {
+    if (userNames.length === 0) {
+      navigate('/');
+    }
+
     setIsDropDown((prev) => !prev);
   };
 
