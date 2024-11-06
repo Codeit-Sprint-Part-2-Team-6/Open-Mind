@@ -6,15 +6,24 @@ import {
   modalSlideDown,
 } from '../../utills/modal-animation.js';
 
-function ConfirmModal({ message, confirmText, onConfirm, onCancel, $isVisible }) {
+function ConfirmModal({
+  message,
+  confirmText,
+  onConfirm,
+  onCancel,
+  $isVisible,
+  isAccepted = false,
+}) {
   return (
     <ModalOverlay $isVisible={$isVisible} onClick={onCancel}>
       <ModalContainer $isVisible={$isVisible} onClick={(e) => e.stopPropagation()}>
         <ConfirmText>{message}</ConfirmText>
-        <ButtonContainer>
-          <ConfirmButton onClick={onConfirm}>{confirmText}</ConfirmButton>
-          <CancelButton onClick={onCancel}>취소</CancelButton>
-        </ButtonContainer>
+        {!isAccepted && (
+          <ButtonContainer>
+            <ConfirmButton onClick={onConfirm}>{confirmText}</ConfirmButton>
+            <CancelButton onClick={onCancel}>취소</CancelButton>
+          </ButtonContainer>
+        )}
       </ModalContainer>
     </ModalOverlay>
   );
