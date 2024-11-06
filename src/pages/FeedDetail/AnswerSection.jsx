@@ -26,7 +26,7 @@ export default function AnswerSection({
                 (question.answer ? (
                   <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
                 ) : (
-                  currentAnswer && <AnswerAt>방금 전</AnswerAt>
+                  currentAnswer && <AnswerAt>{getRelativeTime(currentAnswer.createdAt)}</AnswerAt>
                 ))}
             </AnswerInfo>
             {isEditing && currentAnswer ? (
