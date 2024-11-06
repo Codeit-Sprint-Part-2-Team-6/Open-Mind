@@ -44,12 +44,13 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
-const Dropdown = styled.div`
+const Dropdown = styled.div.attrs(({ show }) => ({
+  'aria-hidden': !show,
+}))`
   position: absolute;
   top: 100%;
   left: 0;
   background-color: ${({ theme }) => theme.gray[10]};
-  // padding: 3px 0;
   width: 120px;
   border-radius: 8px;
   z-index: 1000;
@@ -60,8 +61,8 @@ const Dropdown = styled.div`
     transform 0.3s ease;
   pointer-events: none;
 
-  ${({ show }) =>
-    show &&
+  ${({ $show }) =>
+    $show &&
     `
       display: block;
       opacity: 1;
@@ -69,7 +70,7 @@ const Dropdown = styled.div`
       pointer-events: auto;
     `}
 
-  @media ${theme.typography.device.tabletMn} {
+  @media ${({ theme }) => theme.typography.device.tabletMn} {
     width: 160px;
   }
 `;
@@ -123,7 +124,7 @@ function Header() {
       </Link>
       <HomePageBtn>
         <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
-        <Dropdown show={isDropDown}>
+        <Dropdown $show={isDropDown}>
           {userNames.map((name, index) => (
             <DropdownOption key={index} onClick={() => handleSelectName(index)}>
               {name}
