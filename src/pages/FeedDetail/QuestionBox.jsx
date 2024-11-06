@@ -112,7 +112,12 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
   const handleAnswerComplete = async () => {
     try {
       const response = await createAnswer({ questionId: question.id, content: answerText });
-      setCurrentAnswer({ id: response.id, content: answerText, isRejected: false });
+      setCurrentAnswer({
+        id: response.id,
+        content: answerText,
+        isRejected: false,
+        createdAd: response.createdAt,
+      });
       showToastMessage('답변이 등록되었습니다');
     } catch (error) {
       console.error('답변 등록 중 오류가 발생했습니다:', error);
