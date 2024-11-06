@@ -4,6 +4,53 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Toast from '../../components/Toast';
 
+function Header({ id, image, name, questionsCount }) {
+  const [showToast, setShowToast] = useState(false);
+
+  const copyCurrentUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShowToast(true);
+    } catch (error) {
+      alert('URL 복사에 실패했습니다.');
+    }
+  };
+
+  const handleKakaoShare = () => {
+    shareKakao(id, image, name, questionsCount);
+  };
+
+  return (
+    <HeaderContainer>
+      <BackGroundImage src='/images/backgrounds/feed-detail-header.svg' />
+      <LogoWrapper to='/'>
+        <Logo src='/images/contents/logo.svg' />
+      </LogoWrapper>
+      <ProfileImageWrap>
+        <ProfileImage src={image} />
+      </ProfileImageWrap>
+      <UserName>{name}</UserName>
+      <ShareContainer>
+        <CopyUrlBtn onClick={copyCurrentUrl}>
+          <ShareIcon src='/images/icons/ic_share.svg' />
+        </CopyUrlBtn>
+        <ShareIconLink onClick={handleKakaoShare}>
+          <ShareIcon src='/images/icons/ic_kakao-share.svg' />
+        </ShareIconLink>
+        <ShareIconLink
+          href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          <ShareIcon src='/images/icons/ic_facebook-share.svg' alt='페이스북 공유' />
+        </ShareIconLink>
+      </ShareContainer>
+
+      {showToast && <Toast message='URL이 복사되었습니다' onClose={() => setShowToast(false)} />}
+    </HeaderContainer>
+  );
+}
+
 const HeaderContainer = styled.header`
   display: flex;
   flex-direction: column;
@@ -104,52 +151,5 @@ const ShareIcon = styled.img`
   width: 100%;
   height: 100%;
 `;
-
-function Header({ id, image, name, questionsCount }) {
-  const [showToast, setShowToast] = useState(false);
-
-  const copyCurrentUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setShowToast(true);
-    } catch (error) {
-      alert('URL 복사에 실패했습니다.');
-    }
-  };
-
-  const handleKakaoShare = () => {
-    shareKakao(id, image, name, questionsCount);
-  };
-
-  return (
-    <HeaderContainer>
-      <BackGroundImage src='/images/backgrounds/feed-detail-header.svg' />
-      <LogoWrapper to='/'>
-        <Logo src='/images/contents/logo.svg' />
-      </LogoWrapper>
-      <ProfileImageWrap>
-        <ProfileImage src={image} />
-      </ProfileImageWrap>
-      <UserName>{name}</UserName>
-      <ShareContainer>
-        <CopyUrlBtn onClick={copyCurrentUrl}>
-          <ShareIcon src='/images/icons/ic_share.svg' />
-        </CopyUrlBtn>
-        <ShareIconLink onClick={handleKakaoShare}>
-          <ShareIcon src='/images/icons/ic_kakao-share.svg' />
-        </ShareIconLink>
-        <ShareIconLink
-          href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <ShareIcon src='/images/icons/ic_facebook-share.svg' alt='페이스북 공유' />
-        </ShareIconLink>
-      </ShareContainer>
-
-      {showToast && <Toast message='URL이 복사되었습니다' onClose={() => setShowToast(false)} />}
-    </HeaderContainer>
-  );
-}
 
 export default Header;

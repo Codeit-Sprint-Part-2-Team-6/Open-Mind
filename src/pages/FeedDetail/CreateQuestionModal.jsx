@@ -8,6 +8,81 @@ import {
   modalSlideDown,
 } from '../../utills/modal-animation.js';
 
+function CreateQuestionModal({
+  id,
+  image,
+  name,
+  setCreatedQuestionsCount,
+  setQuestions,
+  setQuestionsCount,
+  onModalClose,
+  onToastshow,
+}) {
+  const [questionText, setQuestionText] = useState('');
+  const [isVisible, setIsVisible] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isFormValid = questionText.trim() === '';
+
+  const handleChange = (event) => {
+    setQuestionText(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const newQuestion = await createQuestions(id, questionText);
+      setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
+      setQuestionsCount((prevCount) => prevCount + 1);
+      setCreatedQuestionsCount((prev) => prev + 1);
+      setIsSubmitting(true);
+
+      setIsVisible(false);
+      setTimeout(() => {
+        onModalClose();
+        onToastshow();
+        setIsSubmitting(false);
+      }, 400);
+    } catch (error) {
+      alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
+    }
+  };
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onModalClose, 400);
+  };
+
+  return (
+    <ModalOverlay isVisible={isVisible} onClick={handleClose}>
+      <ModalContainer isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
+        <ModalTitle>
+          <ModalTitleWrapper>
+            <MessageIcon src='/images/icons/ic_messages_black.svg' />
+            <ModalTitleText>질문을 작성하세요</ModalTitleText>
+          </ModalTitleWrapper>
+          <CloseIcon onClick={handleClose} src='/images/icons/ic_close.svg' />
+        </ModalTitle>
+
+        <ReceiverNicknameWrapper>
+          <ToReceiveText>To.</ToReceiveText>
+          <ReceiverProfileImage src={image} />
+          <ReceiverNickname>{name}</ReceiverNickname>
+        </ReceiverNicknameWrapper>
+
+        <QuestionTextArea
+          placeholder='질문을 입력해주세요'
+          value={questionText}
+          onChange={handleChange}
+        />
+
+        <QuestionRegisterButton onClick={handleSubmit} disabled={isFormValid || isSubmitting}>
+          질문 보내기
+        </QuestionRegisterButton>
+      </ModalContainer>
+    </ModalOverlay>
+  );
+}
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -132,80 +207,5 @@ const QuestionRegisterButton = styled.button`
     background-color: ${(props) => props.theme.brown[30]};
   }
 `;
-
-function CreateQuestionModal({
-  id,
-  image,
-  name,
-  setCreatedQuestionsCount,
-  setQuestions,
-  setQuestionsCount,
-  onModalClose,
-  onToastshow,
-}) {
-  const [questionText, setQuestionText] = useState('');
-  const [isVisible, setIsVisible] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isFormValid = questionText.trim() === '';
-
-  const handleChange = (event) => {
-    setQuestionText(event.target.value);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const newQuestion = await createQuestions(id, questionText);
-      setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
-      setQuestionsCount((prevCount) => prevCount + 1);
-      setCreatedQuestionsCount((prev) => prev + 1);
-      setIsSubmitting(true);
-
-      setIsVisible(false);
-      setTimeout(() => {
-        onModalClose();
-        onToastshow();
-        setIsSubmitting(false);
-      }, 400);
-    } catch (error) {
-      alert('질문 전송에 실패했습니다. 다시 시도해 주세요.');
-    }
-  };
-
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(onModalClose, 400);
-  };
-
-  return (
-    <ModalOverlay isVisible={isVisible} onClick={handleClose}>
-      <ModalContainer isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
-        <ModalTitle>
-          <ModalTitleWrapper>
-            <MessageIcon src='/images/icons/ic_messages_black.svg' />
-            <ModalTitleText>질문을 작성하세요</ModalTitleText>
-          </ModalTitleWrapper>
-          <CloseIcon onClick={handleClose} src='/images/icons/ic_close.svg' />
-        </ModalTitle>
-
-        <ReceiverNicknameWrapper>
-          <ToReceiveText>To.</ToReceiveText>
-          <ReceiverProfileImage src={image} />
-          <ReceiverNickname>{name}</ReceiverNickname>
-        </ReceiverNicknameWrapper>
-
-        <QuestionTextArea
-          placeholder='질문을 입력해주세요'
-          value={questionText}
-          onChange={handleChange}
-        />
-
-        <QuestionRegisterButton onClick={handleSubmit} disabled={isFormValid || isSubmitting}>
-          질문 보내기
-        </QuestionRegisterButton>
-      </ModalContainer>
-    </ModalOverlay>
-  );
-}
 
 export default CreateQuestionModal;

@@ -10,7 +10,235 @@ import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 import Toast from '../../components/Toast.jsx';
-import ConfirmModal from './ConFirmModal.jsx';
+import ConfirmModal from './ConfirmModal.jsx';
+
+function FeedDetailPage({ isAnswer }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { canEditFeed, removeUser } = useUser();
+  const isOwner = canEditFeed(id);
+
+  const [subject, setSubject] = useState({});
+  const [questions, setQuestions] = useState([]);
+  const [questionsCount, setQuestionsCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [createdQuestoinsCount, setCreatedQuestionsCount] = useState(0);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const limit = window.innerWidth <= 768 ? 5 : 10;
+
+  const fetchSubject = useCallback(async () => {
+    try {
+      const response = await getSubjectById(id);
+      setSubject(response);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, [id]);
+
+  const fetchQuestions = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await getQuestions(id, limit, (page - 1) * limit + createdQuestoinsCount);
+      const { count, results } = response;
+      setQuestions((prevQuestions) => [...prevQuestions, ...results]);
+      setQuestionsCount(count);
+    } catch (error) {
+      console.error(error.message);
+    } finally {
+      setIsLoading(false);
+      setIsInitialLoad(false);
+    }
+  }, [id, limit, page]);
+
+  useEffect(() => {
+    if (isAnswer && !isOwner) {
+      navigate('/403');
+    }
+    fetchSubject();
+  }, [fetchSubject, isAnswer, isOwner, navigate]);
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [fetchQuestions]);
+
+  useEffect(() => {
+    if (isInitialLoad) return;
+
+    const observer = new IntersectionObserver(handleObserver, { threshold: 0 });
+    const observerTarget = document.getElementById('observer');
+
+    if (observerTarget) {
+      observer.observe(observerTarget);
+    }
+    return () => observer.disconnect();
+  }, [isInitialLoad]);
+
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+
+      if (target.isIntersecting && !isLoading && !isInitialLoad) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    },
+    [isLoading, isInitialLoad],
+  );
+
+  const handleDeleteSubject = async () => {
+    try {
+      await deleteSubjectById(id);
+      setIsConfirmModalOpen(false);
+      setIsDeleteCompleteModalOpen(true);
+      setIsModalVisible(true);
+    } catch (error) {
+      console.error('Error deleting subject:', error);
+    }
+  };
+
+  const handleOpenModal = () => setIsModalOpen(true);
+
+  const handleCloseQuestionModal = () => {
+    setIsModalVisible(false);
+
+    setTimeout(() => {
+      setIsModalOpen(false);
+    }, 400);
+  };
+
+  const handleCloseConfirmModal = () => {
+    setIsModalVisible(false);
+
+    setTimeout(() => {
+      setIsConfirmModalOpen(false);
+    }, 400);
+  };
+
+  const handleCloseDeleteCompleteModal = () => {
+    setIsModalVisible(false);
+    removeUser(id);
+    navigate('/list');
+  };
+
+  const handleOpenConfirmModal = () => {
+    setIsConfirmModalOpen(true);
+    setIsModalVisible(true);
+  };
+
+  const handleCompleteModalConfirm = () => {
+    handleCloseDeleteCompleteModal();
+  };
+
+  const handleShowToast = () => setShowToast(true);
+  const handleHideToast = () => setShowToast(false);
+
+  const handleToggleMenu = (questionId) => {
+    setOpenMenuId((prevId) => {
+      const newId = prevId === questionId ? null : questionId;
+      return newId;
+    });
+  };
+
+  return (
+    <FeedDetailPageWrapper>
+      <Header
+        id={id}
+        image={subject.imageSource}
+        name={subject.name}
+        questionsCount={questionsCount}
+      />
+      <Main>
+        {isAnswer && isOwner ? (
+          <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
+        ) : (
+          <Spacer />
+        )}
+        <QuestionsContainer>
+          {questionsCount ? (
+            <>
+              <QuestionCounterContainer>
+                <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
+                <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
+              </QuestionCounterContainer>
+
+              {questions.map((question) => (
+                <QuestionBox
+                  key={question.id}
+                  question={question}
+                  image={subject.imageSource}
+                  name={subject.name}
+                  isOwner={isAnswer && isOwner}
+                  isMenuOpen={openMenuId === question.id}
+                  onToggleMenu={() => handleToggleMenu(question.id)}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              <QuestionCounterContainer>
+                <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
+                <QuestionCountText>아직 질문이 없습니다.</QuestionCountText>
+              </QuestionCounterContainer>
+
+              <NoQuestionImage src='/images/contents/no-question.svg' />
+            </>
+          )}
+        </QuestionsContainer>
+
+        {!(isAnswer && isOwner) && <CreateQuestionBtn onClick={handleOpenModal} />}
+
+        {isModalOpen && (
+          <CreateQuestionModal
+            id={id}
+            image={subject.imageSource}
+            name={subject.name}
+            setCreatedQuestionsCount={setCreatedQuestionsCount}
+            setQuestions={setQuestions}
+            setQuestionsCount={setQuestionsCount}
+            onModalClose={handleCloseQuestionModal}
+            onToastshow={handleShowToast}
+          />
+        )}
+
+        {showToast && (
+          <Toast message={'질문이 성공적으로 작성되었습니다.'} onClose={handleHideToast} />
+        )}
+
+        {/* 삭제 확인 모달 */}
+        {isConfirmModalOpen && (
+          <ConfirmModal
+            message='정말 삭제하시겠습니까?'
+            confirmText='삭제'
+            onConfirm={handleDeleteSubject}
+            onCancel={handleCloseConfirmModal}
+            $isVisible={isModalVisible}
+          />
+        )}
+
+        {/* 삭제 완료 모달 */}
+        {isDeleteCompleteModalOpen && (
+          <ConfirmModal
+            message='피드가 삭제되었습니다.'
+            confirmText='확인'
+            onConfirm={handleCompleteModalConfirm}
+            onCancel={handleCloseDeleteCompleteModal}
+            $isVisible={isModalVisible}
+          />
+        )}
+
+        <div id='observer' style={{ height: '10px' }}></div>
+      </Main>
+    </FeedDetailPageWrapper>
+  );
+}
 
 const FeedDetailPageWrapper = styled.div`
   min-height: 100vh;
@@ -164,233 +392,5 @@ const Spacer = styled.div`
     height: 40px;
   }
 `;
-
-function FeedDetailPage({ isAnswer }) {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { canEditFeed, removeUser } = useUser();
-  const isOwner = canEditFeed(id);
-
-  const [subject, setSubject] = useState({});
-  const [questions, setQuestions] = useState([]);
-  const [questionsCount, setQuestionsCount] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [createdQuestoinsCount, setCreatedQuestionsCount] = useState(0);
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [showToast, setShowToast] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const limit = window.innerWidth <= 768 ? 5 : 10;
-
-  const fetchSubject = useCallback(async () => {
-    try {
-      const response = await getSubjectById(id);
-      setSubject(response);
-    } catch (error) {
-      console.error(error.message);
-    }
-  }, [id]);
-
-  const fetchQuestions = useCallback(async () => {
-    setIsLoading(true);
-
-    try {
-      const response = await getQuestions(id, limit, (page - 1) * limit + createdQuestoinsCount);
-      const { count, results } = response;
-      setQuestions((prevQuestions) => [...prevQuestions, ...results]);
-      setQuestionsCount(count);
-    } catch (error) {
-      console.error(error.message);
-    } finally {
-      setIsLoading(false);
-      setIsInitialLoad(false);
-    }
-  }, [id, limit, page]);
-
-  useEffect(() => {
-    if (isAnswer && !isOwner) {
-      navigate('/403');
-    }
-    fetchSubject();
-  }, [fetchSubject, isAnswer, isOwner, navigate]);
-
-  useEffect(() => {
-    fetchQuestions();
-  }, [fetchQuestions]);
-
-  useEffect(() => {
-    if (isInitialLoad) return;
-
-    const observer = new IntersectionObserver(handleObserver, { threshold: 0 });
-    const observerTarget = document.getElementById('observer');
-
-    if (observerTarget) {
-      observer.observe(observerTarget);
-    }
-    return () => observer.disconnect();
-  }, [isInitialLoad]);
-
-  const handleObserver = useCallback(
-    (entries) => {
-      const target = entries[0];
-
-      if (target.isIntersecting && !isLoading && !isInitialLoad) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    },
-    [isLoading, isInitialLoad],
-  );
-
-  const handleDeleteSubject = async () => {
-    try {
-      await deleteSubjectById(id);
-      setIsConfirmModalOpen(false);
-      setIsDeleteCompleteModalOpen(true);
-      setIsModalVisible(true);
-    } catch (error) {
-      console.error('Error deleting subject:', error);
-    }
-  };
-
-  const handleOpenModal = () => setIsModalOpen(true);
-
-  const handleCloseQuestionModal = () => {
-    setIsModalVisible(false);
-
-    setTimeout(() => {
-      setIsModalOpen(false);
-    }, 400);
-  };
-
-  const handleCloseConfirmModal = () => {
-    setIsModalVisible(false);
-
-    setTimeout(() => {
-      setIsConfirmModalOpen(false);
-    }, 400);
-  };
-
-  const handleCloseDeleteCompleteModal = () => {
-    setIsModalVisible(false);
-    removeUser(id);
-    navigate('/list');
-  };
-
-  const handleShowToast = () => setShowToast(true);
-  const handleHideToast = () => setShowToast(false);
-
-  const handleOpenConfirmModal = () => {
-    setIsConfirmModalOpen(true);
-    setIsModalVisible(true);
-  };
-
-  const handleCompleteModalConfirm = () => {
-    handleCloseDeleteCompleteModal();
-  };
-
-  const handleToggleMenu = (questionId) => {
-    setOpenMenuId((prevId) => {
-      const newId = prevId === questionId ? null : questionId;
-      return newId;
-    });
-  };
-
-  return (
-    <FeedDetailPageWrapper>
-      <Header
-        id={id}
-        image={subject.imageSource}
-        name={subject.name}
-        questionsCount={questionsCount}
-      />
-      <Main>
-        {isAnswer && isOwner ? (
-          <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
-        ) : (
-          <Spacer />
-        )}
-        <QuestionsContainer>
-          {questionsCount ? (
-            <>
-              <QuestionCounterContainer>
-                <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
-                <QuestionCountText>{`${questionsCount}개의 질문이 있습니다.`}</QuestionCountText>
-              </QuestionCounterContainer>
-
-              {questions.map((question) => (
-                <QuestionBox
-                  key={question.id}
-                  question={question}
-                  image={subject.imageSource}
-                  name={subject.name}
-                  isOwner={isAnswer && isOwner}
-                  isMenuOpen={openMenuId === question.id}
-                  onToggleMenu={() => handleToggleMenu(question.id)}
-                />
-              ))}
-            </>
-          ) : (
-            <>
-              <QuestionCounterContainer>
-                <QuestionIcon src='/images/icons/ic_messages_brown.svg' />
-                <QuestionCountText>아직 질문이 없습니다.</QuestionCountText>
-              </QuestionCounterContainer>
-
-              <NoQuestionImage src='/images/contents/no-question.svg' />
-            </>
-          )}
-        </QuestionsContainer>
-
-        {!(isAnswer && isOwner) && <CreateQuestionBtn onClick={handleOpenModal} />}
-
-        {isModalOpen && (
-          <CreateQuestionModal
-            id={id}
-            image={subject.imageSource}
-            name={subject.name}
-            setCreatedQuestionsCount={setCreatedQuestionsCount}
-            setQuestions={setQuestions}
-            setQuestionsCount={setQuestionsCount}
-            onModalClose={handleCloseQuestionModal}
-            onToastshow={handleShowToast}
-          />
-        )}
-
-        {showToast && (
-          <Toast message={'질문이 성공적으로 작성되었습니다.'} onClose={handleHideToast} />
-        )}
-
-        {/* 삭제 확인 모달 */}
-        {isConfirmModalOpen && (
-          <ConfirmModal
-            message='정말 삭제하시겠습니까?'
-            confirmText='삭제'
-            onConfirm={handleDeleteSubject}
-            onCancel={handleCloseConfirmModal}
-            $isVisible={isModalVisible}
-          />
-        )}
-
-        {/* 삭제 완료 모달 */}
-        {isDeleteCompleteModalOpen && (
-          <ConfirmModal
-            message='피드가 삭제되었습니다.'
-            confirmText='확인'
-            onConfirm={handleCompleteModalConfirm}
-            onCancel={handleCloseDeleteCompleteModal}
-            $isVisible={isModalVisible}
-          />
-        )}
-
-        <div id='observer' style={{ height: '10px' }}></div>
-      </Main>
-    </FeedDetailPageWrapper>
-  );
-}
 
 export default FeedDetailPage;
