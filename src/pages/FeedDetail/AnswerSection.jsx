@@ -1,5 +1,86 @@
 import styled from 'styled-components';
 
+export default function AnswerSection({
+  isOwner,
+  image,
+  name,
+  getRelativeTime,
+  question,
+  isEditing,
+  currentAnswer,
+  answerText,
+  handleAnswerComplete,
+  handleEditComplete,
+  handleAnswerTextChange,
+}) {
+  const isButtonDisabled = () => !answerText.trim();
+  return (
+    <>
+      {isOwner ? (
+        <AnswerContainer>
+          <AnswerProfile src={image} alt='프로필 이미지' />
+          <AnswerTextContainer>
+            <AnswerInfo>
+              <UserName className='actor-regular'>{name}</UserName>
+              <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
+            </AnswerInfo>
+            {isEditing && currentAnswer ? (
+              <AnswerRegisterContainer>
+                <AnswerTextArea
+                  placeholder='답변을 입력해주세요'
+                  value={answerText}
+                  onChange={handleAnswerTextChange}
+                />
+                <AnswerRegisterButton
+                  onClick={() => handleEditComplete()}
+                  disabled={isButtonDisabled()}
+                >
+                  수정 완료
+                </AnswerRegisterButton>
+              </AnswerRegisterContainer>
+            ) : currentAnswer ? (
+              currentAnswer.isRejected ? (
+                <AnswerContent $isRejected>답변 거절</AnswerContent>
+              ) : (
+                <AnswerContent>{currentAnswer.content}</AnswerContent>
+              )
+            ) : (
+              <AnswerRegisterContainer>
+                <AnswerTextArea
+                  placeholder='답변을 입력해주세요'
+                  value={answerText}
+                  onChange={handleAnswerTextChange}
+                />
+                <AnswerRegisterButton
+                  onClick={() => handleAnswerComplete()}
+                  disabled={isButtonDisabled()}
+                >
+                  답변 완료
+                </AnswerRegisterButton>
+              </AnswerRegisterContainer>
+            )}
+          </AnswerTextContainer>
+        </AnswerContainer>
+      ) : (
+        question.answer && ( // 답변자인 경우에만 보여주고, 답변자 시점이지만 미답변인 경우는 아예 숨김
+          <AnswerContainer>
+            <AnswerProfile src={image} alt='프로필 이미지' />
+            <AnswerTextContainer>
+              <AnswerInfo>
+                <UserName className='actor-regular'>{name}</UserName>
+                <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
+              </AnswerInfo>
+              <AnswerContent $isRejected={question.answer.isRejected}>
+                {question.answer.isRejected ? '답변 거절' : question.answer.content}
+              </AnswerContent>
+            </AnswerTextContainer>
+          </AnswerContainer>
+        )
+      )}
+    </>
+  );
+}
+
 const AnswerContainer = styled.div`
   display: flex;
   align-items: flex-start;
@@ -108,84 +189,3 @@ const AnswerRegisterButton = styled.button`
     background-color: ${({ theme }) => theme.brown[30]};
   }
 `;
-
-export default function AnswerSection({
-  isOwner,
-  image,
-  name,
-  getRelativeTime,
-  question,
-  isEditing,
-  currentAnswer,
-  answerText,
-  handleAnswerComplete,
-  handleEditComplete,
-  handleAnswerTextChange,
-}) {
-  const isButtonDisabled = () => !answerText.trim();
-  return (
-    <>
-      {isOwner ? (
-        <AnswerContainer>
-          <AnswerProfile src={image} alt='프로필 이미지' />
-          <AnswerTextContainer>
-            <AnswerInfo>
-              <UserName className='actor-regular'>{name}</UserName>
-              <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
-            </AnswerInfo>
-            {isEditing && currentAnswer ? (
-              <AnswerRegisterContainer>
-                <AnswerTextArea
-                  placeholder='답변을 입력해주세요'
-                  value={answerText}
-                  onChange={handleAnswerTextChange}
-                />
-                <AnswerRegisterButton
-                  onClick={() => handleEditComplete()}
-                  disabled={isButtonDisabled()}
-                >
-                  수정 완료
-                </AnswerRegisterButton>
-              </AnswerRegisterContainer>
-            ) : currentAnswer ? (
-              currentAnswer.isRejected ? (
-                <AnswerContent $isRejected>답변 거절</AnswerContent>
-              ) : (
-                <AnswerContent>{currentAnswer.content}</AnswerContent>
-              )
-            ) : (
-              <AnswerRegisterContainer>
-                <AnswerTextArea
-                  placeholder='답변을 입력해주세요'
-                  value={answerText}
-                  onChange={handleAnswerTextChange}
-                />
-                <AnswerRegisterButton
-                  onClick={() => handleAnswerComplete()}
-                  disabled={isButtonDisabled()}
-                >
-                  답변 완료
-                </AnswerRegisterButton>
-              </AnswerRegisterContainer>
-            )}
-          </AnswerTextContainer>
-        </AnswerContainer>
-      ) : (
-        question.answer && ( // 답변자인 경우에만 보여주고, 답변자 시점이지만 미답변인 경우는 아예 숨김
-          <AnswerContainer>
-            <AnswerProfile src={image} alt='프로필 이미지' />
-            <AnswerTextContainer>
-              <AnswerInfo>
-                <UserName className='actor-regular'>{name}</UserName>
-                <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
-              </AnswerInfo>
-              <AnswerContent $isRejected={question.answer.isRejected}>
-                {question.answer.isRejected ? '답변 거절' : question.answer.content}
-              </AnswerContent>
-            </AnswerTextContainer>
-          </AnswerContainer>
-        )
-      )}
-    </>
-  );
-}

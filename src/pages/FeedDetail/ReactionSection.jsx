@@ -2,6 +2,35 @@ import styled, { keyframes, css, useTheme } from 'styled-components';
 import ThumbsUpIcon from './SvgIcons/thumbs-up';
 import ThumbsDownIcon from './SvgIcons/thumbs-down';
 
+export default function ReactionSection({
+  isLiked,
+  isDisliked,
+  question,
+  handleReaction,
+  likeCount,
+  dislikeCount,
+}) {
+  const theme = useTheme();
+  return (
+    <ReactionContainer>
+      <ReactionBox>
+        <Reaction $isActive={isLiked} type='like' onClick={() => handleReaction('like')}>
+          <AnimatedIcon $isActive={isLiked}>
+            <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
+          </AnimatedIcon>
+          좋아요 {likeCount}
+        </Reaction>
+        <Reaction $isActive={isDisliked} type='dislike' onClick={() => handleReaction('dislike')}>
+          <AnimatedIcon $isActive={isDisliked}>
+            <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
+          </AnimatedIcon>
+          싫어요 {dislikeCount}
+        </Reaction>
+      </ReactionBox>
+    </ReactionContainer>
+  );
+}
+
 const ReactionContainer = styled.div`
   width: 100%;
   border-top: 1px solid ${({ theme }) => theme.gray[30]};
@@ -43,32 +72,3 @@ const AnimatedIcon = styled.div`
         `
       : 'none'};
 `;
-
-export default function ReactionSection({
-  isLiked,
-  isDisliked,
-  question,
-  handleReaction,
-  likeCount,
-  dislikeCount,
-}) {
-  const theme = useTheme();
-  return (
-    <ReactionContainer>
-      <ReactionBox>
-        <Reaction $isActive={isLiked} type='like' onClick={() => handleReaction('like')}>
-          <AnimatedIcon $isActive={isLiked}>
-            <ThumbsUpIcon color={isLiked ? theme.blue : theme.gray[40]} size={16} />
-          </AnimatedIcon>
-          좋아요 {likeCount}
-        </Reaction>
-        <Reaction $isActive={isDisliked} type='dislike' onClick={() => handleReaction('dislike')}>
-          <AnimatedIcon $isActive={isDisliked}>
-            <ThumbsDownIcon color={isDisliked ? theme.gray[60] : theme.gray[40]} size={16} />
-          </AnimatedIcon>
-          싫어요 {dislikeCount}
-        </Reaction>
-      </ReactionBox>
-    </ReactionContainer>
-  );
-}

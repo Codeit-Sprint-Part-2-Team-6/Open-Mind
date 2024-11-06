@@ -8,49 +8,6 @@ import AnswerSection from './AnswerSection';
 import ReactionSection from './ReactionSection';
 import Toast from '../../components/Toast';
 
-const QuestionCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  padding: 32px;
-  gap: 32px;
-  background-color: ${({ theme }) => theme.gray[10]};
-  box-shadow: ${({ theme }) => theme.shadows.small};
-  border-radius: 16px;
-`;
-
-const TitleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  width: 100%;
-`;
-
-const TitleInfo = styled.p`
-  font-weight: ${({ theme }) => theme.typography.caption1Medium.fontWeight};
-  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
-  line-height: 18px;
-  color: ${({ theme }) => theme.gray[40]};
-`;
-
-const Title = styled.p`
-  font-size: ${({ theme }) => theme.typography.body3.fontSize};
-  font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
-  line-height: 22px;
-  color: ${({ theme }) => theme.gray[60]};
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow-wrap: break-word;
-  text-align: left;
-
-  @media ${({ theme }) => theme.typography.device.tabletMn} {
-    font-size: ${({ theme }) => theme.typography.body2.fontSize};
-    font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
-  }
-`;
-
 const getRelativeTime = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
@@ -261,3 +218,46 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
     </QuestionCard>
   );
 }
+
+const QuestionCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 32px;
+  gap: 32px;
+  background-color: ${({ theme }) => theme.gray[10]};
+  box-shadow: ${({ theme }) => theme.shadows.small};
+  border-radius: 16px;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+`;
+
+const TitleInfo = styled.p`
+  font-weight: ${({ theme }) => theme.typography.caption1Medium.fontWeight};
+  font-size: ${({ theme }) => theme.typography.caption1.fontSize};
+  line-height: 18px;
+  color: ${({ theme }) => theme.gray[40]};
+`;
+
+const Title = styled.p`
+  font-size: ${({ theme }) => theme.typography.body3.fontSize};
+  font-weight: ${({ theme }) => theme.typography.body3.fontWeight};
+  line-height: 22px;
+  color: ${({ theme }) => theme.gray[60]};
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  text-align: left;
+
+  @media ${({ theme }) => theme.typography.device.tabletMn} {
+    font-size: ${({ theme }) => theme.typography.body2.fontSize};
+    font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
+  }
+`;
