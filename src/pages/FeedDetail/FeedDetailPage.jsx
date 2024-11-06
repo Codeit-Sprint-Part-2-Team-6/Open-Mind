@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 import Toast from '../../components/Toast.jsx';
-import ConfirmModal from './ConFirmModal.jsx';
+import ConfirmModal from './ConfirmModal.jsx';
 
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
