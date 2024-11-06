@@ -5,6 +5,45 @@ import theme from '../../styles/theme';
 import { useUser } from '../../hooks/useStore';
 import { useState } from 'react';
 
+function Header() {
+  const navigate = useNavigate();
+  const { getUserIds, getUserNames } = useUser();
+  const userKeys = getUserIds();
+  const userNames = getUserNames();
+  const [isDropDown, setIsDropDown] = useState(false);
+
+  const handleAnswerBtn = () => {
+    setIsDropDown((prev) => !prev);
+  };
+
+  const handleSelectName = (index) => {
+    setIsDropDown(false);
+    const selectedId = userKeys[index];
+    const nextPath = selectedId ? `/post/${selectedId}/answer` : '/';
+    navigate(nextPath);
+  };
+
+  return (
+    <HeaderContainer>
+      <Link to='/' aria-label='메인페이지이동'>
+        <Logo src='/images/contents/logo.svg' alt='logo' />
+      </Link>
+      <HomePageBtn>
+        <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
+        <Dropdown $show={isDropDown}>
+          {userNames.map((name, index) => (
+            <DropdownOption key={index} onClick={() => handleSelectName(index)}>
+              {name}
+            </DropdownOption>
+          ))}
+        </Dropdown>
+      </HomePageBtn>
+    </HeaderContainer>
+  );
+}
+
+export default Header;
+
 const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -98,42 +137,3 @@ const DropdownOption = styled.div`
     transform: translateY(-2px);
   }
 `;
-
-function Header() {
-  const navigate = useNavigate();
-  const { getUserIds, getUserNames } = useUser();
-  const userKeys = getUserIds();
-  const userNames = getUserNames();
-  const [isDropDown, setIsDropDown] = useState(false);
-
-  const handleAnswerBtn = () => {
-    setIsDropDown((prev) => !prev);
-  };
-
-  const handleSelectName = (index) => {
-    setIsDropDown(false);
-    const selectedId = userKeys[index];
-    const nextPath = selectedId ? `/post/${selectedId}/answer` : '/';
-    navigate(nextPath);
-  };
-
-  return (
-    <HeaderContainer>
-      <Link to='/' aria-label='메인페이지이동'>
-        <Logo src='/images/contents/logo.svg' alt='logo' />
-      </Link>
-      <HomePageBtn>
-        <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
-        <Dropdown $show={isDropDown}>
-          {userNames.map((name, index) => (
-            <DropdownOption key={index} onClick={() => handleSelectName(index)}>
-              {name}
-            </DropdownOption>
-          ))}
-        </Dropdown>
-      </HomePageBtn>
-    </HeaderContainer>
-  );
-}
-
-export default Header;
