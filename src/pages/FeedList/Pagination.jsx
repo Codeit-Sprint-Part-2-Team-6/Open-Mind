@@ -1,44 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 
-const PaginationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 31px;
-
-  @media (min-width: 768px) {
-    margin-top: 11px;
-  }
-
-  @media (min-width: 868px) {
-    margin-top: 11px;
-  }
-
-  @media (min-width: 1200px) {
-    margin-top: 11px;
-  }
-`;
-
-const PaginationButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  font-family: 'Actor', sans-serif;
-  font-weight: ${({ $isCurrentPage }) => ($isCurrentPage ? '900' : '300')};
-  color: ${({ $isCurrentPage }) => ($isCurrentPage ? theme.brown[40] : theme.gray[40])};
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-`;
-
 const Pagination = ({ totalPage, currentPage, pageChange }) => {
   const maxPage = 5;
   let startPage;
@@ -84,3 +46,41 @@ const Pagination = ({ totalPage, currentPage, pageChange }) => {
 };
 
 export default Pagination;
+
+const PaginationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 31px;
+
+  @media (min-width: 768px) {
+    margin-top: 11px;
+  }
+
+  @media (min-width: 868px) {
+    margin-top: 11px;
+  }
+
+  @media (min-width: 1200px) {
+    margin-top: 11px;
+  }
+`;
+
+const PaginationButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-family: 'Actor', sans-serif;
+  font-weight: ${({ $isCurrentPage }) => ($isCurrentPage ? '900' : '300')};
+  color: ${({ $isCurrentPage }) => ($isCurrentPage ? theme.brown[40] : theme.gray[40])};
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
