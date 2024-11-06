@@ -25,7 +25,7 @@ function ScrollToTop() {
   }, []);
 
   return (
-    <ScrollToTopButton onClick={scrollToTop} isVisible={isVisible}>
+    <ScrollToTopButton onClick={scrollToTop} $isVisible={isVisible}>
       Top
     </ScrollToTopButton>
   );
@@ -44,7 +44,7 @@ const ScrollToTopButton = styled.button`
   border-radius: 20px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  opacity: ${({ isVisible }) => (isVisible ? '1' : '0')};
+  opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};
   transition:
     opacity 0.2s ease,
     background-color 0.3s ease,

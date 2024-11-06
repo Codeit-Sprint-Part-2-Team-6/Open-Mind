@@ -61,7 +61,6 @@ function FeedDetailPage({ isAnswer }) {
     } finally {
       setIsLoading(false);
       setIsInitialLoad(false);
-      console.log(page);
     }
   }, [id, limit, page]);
 

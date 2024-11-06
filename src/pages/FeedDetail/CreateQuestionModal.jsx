@@ -53,8 +53,8 @@ function CreateQuestionModal({
   };
 
   return (
-    <ModalOverlay isVisible={isVisible} onClick={handleClose}>
-      <ModalContainer isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay $isVisible={isVisible} onClick={handleClose}>
+      <ModalContainer $isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
         <ModalTitle>
           <ModalTitleWrapper>
             <MessageIcon src='/images/icons/ic_messages_black.svg' />
@@ -95,7 +95,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: ${({ isVisible }) => (isVisible ? overlayFadeIn : overlayFadeOut)} 0.2s ease-out
+  animation: ${({ $isVisible }) => ($isVisible ? overlayFadeIn : overlayFadeOut)} 0.2s ease-out
     forwards;
 `;
 
@@ -107,7 +107,7 @@ const ModalContainer = styled.div`
   padding: 24px;
   border-radius: 24px;
   box-shadow: ${(props) => props.theme.shadows['large']};
-  animation: ${({ isVisible }) => (isVisible ? modalSlideUp : modalSlideDown)} 0.4s ease forwards;
+  animation: ${({ $isVisible }) => ($isVisible ? modalSlideUp : modalSlideDown)} 0.4s ease forwards;
 `;
 
 const ModalTitle = styled.div`
