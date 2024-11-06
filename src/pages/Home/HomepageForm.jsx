@@ -85,7 +85,7 @@ const HomePageForm = styled.form`
   background-color: ${({ theme }) => theme.gray[10]};
   z-index: 2;
 
-  @media (min-width: 768px) {
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
     max-width: 400px;
     padding: 32px;
   }
@@ -98,7 +98,7 @@ const HomeInputCon = styled.div`
   flex-direction: column;
   gap: 16px;
 
-  @media (min-width: 768px) {
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
     max-width: 336px;
   }
 `;
