@@ -1,10 +1,28 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+export default function Card({ item }) {
+  return (
+    <CardContainer to={`/post/${item.id}`}>
+      <CardPadding>
+        <CardImage src={item.imageSource} alt={`${item.name}의 이미지`} />
+        <CardName>{item.name}</CardName>
+        <CardQuestionWrap>
+          <CardQuestionBox>
+            <CardQuestionIcos src='/images/icons/Messages.svg' alt='메시지 아이콘' />
+            <CardQuestionTxt>받은 질문</CardQuestionTxt>
+          </CardQuestionBox>
+          <CardQuestionCount>{item.questionCount}개</CardQuestionCount>
+        </CardQuestionWrap>
+      </CardPadding>
+    </CardContainer>
+  );
+}
+
 const CardContainer = styled(Link)`
   display: block;
   height: 168px;
-  width:80%;
+  width: 80%;
   min-width: 155.5px;
   background-color: ${({ theme }) => theme.gray[10]};
   border: 1px solid ${({ theme }) => theme.gray[40]};
@@ -16,14 +34,13 @@ const CardContainer = styled(Link)`
     opacity: 1;
     transform: translateY(-3px);
     transition: transform 0.3s ease;
-    tran
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   @media (min-width: 768px) {
     height: 187px;
-    width:100%;
+    width: 100%;
   }
-  
+
   @media (min-width: 1200px) {
     width: 220px;
   }
@@ -91,21 +108,3 @@ const CardQuestionCount = styled.div`
     font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
 `;
-
-export default function Card({ item }) {
-  return (
-    <CardContainer to={`/post/${item.id}`}>
-      <CardPadding>
-        <CardImage src={item.imageSource} alt={`${item.name}의 이미지`} />
-        <CardName>{item.name}</CardName>
-        <CardQuestionWrap>
-          <CardQuestionBox>
-            <CardQuestionIcos src='/images/icons/Messages.svg' alt='메시지 아이콘' />
-            <CardQuestionTxt>받은 질문</CardQuestionTxt>
-          </CardQuestionBox>
-          <CardQuestionCount>{item.questionCount}개</CardQuestionCount>
-        </CardQuestionWrap>
-      </CardPadding>
-    </CardContainer>
-  );
-}

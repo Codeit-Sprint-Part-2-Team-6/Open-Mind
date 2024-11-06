@@ -1,6 +1,18 @@
 import styled from 'styled-components';
 import RotateLoader from 'react-spinners/RotateLoader';
 
+const Loding = () => {
+  return (
+    <StyledLoding>
+      <StyledContainer>
+        <RotateLoader />
+      </StyledContainer>
+    </StyledLoding>
+  );
+};
+
+export default Loding;
+
 const StyledLoding = styled.div`
   position: fixed;
   background-color: rgba(0, 0, 0, 0.4);
@@ -18,15 +30,3 @@ const StyledContainer = styled.div`
   height: 1000px;
   opacity: 0.5;
 `;
-
-const Loding = () => {
-  return (
-    <StyledLoding>
-      <StyledContainer>
-        <RotateLoader />
-      </StyledContainer>
-    </StyledLoding>
-  );
-};
-
-export default Loding;

@@ -2,6 +2,50 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 
+function Dropdown({ onSortCard }) {
+  const [isDropDown, setIsDropDown] = useState(false);
+  const [orderBy, setOrderBy] = useState('최신순');
+  const sortingOptions = [
+    { label: '이름순', value: 'name' },
+    { label: '최신순', value: 'createdAt' },
+  ];
+
+  const toggleDropdown = () => setIsDropDown(!isDropDown);
+
+  const handleSortCard = (value, label) => {
+    onSortCard(value);
+    setOrderBy(label);
+    setIsDropDown(false);
+  };
+
+  return (
+    <DropdownContainer>
+      <DropdownBtn onClick={toggleDropdown}>
+        {orderBy}
+        <img
+          src={isDropDown ? 'images/icons/Arrow-up.svg' : 'images/icons/Arrow-down.svg'}
+          alt={isDropDown ? '화살표위' : '화살표아래'}
+        />
+      </DropdownBtn>
+      {isDropDown && (
+        <DropdownList>
+          {sortingOptions.map((option) => (
+            <DropdownOption
+              key={option.value}
+              onClick={() => handleSortCard(option.value, option.label)}
+              selected={orderBy === option.label}
+            >
+              {option.label}
+            </DropdownOption>
+          ))}
+        </DropdownList>
+      )}
+    </DropdownContainer>
+  );
+}
+
+export default Dropdown;
+
 const DropdownContainer = styled.div`
   height: 34px;
   background-color: ${theme.gray[10]};
@@ -59,47 +103,3 @@ const DropdownOption = styled.div`
     color: blue;
   }
 `;
-
-function Dropdown({ onSortCard }) {
-  const [isDropDown, setIsDropDown] = useState(false);
-  const [orderBy, setOrderBy] = useState('최신순');
-  const sortingOptions = [
-    { label: '이름순', value: 'name' },
-    { label: '최신순', value: 'createdAt' },
-  ];
-
-  const toggleDropdown = () => setIsDropDown(!isDropDown);
-
-  const handleSortCard = (value, label) => {
-    onSortCard(value);
-    setOrderBy(label);
-    setIsDropDown(false);
-  };
-
-  return (
-    <DropdownContainer>
-      <DropdownBtn onClick={toggleDropdown}>
-        {orderBy}
-        <img
-          src={isDropDown ? 'images/icons/Arrow-up.svg' : 'images/icons/Arrow-down.svg'}
-          alt={isDropDown ? '화살표위' : '화살표아래'}
-        />
-      </DropdownBtn>
-      {isDropDown && (
-        <DropdownList>
-          {sortingOptions.map((option) => (
-            <DropdownOption
-              key={option.value}
-              onClick={() => handleSortCard(option.value, option.label)}
-              selected={orderBy === option.label}
-            >
-              {option.label}
-            </DropdownOption>
-          ))}
-        </DropdownList>
-      )}
-    </DropdownContainer>
-  );
-}
-
-export default Dropdown;

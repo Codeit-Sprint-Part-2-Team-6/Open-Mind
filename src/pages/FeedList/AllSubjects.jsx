@@ -10,6 +10,78 @@ import Loding from './Loading';
 
 const getPageSize = () => (window.innerWidth < 868 ? 6 : 8);
 
+function AllSubjects() {
+  const [pageSize, setPageSize] = useState(getPageSize());
+  const [subjectList, setSubjectList] = useState([]);
+  const [sort, setSort] = useState('createdAt');
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSortCard = (sortOption) => {
+    setSort(sortOption);
+  };
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const subjects = await getSubjects({ sort, page, pageSize });
+      setSubjectList(subjects.results);
+      setTotalPage(Math.ceil(subjects.count / pageSize));
+    } catch (error) {
+      console.log('Error fetchingdata:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [sort, pageSize, page]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setPageSize(getPageSize());
+    };
+
+    const debouncedHandleResize = debounce(handleResize, 250);
+
+    window.addEventListener('resize', debouncedHandleResize);
+
+    return () => {
+      window.removeEventListener('resize', debouncedHandleResize);
+    };
+  }, []);
+
+  const pageChange = (pageNum) => {
+    setPage(pageNum);
+  };
+
+  return (
+    <Container>
+      <HeaderContainer>
+        <Title>누구에게 질문할까요?</Title>
+        <Dropdown onSortCard={handleSortCard} />
+      </HeaderContainer>
+      <GridContainer>
+        {isLoading ? (
+          <Loding />
+        ) : (
+          <UserCardGrid>
+            {subjectList?.map((subject) => (
+              <UserCard item={subject} key={subject.id} />
+            ))}
+          </UserCardGrid>
+        )}
+
+        <Pagination totalPage={totalPage} currentPage={page} pageChange={pageChange} />
+      </GridContainer>
+    </Container>
+  );
+}
+
+export default AllSubjects;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -85,75 +157,3 @@ const UserCardGrid = styled.div`
     width: fit-content;
   }
 `;
-
-function AllSubjects() {
-  const [pageSize, setPageSize] = useState(getPageSize());
-  const [subjectList, setSubjectList] = useState([]);
-  const [sort, setSort] = useState('createdAt');
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSortCard = (sortOption) => {
-    setSort(sortOption);
-  };
-
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const subjects = await getSubjects({ sort, page, pageSize });
-      setSubjectList(subjects.results);
-      setTotalPage(Math.ceil(subjects.count / pageSize));
-    } catch (error) {
-      console.log('Error fetchingdata:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sort, pageSize, page]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setPageSize(getPageSize());
-    };
-
-    const debouncedHandleResize = debounce(handleResize, 250);
-
-    window.addEventListener('resize', debouncedHandleResize);
-
-    return () => {
-      window.removeEventListener('resize', debouncedHandleResize);
-    };
-  }, []);
-
-  const pageChange = (pageNum) => {
-    setPage(pageNum);
-  };
-
-  return (
-    <Container>
-      <HeaderContainer>
-        <Title>누구에게 질문할까요?</Title>
-        <Dropdown onSortCard={handleSortCard} />
-      </HeaderContainer>
-      <GridContainer>
-        {isLoading ? (
-          <Loding />
-        ) : (
-          <UserCardGrid>
-            {subjectList?.map((subject) => (
-              <UserCard item={subject} key={subject.id} />
-            ))}
-          </UserCardGrid>
-        )}
-
-        <Pagination totalPage={totalPage} currentPage={page} pageChange={pageChange} />
-      </GridContainer>
-    </Container>
-  );
-}
-
-export default AllSubjects;

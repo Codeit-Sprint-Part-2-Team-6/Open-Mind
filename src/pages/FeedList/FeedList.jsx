@@ -3,17 +3,6 @@ import Header from './Header';
 import AllSubjects from './AllSubjects';
 import theme from '../../styles/theme';
 
-const Container = styled.div`
-  height: 120vh;
-  display: flex;
-  flex-direction: column;
-  background-color: ${theme.gray[20]};
-
-  @media (min-width: 768px) {
-    height: 105vh;
-  }
-`;
-
 function FeedList() {
   return (
     <Container>
@@ -24,3 +13,14 @@ function FeedList() {
 }
 
 export default FeedList;
+
+const Container = styled.div`
+  height: 120vh;
+  display: flex;
+  flex-direction: column;
+  background-color: ${theme.gray[20]};
+
+  @media (min-width: 768px) {
+    height: 105vh;
+  }
+`;
