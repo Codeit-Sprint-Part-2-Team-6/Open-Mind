@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from 'react';
 import CreateQuestionModal from './CreateQuestionModal.jsx';
 import { deleteSubjectById, getSubjectById } from '../../api/subjectApi.js';
 import { getQuestions } from '../../api/questionApi.js';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 import Toast from '../../components/Toast.jsx';
@@ -156,11 +156,14 @@ function FeedDetailPage({ isAnswer }) {
         questionsCount={questionsCount}
       />
       <Main>
-        {isAnswer && isOwner ? (
-          <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
-        ) : (
-          <Spacer />
-        )}
+        <BtnWrapper>
+          <PreviousLinkBtn to={'/list'}>{'← 목록으로'}</PreviousLinkBtn>
+          {isAnswer && isOwner ? (
+            <DeleteSubjectBtn onClick={handleOpenConfirmModal}>삭제하기</DeleteSubjectBtn>
+          ) : (
+            <Spacer />
+          )}
+        </BtnWrapper>
         <QuestionsContainer>
           {questionsCount ? (
             <>
@@ -260,6 +263,83 @@ const Main = styled.main`
   }
 `;
 
+const BtnWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const PreviousLinkBtn = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 25px;
+  padding: 0 12px;
+  margin: 20px 0 12px;
+  font-size: 0.625rem;
+  color: ${(props) => props.theme.gray[10]};
+  background-color: ${(props) => props.theme.brown[40]};
+  border: none;
+  border-radius: 200px;
+  box-shadow: ${(props) => props.theme.shadows['medium']};
+
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: ${(props) => props.theme.brown[50]};
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 116px;
+    height: 40px;
+    font-size: ${(props) => props.theme.typography.body3.fontSize};
+  }
+`;
+
+// const ToPreviousImg = styled.img`
+//   display: inline;
+// `;
+
+const DeleteSubjectBtn = styled.button`
+  width: 70px;
+  height: 25px;
+  padding: 0 12px;
+  margin: 20px 0 12px;
+  font-size: 0.625rem;
+  color: ${(props) => props.theme.gray[10]};
+  background-color: ${(props) => props.theme.brown[40]};
+  border: none;
+  border-radius: 200px;
+  box-shadow: ${(props) => props.theme.shadows['medium']};
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: ${(props) => props.theme.brown[50]};
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (${(props) => props.theme.typography.device.tabletMn}) {
+    width: 116px;
+    height: 40px;
+    font-size: ${(props) => props.theme.typography.body3.fontSize};
+  }
+`;
+
 const QuestionsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -346,39 +426,6 @@ const CreateQuestionBtn = styled.button`
     &::after {
       content: '질문 작성하기';
     }
-  }
-`;
-
-const DeleteSubjectBtn = styled.button`
-  width: 70px;
-  height: 25px;
-  padding: 0 12px;
-  margin: 20px 0 12px;
-  font-size: 0.625rem;
-  align-self: end;
-  color: ${(props) => props.theme.gray[10]};
-  background-color: ${(props) => props.theme.brown[40]};
-  border: none;
-  border-radius: 200px;
-  box-shadow: ${(props) => props.theme.shadows['medium']};
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    transform 0.2s ease;
-
-  &:hover {
-    background-color: ${(props) => props.theme.brown[50]};
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  @media (${(props) => props.theme.typography.device.tabletMn}) {
-    width: 116px;
-    height: 40px;
-    font-size: ${(props) => props.theme.typography.body3.fontSize};
   }
 `;
 
