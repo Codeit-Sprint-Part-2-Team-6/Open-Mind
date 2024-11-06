@@ -11,6 +11,7 @@ import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 import Toast from '../../components/Toast.jsx';
 import ConfirmModal from './ConfirmModal.jsx';
+import ScrollToTop from './ScrollTopBtn.jsx';
 
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
@@ -156,6 +157,7 @@ function FeedDetailPage({ isAnswer }) {
         questionsCount={questionsCount}
       />
       <Main>
+        <ScrollToTop />
         <BtnWrapper>
           <PreviousLinkBtn to={'/list'}>{'← 목록으로'}</PreviousLinkBtn>
           {isAnswer && isOwner ? (
@@ -304,10 +306,6 @@ const PreviousLinkBtn = styled(Link)`
     font-size: ${(props) => props.theme.typography.body3.fontSize};
   }
 `;
-
-// const ToPreviousImg = styled.img`
-//   display: inline;
-// `;
 
 const DeleteSubjectBtn = styled.button`
   width: 70px;
