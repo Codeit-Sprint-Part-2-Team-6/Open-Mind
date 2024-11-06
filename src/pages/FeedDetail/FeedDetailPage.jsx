@@ -278,6 +278,7 @@ const PreviousLinkBtn = styled(Link)`
   padding: 0 12px;
   margin: 20px 0 12px;
   font-size: 0.625rem;
+  white-space: nowrap;
   color: ${(props) => props.theme.gray[10]};
   background-color: ${(props) => props.theme.brown[40]};
   border: none;
