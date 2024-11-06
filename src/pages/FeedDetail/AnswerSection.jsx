@@ -22,7 +22,7 @@ export default function AnswerSection({
           <AnswerTextContainer>
             <AnswerInfo>
               <UserName className='actor-regular'>{name}</UserName>
-              <AnswerAt>{getRelativeTime(question.createdAt)}</AnswerAt>
+              <AnswerAt>{getRelativeTime(question.answer.createdAt)}</AnswerAt>
             </AnswerInfo>
             {isEditing && currentAnswer ? (
               <AnswerRegisterContainer>
