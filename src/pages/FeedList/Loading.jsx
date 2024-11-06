@@ -15,7 +15,6 @@ export default Loding;
 
 const StyledLoding = styled.div`
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.4);
   left: 0;
   top: 0;
   width: 100%;
