@@ -1,5 +1,22 @@
 import styled from 'styled-components';
 
+export default function ToggleThemeBtn({ isDarkMode, toggleTheme }) {
+  return (
+    <ToggleContainer $isDarkMode={isDarkMode}>
+      <BgMove $isDarkMode={isDarkMode} />
+      <ToggleButton
+        $active={!isDarkMode}
+        $isDarkMode={isDarkMode}
+        onClick={() => toggleTheme(false)}
+      >
+        Light
+      </ToggleButton>
+      <ToggleButton $active={isDarkMode} $isDarkMode={isDarkMode} onClick={() => toggleTheme(true)}>
+        Dark
+      </ToggleButton>
+    </ToggleContainer>
+  );
+}
 const ToggleContainer = styled.div`
   display: flex;
   width: 90px;
@@ -13,7 +30,7 @@ const ToggleContainer = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.medium};
   transition: all 0.3s ease;
 
-  @media (min-width: 768px) {
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
     width: 120px;
     height: 40px;
     top: unset;
@@ -45,7 +62,7 @@ const ToggleButton = styled.button`
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
   }
-  @media (min-width: 768px) {
+  @media (${({ theme }) => theme.typography.device.tabletMn}) {
     padding: 10px 0;
     font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
@@ -62,21 +79,3 @@ const BgMove = styled.div`
   transition: all 0.3s ease;
   border: 1px solid ${({ $isDarkMode }) => ($isDarkMode ? 'transparent' : '#E8E8E8')};
 `;
-
-export default function ToggleThemeBtn({ isDarkMode, toggleTheme }) {
-  return (
-    <ToggleContainer $isDarkMode={isDarkMode}>
-      <BgMove $isDarkMode={isDarkMode} />
-      <ToggleButton
-        $active={!isDarkMode}
-        $isDarkMode={isDarkMode}
-        onClick={() => toggleTheme(false)}
-      >
-        Light
-      </ToggleButton>
-      <ToggleButton $active={isDarkMode} $isDarkMode={isDarkMode} onClick={() => toggleTheme(true)}>
-        Dark
-      </ToggleButton>
-    </ToggleContainer>
-  );
-}
