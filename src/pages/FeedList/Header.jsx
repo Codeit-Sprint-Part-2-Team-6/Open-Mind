@@ -44,41 +44,58 @@ const StyledCommonBtn = styled(CommonBtn)`
   cursor: pointer;
 `;
 
-const Dropdown = styled.div`
+const Dropdown = styled.div.attrs(({ show }) => ({
+  'aria-hidden': !show,
+}))`
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: ${({ theme }) => theme.brown[10]};
-  border: 1px solid ${theme.brown[40]};
-  border-radius: 8px;
-  padding: 3px 0;
+  background-color: ${({ theme }) => theme.gray[10]};
   width: 120px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   z-index: 1000;
-  display: ${({ show }) => (show ? 'block' : 'none')};
-  @media ${theme.typography.device.tabletMn} {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  pointer-events: none;
+
+  ${({ $show }) =>
+    $show &&
+    `
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    `}
+
+  @media ${({ theme }) => theme.typography.device.tabletMn} {
     width: 160px;
   }
 `;
 
 const DropdownOption = styled.div`
-  margin: 2px;
-  border: 1px solid ${theme.brown[40]};
+  width: 90%;
+  margin: 4px auto 0;
+  padding: 1px 0;
+  border: 1px solid ${({ theme }) => theme.gray[40]};
   border-radius: 5px;
   text-align: center;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 14px;
+  font-size: ${(props) => props.theme.typography.caption1.fontSize};
+  color: ${({ theme }) => theme.gray[50]};
+  font-weight: 400;
+  font-family: 'Pretendard';
+  line-height: 20px;
   cursor: pointer;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  color: ${theme.brown[40]};
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+
   &:hover {
     color: ${({ theme }) => theme.red};
     border-color: ${({ theme }) => theme.red};
     opacity: 1;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
   }
 `;
 
@@ -107,7 +124,7 @@ function Header() {
       </Link>
       <HomePageBtn>
         <StyledCommonBtn text='답변하러가기' onClick={handleAnswerBtn} />
-        <Dropdown show={isDropDown}>
+        <Dropdown $show={isDropDown}>
           {userNames.map((name, index) => (
             <DropdownOption key={index} onClick={() => handleSelectName(index)}>
               {name}
