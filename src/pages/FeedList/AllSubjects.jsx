@@ -28,12 +28,15 @@ function AllSubjects() {
       const subjects = await getSubjects({ sort, page, pageSize });
       setSubjectList(subjects.results);
       setTotalPage(Math.ceil(subjects.count / pageSize));
+      if (subjects.results.length === 0 && page !== totalPage) {
+        setPage(totalPage);
+      }
     } catch (error) {
       console.log('Error fetchingdata:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [sort, pageSize, page]);
+  }, [sort, pageSize, page, totalPage]);
 
   useEffect(() => {
     fetchData();
@@ -41,17 +44,17 @@ function AllSubjects() {
 
   useEffect(() => {
     const handleResize = () => {
-      setPageSize(getPageSize());
+      const newPageSize = getPageSize(); // 새로운 페이지 사이즈 계산
+      setPageSize(newPageSize); // 페이지 사이즈 상태 업데이트
     };
 
-    const debouncedHandleResize = debounce(handleResize, 250);
-
-    window.addEventListener('resize', debouncedHandleResize);
+    const debouncedHandleResize = debounce(handleResize, 250); // 리사이즈를 디바운스 처리하여 성능 최적화
+    window.addEventListener('resize', debouncedHandleResize); // 리사이즈 이벤트 리스너 추가
 
     return () => {
-      window.removeEventListener('resize', debouncedHandleResize);
+      window.removeEventListener('resize', debouncedHandleResize); // 컴포넌트 언마운트 시 리사이즈 이벤트 리스너 제거
     };
-  }, []);
+  }, [subjectList]); // subjectList가 변경될 때마다 리사이즈 처리
 
   const pageChange = (pageNum) => {
     setPage(pageNum);
