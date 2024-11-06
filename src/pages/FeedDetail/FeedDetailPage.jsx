@@ -11,6 +11,7 @@ import QuestionBox from './QuestionBox.jsx';
 import { useUser } from '../../hooks/useStore.js';
 import Toast from '../../components/Toast.jsx';
 import ConfirmModal from './ConfirmModal.jsx';
+import ScrollToTop from './ScrollTopBtn.jsx';
 
 function FeedDetailPage({ isAnswer }) {
   const { id } = useParams();
@@ -46,6 +47,10 @@ function FeedDetailPage({ isAnswer }) {
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
 
+    if (questionsCount < (page - 1) * limit + createdQuestoinsCount) {
+      return;
+    }
+
     try {
       const response = await getQuestions(id, limit, (page - 1) * limit + createdQuestoinsCount);
       const { count, results } = response;
@@ -56,6 +61,7 @@ function FeedDetailPage({ isAnswer }) {
     } finally {
       setIsLoading(false);
       setIsInitialLoad(false);
+      console.log(page);
     }
   }, [id, limit, page]);
 
@@ -95,10 +101,19 @@ function FeedDetailPage({ isAnswer }) {
 
   const handleDeleteSubject = async () => {
     try {
-      await deleteSubjectById(id);
+      await deleteSubjectById(id); // 삭제 요청
+
       setIsConfirmModalOpen(false);
       setIsDeleteCompleteModalOpen(true);
-      setIsModalVisible(true);
+
+      setTimeout(() => {
+        setIsModalVisible(false);
+        navigate('/list');
+
+        setTimeout(() => {
+          removeUser(id);
+        }, 100);
+      }, 1000);
     } catch (error) {
       console.error('Error deleting subject:', error);
     }
@@ -122,11 +137,7 @@ function FeedDetailPage({ isAnswer }) {
     }, 400);
   };
 
-  const handleCloseDeleteCompleteModal = () => {
-    setIsModalVisible(false);
-    removeUser(id);
-    navigate('/list');
-  };
+  const handleCloseDeleteCompleteModal = () => {};
 
   const handleOpenConfirmModal = () => {
     setIsConfirmModalOpen(true);
@@ -156,6 +167,7 @@ function FeedDetailPage({ isAnswer }) {
         questionsCount={questionsCount}
       />
       <Main>
+        <ScrollToTop />
         <BtnWrapper>
           <PreviousLinkBtn to={'/list'}>{'← 목록으로'}</PreviousLinkBtn>
           {isAnswer && isOwner ? (
@@ -230,9 +242,7 @@ function FeedDetailPage({ isAnswer }) {
         {isDeleteCompleteModalOpen && (
           <ConfirmModal
             message='피드가 삭제되었습니다.'
-            confirmText='확인'
-            onConfirm={handleCompleteModalConfirm}
-            onCancel={handleCloseDeleteCompleteModal}
+            isAccepted={true}
             $isVisible={isModalVisible}
           />
         )}
@@ -304,10 +314,6 @@ const PreviousLinkBtn = styled(Link)`
     font-size: ${(props) => props.theme.typography.body3.fontSize};
   }
 `;
-
-// const ToPreviousImg = styled.img`
-//   display: inline;
-// `;
 
 const DeleteSubjectBtn = styled.button`
   width: 70px;
