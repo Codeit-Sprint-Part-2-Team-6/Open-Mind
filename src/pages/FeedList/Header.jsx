@@ -87,7 +87,7 @@ const Dropdown = styled.div.attrs(({ show }) => ({
   'aria-hidden': !show,
 }))`
   position: absolute;
-  top: 100%;
+  top: 110%;
   left: 0;
   background-color: ${({ theme }) => theme.gray[10]};
   width: 120px;

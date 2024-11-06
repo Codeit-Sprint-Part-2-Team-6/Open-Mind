@@ -10,11 +10,22 @@ export default function CommonBtn({ text, onClick, className }) {
     </CommonButtonWrap>
   );
 }
+
 const CommonButtonWrap = styled.div`
   border: 1px solid ${({ theme }) => theme.brown[40]};
   border-radius: 8px;
   background-color: ${({ theme }) => theme.brown[10]};
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.brown[20]};
+    transform: scale(1.05);
+  }
 `;
+
 const CommonButtonFlex = styled.div`
   padding: 8px 12px;
   display: flex;
@@ -27,6 +38,7 @@ const CommonButtonFlex = styled.div`
     gap: 8px;
   }
 `;
+
 const CommonButtonTxt = styled.p`
   color: ${({ theme }) => theme.brown[40]};
   font-size: ${({ theme }) => theme.typography.caption1.fontSize};
@@ -35,12 +47,13 @@ const CommonButtonTxt = styled.p`
     font-size: ${({ theme }) => theme.typography.body3.fontSize};
   }
 `;
+
 const CommonButtonArrowIcon = styled.img`
   width: 18px;
   height: 18px;
   transition: transform 0.2s ease;
 
   ${CommonButtonWrap}:hover & {
-    transform: translateX(4px);
+    transform: translateX(6px);
   }
 `;
