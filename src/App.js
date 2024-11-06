@@ -24,7 +24,7 @@ function App() {
         <link
           rel='stylesheet'
           as='style'
-          crossorigin='anonymous'
+          crossOrigin='anonymous'
           href='https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css'
         />
       </Helmet>

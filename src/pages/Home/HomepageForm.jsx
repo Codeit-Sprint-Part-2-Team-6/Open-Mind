@@ -33,14 +33,10 @@ function HomeForm() {
     if (isDisabled || inputValue.trim() === '') {
       setErrorMessage('이름을 입력하세요.');
     } else {
-      console.log('제출할 이름:', inputValue);
       try {
-        // 새로운 데이터를 API에 전송
         const data = await createSubject(inputValue);
-        console.log('API 응답:', data);
-
-        // 생성한 subject의 id를 로컬 스토리지에 저장
         const { id: feedId, name: ownerName } = data;
+
         setUser(feedId, ownerName);
         setErrorMessage('');
         setInputValue('');

@@ -125,7 +125,7 @@ export default function AnswerSection({
   const isButtonDisabled = () => !answerText.trim();
   return (
     <>
-      {isOwner ? ( // 질문자인 경우
+      {isOwner ? (
         <AnswerContainer>
           <AnswerProfile src={image} alt='프로필 이미지' />
           <AnswerTextContainer>

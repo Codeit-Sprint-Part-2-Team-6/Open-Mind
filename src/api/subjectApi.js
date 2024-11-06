@@ -62,7 +62,6 @@ export async function deleteSubjectById(subjectId) {
       headers: DEFAULT_HEADERS,
     });
 
-    console.log(`Subject with ID ${subjectId} has been deleted successfully.`);
     return response.data;
   } catch (error) {
     console.error('Error deleting subject:', error);

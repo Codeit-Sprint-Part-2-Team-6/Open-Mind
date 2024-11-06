@@ -278,11 +278,7 @@ function FeedDetailPage({ isAnswer }) {
   const handleCloseDeleteCompleteModal = () => {
     setIsModalVisible(false);
     removeUser(id);
-
-    setTimeout(() => {
-      setIsDeleteCompleteModalOpen(false);
-      navigate('/list');
-    }, 400);
+    navigate('/list');
   };
 
   const handleShowToast = () => setShowToast(true);
@@ -376,7 +372,7 @@ function FeedDetailPage({ isAnswer }) {
             confirmText='삭제'
             onConfirm={handleDeleteSubject}
             onCancel={handleCloseConfirmModal}
-            isVisible={isModalVisible}
+            $isVisible={isModalVisible}
           />
         )}
 
@@ -387,7 +383,7 @@ function FeedDetailPage({ isAnswer }) {
             confirmText='확인'
             onConfirm={handleCompleteModalConfirm}
             onCancel={handleCloseDeleteCompleteModal}
-            isVisible={isModalVisible}
+            $isVisible={isModalVisible}
           />
         )}
 

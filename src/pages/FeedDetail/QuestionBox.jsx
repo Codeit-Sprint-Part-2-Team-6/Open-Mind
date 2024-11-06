@@ -51,7 +51,6 @@ const Title = styled.p`
   }
 `;
 
-// 상대 시간
 const getRelativeTime = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
@@ -77,7 +76,6 @@ const getRelativeTime = (dateString) => {
 };
 
 export default function QuestionBox({ question, image, name, isOwner, isMenuOpen, onToggleMenu }) {
-  // const [menuOpen, setMenuOpen] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState(question.answer);
   const [isEditing, setIsEditing] = useState(false);
   const [answerText, setAnswerText] = useState('');
@@ -89,12 +87,8 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
 
   const showToastMessage = (message) => {
     setShowToast(message);
-    setTimeout(() => setShowToast(''), 5000); // 5초 후 메시지 초기화
+    setTimeout(() => setShowToast(''), 5000);
   };
-
-  // const handleToggleMenu = () => {
-  //   setMenuOpen((prev) => !prev);
-  // };
 
   const handleMenuItemClick = async (action) => {
     switch (action) {
@@ -119,22 +113,20 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
         break;
       case 'reject':
         if (currentAnswer && currentAnswer.id) {
-          // 기존 답변이 있을 때
           try {
-            await updateAnswer(currentAnswer.id, currentAnswer.content, true); // 답변 거절 API 호출
+            await updateAnswer(currentAnswer.id, currentAnswer.content, true);
             setCurrentAnswer((prev) => ({ ...prev, isRejected: true }));
             showToastMessage('답변이 거절되었습니다');
           } catch (error) {
             console.error('답변 거절 중 오류가 발생했습니다:', error);
           }
         } else {
-          // 기존 답변이 없을 때
           try {
             const response = await createAnswer({
               questionId: question.id,
               content: '답변 거절',
               isRejected: true,
-            }); // POST 요청으로 새로운 답변 생성
+            });
             setCurrentAnswer({ id: response.id, content: '답변 거절', isRejected: true });
             showToastMessage('답변이 거절되었습니다');
           } catch (error) {
@@ -151,7 +143,6 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
   const handleEditComplete = async () => {
     try {
       await updateAnswer(currentAnswer.id, answerText);
-      // 사용자 경험을 위해 GET 요청을 추가하지 않고 상태 업데이트
       setCurrentAnswer((prev) => ({ ...prev, content: answerText, isRejected: false }));
       setIsEditing(false);
       setAnswerText('');
@@ -163,7 +154,7 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
 
   const handleAnswerComplete = async () => {
     try {
-      const response = await createAnswer({ questionId: question.id, content: answerText }); // POST 요청으로 새로운 답변 생성
+      const response = await createAnswer({ questionId: question.id, content: answerText });
       setCurrentAnswer({ id: response.id, content: answerText, isRejected: false });
       showToastMessage('답변이 등록되었습니다');
     } catch (error) {
@@ -176,7 +167,6 @@ export default function QuestionBox({ question, image, name, isOwner, isMenuOpen
     setAnswerText(event.target.value);
   };
 
-  // 메뉴창에 ref 설정
   const menuRef = useRef();
 
   const handleClickOutside = useCallback(

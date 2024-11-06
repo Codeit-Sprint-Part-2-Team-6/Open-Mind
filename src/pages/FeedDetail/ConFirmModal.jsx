@@ -17,7 +17,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: ${({ isVisible }) => (isVisible ? overlayFadeIn : overlayFadeOut)} 0.3s ease-out
+  animation: ${({ $isVisible }) => ($isVisible ? overlayFadeIn : overlayFadeOut)} 0.3s ease-out
     forwards;
 `;
 
@@ -30,7 +30,7 @@ const ModalContainer = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  animation: ${({ isVisible }) => (isVisible ? modalSlideUp : modalSlideDown)} 0.4s ease forwards;
+  animation: ${({ $isVisible }) => ($isVisible ? modalSlideUp : modalSlideDown)} 0.4s ease forwards;
 `;
 
 const ConfirmText = styled.p`
@@ -62,10 +62,10 @@ const CancelButton = styled.button`
   cursor: pointer;
 `;
 
-function ConfirmModal({ message, confirmText, onConfirm, onCancel, isVisible }) {
+function ConfirmModal({ message, confirmText, onConfirm, onCancel, $isVisible }) {
   return (
-    <ModalOverlay isVisible={isVisible} onClick={onCancel}>
-      <ModalContainer isVisible={isVisible} onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay $isVisible={$isVisible} onClick={onCancel}>
+      <ModalContainer $isVisible={$isVisible} onClick={(e) => e.stopPropagation()}>
         <ConfirmText>{message}</ConfirmText>
         <ButtonContainer>
           <ConfirmButton onClick={onConfirm}>{confirmText}</ConfirmButton>
